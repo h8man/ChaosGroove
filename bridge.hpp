@@ -3,7 +3,9 @@
 
 #ifndef __Bridge_hpp__
 #define __Bridge_hpp__ 
-     
+
+#include <string>
+
 #define MIN(x,y)     (((x) < (y)) ? (x) : (y))
 #define MAX(x,y)     (((x) > (y)) ? (x) : (y))
 #define MID(x,y,z)   MAX((x), MIN((y), (z)))
@@ -27,7 +29,7 @@ public:
    Rgba( double r, double g, double b, double a = 1.0 )              : r( r ), g( g ), b( b ), a( a ) {}
    Rgba( int    r, int    g, int    b, int    a = 255 )              : r( Rgba::CompToF(r)), g( Rgba::CompToF(g)), b( Rgba::CompToF(b)), a( Rgba::CompToF(a)) {}
    
-   Rgba( const std::string &hexPresentation );
+   //Rgba( const string &hexPresentation );
    
    Rgba() : r( 0.0 ), g( 0.0 ), b( 0.0 ), a( 0.0 ) {}
    
