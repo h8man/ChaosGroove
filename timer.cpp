@@ -1,4 +1,4 @@
-#include <Windows.h>
+#include <windows.h>
 #include "timer.hpp"
 
 
@@ -10,12 +10,16 @@ struct timer_t timer;
 
 void start_timer(void) 
 {
- timer.high_freq = QueryPerformanceFrequency(&timer.tticks);
+ LARGE_INTEGER ticks;
+ timer.high_freq = QueryPerformanceFrequency(&ticks);
+ timer.tticks.QuadPart = ticks.QuadPart;
  timer.logic_frames = 0;
  	
  if (timer.high_freq)	
  {
-  QueryPerformanceCounter(&timer.tstart);
+     LARGE_INTEGER ticks;
+  QueryPerformanceCounter(&ticks);
+  timer.tstart.QuadPart = ticks.QuadPart;
   timer.tlast = timer.tstart;	
  } 
 } 
@@ -24,7 +28,10 @@ void reset_timer(void)
 {
  if (timer.high_freq)
  {
-  QueryPerformanceCounter(&timer.tnow);
+     LARGE_INTEGER ticks;
+
+  QueryPerformanceCounter(&ticks);
+  timer.tnow.QuadPart = ticks.QuadPart;
   timer.tstart = timer.tnow;
  } 
 }
@@ -35,7 +42,11 @@ int check_timer(int frac_sec)
 
  if (timer.high_freq)
  {
-  QueryPerformanceCounter(&timer.tnow);
+     LARGE_INTEGER ticks;
+
+  QueryPerformanceCounter(&ticks);
+  timer.tnow.QuadPart = ticks.QuadPart;
+
   t = (int) (((timer.tnow.QuadPart - timer.tstart.QuadPart) * frac_sec) / timer.tticks.QuadPart);		
 	  
   // Have we done 1 second since the timer was last reset?

@@ -3,12 +3,11 @@
 
 // Options code for dealing with menus and other variables. Needs better checking to stop partial option text being read. i.e. needs to check for < & > around text.
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
 #include "time.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -34,8 +33,8 @@ bool load_options(void)
 {
  char text[MAX_STRING], file[MAX_STRING];
 
- sprintf(text, "\\text_files\\game_options.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\game_options.ini");
+ sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_OPTIONS, file, false))
  {
@@ -43,8 +42,8 @@ bool load_options(void)
   return false;
  }
 
- sprintf(text, "\\text_files\\menus.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\menus.ini");
+ sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_MENUS, file, false))
  {
@@ -52,8 +51,8 @@ bool load_options(void)
   return false;
  }
 
- sprintf(text, "\\text_files\\wizard_options.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\wizard_options.ini");
+ sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_WIZARDS, file, false))
  {
@@ -61,8 +60,8 @@ bool load_options(void)
   return false;
  }
 
- sprintf(text, "\\text_files\\sounds.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\sounds.ini");
+ sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_SOUNDS, file, false))
  {
@@ -71,16 +70,16 @@ bool load_options(void)
  }
 
  // Now load a name list
- sprintf(text, "\\text_files\\wizard_names\\funk.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\wizard_names\\funk.ini");
+ sprintf(file, "%s", GetFullPath(text));
  if (!set_config_file_new(CONFIG_WIZARD_NAMES, file, false))
  {
   log("Can't open wizard names!");
  }
 
  // Load Scrolly text
- sprintf(text, "\\text_files\\Scrolly.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "text_files\\Scrolly.ini");
+ sprintf(file, "%s", GetFullPath(text));
  if (!set_config_file_new(CONFIG_SCROLLY, file, false))
  {
   log("Can't open Scrolly text!");
@@ -248,23 +247,23 @@ void do_options(bool draw)
  //log("game.exit_key: %d", game.exit_key);
  if (draw)
  {
-  gfx[43]->stretchAlphaRect(1, 1, gfx[43]->getWidth() - 1, gfx[43]->getHeight() - 1, 0, 0, 1280, 960);
+	 Draw(gfx[43], Rectangle{ 1, 1, (float)gfx[43]->width - 1, (float)gfx[43]->height - 1 }, Rectangle{ 0, 0, 1280, 960 });
 
 	draw_scrolly();
 
 	if (strcmp(menu_info.section_name, "TITLE") == 0)
 	{
 	 // Chaos Logo
-	 gfx[44]->blitAlphaRectFx(0, 0, 512, 255, 196, 48, 0.0, 1.0, menu_info.alpha.current);
-   gfx[44]->blitAlphaRectFx(112, 256, 512, 512, 196 + 512, 48, 0.0, 1.0, menu_info.alpha.current);
+		Draw(gfx[44], Rectangle{ 0, 0, 512, 255 }, Rectangle{ 196, 48, 0.0, 1.0 }, menu_info.alpha.current);
+		Draw(gfx[44], Rectangle{ 112, 256, 512, 512 }, Rectangle{ 196 + 512, 48, 0.0 , 1.0 }, menu_info.alpha.current);
  
 	 // Groove Logo
 	 x = 396;
 
 	 for (o = 0 ; o < 3 ; o++)
 	 {
-	  gfx[45]->blitAlphaRectFx(o * 32, 0, (o * 32) + 32, 24, (o * 96) + x, 312, 0.0, 1.0, menu_info.alpha.current);
-	  gfx[45]->blitAlphaRectFx(o * 32, 28, (o * 32) + 32, 52, ((o + 3) * 96) + x, 312, 0.0, 1.0, menu_info.alpha.current);
+		 Draw(gfx[45], Rectangle{ (float)o * 32, 0, (float)(o * 32) + 32, 24 }, Rectangle{ (float)(o * 96) + x, 312, 0.0, 1.0 }, menu_info.alpha.current);
+		 Draw(gfx[45], Rectangle{ (float)o * 32, 28, (float)(o * 32) + 32, 52 }, Rectangle{ (float)((o + 3) * 96) + x, 312, 0.0, 1.0 }, menu_info.alpha.current);
 	 }
 
 	 // Author text
@@ -329,10 +328,10 @@ void do_options(bool draw)
 	 if (mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && mouse.y - 12 < y + 16 && choices == -1
 	 && strlen(action) > 0)
 	 {
-	  gfx[46]->setAlphaMode(0);
-	  gfx[46]->setBlitColor(r, g, b, menu_info.alpha.current);
-		gfx[46]->allowTextureWrap(true);
-    gfx[46]->stretchAlphaRect(0, 1, 16, 16, x, y, x + w, y + 21);
+	 // gfx[46]->setAlphaMode(0);
+	 // gfx[46]->setBlitColor(r, g, b, menu_info.alpha.current);
+		//gfx[46]->allowTextureWrap(true);
+		 Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float)x + w, (float)y + 21 }, ColorFromNormalized({ COMPTO_F(r), COMPTO_F(g), COMPTO_F(b), menu_info.alpha.current }));
 	 }
 	 draw_text(text, x, 1248, y, font, 0, Rgba(r, g, b), menu_info.alpha.current, allign);
 	}
@@ -360,10 +359,10 @@ void do_options(bool draw)
 		// Draw highlighting over option..
 	  if (mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && mouse.y - 12 < y + 16 && c != choice)
 	  {
-	  gfx[46]->setAlphaMode(0);
-	  gfx[46]->setBlitColor(1.0, 1.0, 1.0, menu_info.alpha.current);
-		gfx[46]->allowTextureWrap(true);
-    gfx[46]->stretchAlphaRect(0, 1, 16, 16, x, y, x + w, y + 21);
+	 // gfx[46]->setAlphaMode(0);
+	 // gfx[46]->setBlitColor(1.0, 1.0, 1.0, menu_info.alpha.current);
+		//gfx[46]->allowTextureWrap(true);
+		  Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float)x + w, (float)y + 21 }, menu_info.alpha.current);
 	  }
     
 		draw_text(text, x, 1280, y, font, 0, col, menu_info.alpha.current, TEXT_LEFT);

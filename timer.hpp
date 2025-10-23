@@ -4,9 +4,17 @@
 #ifndef __Timer_hpp__
 #define __Timer_hpp__ 
 
+typedef union {
+    struct {
+        unsigned long LowPart;
+        long HighPart;
+    };
+    long long QuadPart;
+} LARGE_TICK;
+
 struct timer_t   
 {
- LARGE_INTEGER tstart, tticks, tnow, tlast;
+ LARGE_TICK tstart, tticks, tnow, tlast;
  int high_freq, logic_frames, logic_fps, gfx_frames, gfx_fps;
 };
 

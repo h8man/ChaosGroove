@@ -3,12 +3,11 @@
 
 // This replaces PTK's config code to avoid problems of spaces in old config code.
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
 #include <sys/stat.h>
+#include "raylib.h"
 
 using namespace std;
 
@@ -19,6 +18,8 @@ using namespace std;
 #include "log.hpp"
 #include "scene.hpp"
 #include "game.hpp"
+
+#define MAX_PATH 260
 
 struct config_t config[MAX_CONFIG_FILES];
 
@@ -36,7 +37,7 @@ bool set_config_file_new(int cfg, char *name, bool log_error)
 	config[cfg].length = 0;
  }
 
- sprintf(new_filename, "%s", KMiscTools::makeFilePath(name) );
+ sprintf(new_filename, "%s", GetFullPath(name) );
  //log("%s", new_filename);
 
  f = fopen(new_filename, "rb");

@@ -12,7 +12,7 @@
 
 FILE *log_file;
 
-int open_log(char *filename)
+int open_log(const char *filename)
 {
  if ((log_file = fopen(filename, "w")) != NULL) return 0; /* Opened succesfully. */
 

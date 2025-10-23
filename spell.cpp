@@ -2,11 +2,10 @@
 
 // Deals with all spells and related functions.
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
+#include "raylib.h"
 #include "time.h"
 
 using namespace std;
@@ -54,7 +53,7 @@ void load_spells(void)
 
   for (s = 0 ; s < num ; s++)
   {
-   spell_icon_gfx[s]->freePicture(); 
+   UnloadTexture(*spell_icon_gfx[s]); 
   }
 
 	spell_icon_gfx.clear(); // Remove old vectors.
@@ -67,7 +66,7 @@ void load_spells(void)
 
  sprintf(total_spells.loaded_spell_list_name, "%s", name);
  sprintf(text, "Spells\\%s.ini", name);
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(file, "%s", GetFullPath(text));
 
  set_config_file_new(CONFIG_TEMP, file, true);
  
@@ -109,7 +108,7 @@ void load_spells(void)
 
 	// Try to load spell icon.
 	sprintf(text, "Spells\\%s\\Groove\\", spell[total_spells.num].name);
-  sprintf(file, "%s", KMiscTools::makeFilePath(text));
+  sprintf(file, "%s", GetFullPath(text));
 
 	frames = LoadAndAddBitmaps(&spell_icon_gfx, file, "png");
 

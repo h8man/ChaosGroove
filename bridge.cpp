@@ -3,15 +3,13 @@
 
 // Bridge code (used to add some handy RGBA code as well as wrap around some PTK functions)
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "time.h"
-#include "gl.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -21,15 +19,16 @@ using namespace std;
 #include "log.hpp"
 
 // Necessary objects.
-KWindow *gwin;
+
+extern void _sleep(int milliseconds);
 
 // Rgba class:
-Rgba Rgba::BLACK = Rgba( 0.0, 0.0, 0.0, 1.0 );
-Rgba Rgba::WHITE = Rgba( 1.0, 1.0, 1.0, 1.0 );
-Rgba Rgba::RED = Rgba( 1.0, 0.0, 0.0, 1.0 );
-Rgba Rgba::YELLOW = Rgba( 1.0, 1.0, 0.0, 1.0 );
-Rgba Rgba::GREEN = Rgba( 0.0, 1.0, 0.0, 1.0 );
-Rgba Rgba::BLUE = Rgba( 0.0, 0.0, 1.0, 1.0 );
+//Rgba Rgba::BLACK = Rgba( 0.0, 0.0, 0.0, 1.0 );
+//Rgba Rgba::WHITE = Rgba( 1.0, 1.0, 1.0, 1.0 );
+//Rgba Rgba::RED = Rgba( 1.0, 0.0, 0.0, 1.0 );
+//Rgba Rgba::YELLOW = Rgba( 1.0, 1.0, 0.0, 1.0 );
+//Rgba Rgba::GREEN = Rgba( 0.0, 1.0, 0.0, 1.0 );
+//Rgba Rgba::BLUE = Rgba( 0.0, 0.0, 1.0, 1.0 );
 Rgba Rgba::INVISIBLE = Rgba( 0.0, 0.0, 0.0, 0.0 );
 
 
@@ -111,9 +110,9 @@ int IRand(int min, int max)
  return min + (Rand() % (max + 1 - min));
 }
 
-vector < KGraphic *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers)
+vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers)
 {
-   vector< KGraphic *> bitmapList;
+   vector< Texture2D *> bitmapList;
    
    for( int index = 1;; index++ )
    {
@@ -128,23 +127,23 @@ vector < KGraphic *> LoadListOfBitmaps( string filenameBegin, string extension, 
       
       string filename = filenameBegin + numbers + string(".") + extension;
 
-      KGraphic *frame = NULL;
-	  frame = KPTK::createKGraphic() ;
+      Texture2D *frame = NULL;
+	  frame = &LoadTexture(GetFullPath(filename.c_str()));
       
-	  if( !frame->loadPicture( KMiscTools::makeFilePath(filename.c_str()), true, true ))
+	  if( !IsTextureValid(*frame))
 	  {
-         delete frame;
-         break;
+		  UnloadTexture(*frame);
+          break;
       }
-      
-	  frame->setTextureQuality( true );
+      //TODO:
+	  //frame->setTextureQuality( true );
       bitmapList.push_back( frame );
    }
    
    return bitmapList;
 }
 
-int LoadAndAddBitmaps(vector< KGraphic *> *bitmapList, string filenameBegin, string extension)
+int LoadAndAddBitmaps(vector< Texture2D *> *bitmapList, string filenameBegin, string extension)
 {
    int num = 0;
 
@@ -156,16 +155,16 @@ int LoadAndAddBitmaps(vector< KGraphic *> *bitmapList, string filenameBegin, str
       
       string filename = filenameBegin + numbers + string(".") + extension;
 
-      KGraphic *frame = NULL;
-	  frame = KPTK::createKGraphic() ;
-      
-	  if( !frame->loadPicture( KMiscTools::makeFilePath(filename.c_str()), true, true ))
+      Texture2D *frame = NULL;
+	  frame = &LoadTexture(GetFullPath(filename.c_str()));
+
+	  if (!IsTextureValid(*frame))
 	  {
-         delete frame;
-         break;
-      }
-      
-	  frame->setTextureQuality( true );
+		  UnloadTexture(*frame);
+		  break;
+	  }
+	  //TODO:
+	  //frame->setTextureQuality( true );
 	  //frame->setAlphaMode( 0 );
       bitmapList->push_back( frame );
 			num++;
@@ -176,34 +175,36 @@ int LoadAndAddBitmaps(vector< KGraphic *> *bitmapList, string filenameBegin, str
 
 bool CheckQuit(void)
 {
- return gwin->isQuit();
+ return WindowShouldClose();
 }
 
 bool CheckWindowFocus(void)
 {
- return gwin->hasFocus();
+ return IsWindowFocused();
 }
 
 void RestoreWindow(void)
 {
- gwin->restore();
+	RestoreWindow();
 }
 
 void Rest(int time)
 {
  #if !defined __APPLE__
- Sleep(time);
+ _sleep(time);
  #endif
 }
 
 bool CreateGameScreen(int width, int height, bool window, bool dx)
 {
 	// Open DirectX or OpenGL gfx context.
-	if (dx == false) gwin = KPTK::createKWindow( K_OPENGL );
-	if ( dx == true) gwin = KPTK::createKWindow( K_DIRECTX );
+	//if (dx == false) gwin = KPTK::createKWindow( K_OPENGL );
+	//if ( dx == true) gwin = KPTK::createKWindow( K_DIRECTX );
 
 	// Now try to open screen with requested details.
-	if (!gwin->createGameWindow( width, height, 32, window, "Chaos Groove" )) return false;
+	SetWindowSize(width, height);
+	SetWindowTitle("Chaos Groove");
+	if (!IsWindowReady()) return false;
 
 	// Clear newly created screen.
 	ClearScreen();
@@ -214,14 +215,16 @@ bool CreateGameScreen(int width, int height, bool window, bool dx)
 
 void ListScreenModes(void)
 {
- gwin->enumerateDisplays(ListDisplays);
+	for (int i; i < GetMonitorCount(); i++) {
+		ListDisplays(i);
+	}
 }
 
 
-bool ListDisplays(KDisplay * kd)
+bool ListDisplays(int display)
 {
- log( "%d %d %d bpp - %d hz" , kd->width , kd->height , kd->depth, kd->frequency ) ;
- return true ;
+  log( "%d %d - %d hz" , GetMonitorWidth(display), GetMonitorHeight(display), GetMonitorRefreshRate(display));
+  return true ;
 }
 
 int get_desktop_resolution(int *width, int *height)
@@ -240,38 +243,43 @@ int get_desktop_resolution(int *width, int *height)
     *
     *   return 0;
     */
- #if !defined __APPLE__
-   HDC dc;
+ //#if !defined __APPLE__
+ //  HDC dc;
 
-   dc = GetDC(NULL);
-   *width  = GetDeviceCaps(dc, HORZRES);
-   *height = GetDeviceCaps(dc, VERTRES);
-   ReleaseDC(NULL, dc);
+ //  dc = GetDC(NULL);
+ //  *width  = GetDeviceCaps(dc, HORZRES);
+ //  *height = GetDeviceCaps(dc, VERTRES);
+ //  ReleaseDC(NULL, dc);
 
-   return 0;
- #endif
+ //  return 0;
+ //#endif
+
+	*width = GetMonitorWidth(GetCurrentMonitor());
+	*height = GetMonitorHeight(GetCurrentMonitor());
+	return 0;
 }
 
 int ScreenWidth(void)
 {
- return gwin->getWindowWidth();
+ return GetScreenWidth();
 }
 
 int ScreenHeight(void)
 {
- return gwin->getWindowHeight();
+ return GetScreenWidth();
 }
 
 void ClearScreen(void)
 {
 	// Clear newly created screen.
-	gwin->setWorldView(0, 0, 0, 1.0, true);
+	ClearBackground(BLACK);
 }
 
 void MessageBox(char *title, char *maintext)
 {
 	// Display messagebox with error details.
-	KMiscTools::messageBox(title, maintext);
+	DrawText(title, ScreenWidth() / 2, ScreenHeight() / 2, 10, RED);
+	DrawText(maintext, ScreenWidth() / 2, ScreenHeight() / 2+10, 10, RED);
 
 	// Record error in logfile too.
 	log("");
@@ -282,34 +290,34 @@ void MessageBox(char *title, char *maintext)
 	log("");
 }
 
-void UpdateScreen(void)
-{
- // Flip screen buffer.
- gwin->flipBackBuffer( false ) ;
- gwin->processEvents( ) ;
-}
+//void UpdateScreen(void)
+//{
+// // Flip screen buffer.
+// gwin->flipBackBuffer( false ) ;
+// gwin->processEvents( ) ;
+//}
 
-bool Key(int k)
+bool Key(int key)
 {
- return KInput::isPressed( EKeyboardLayout(k) );
+ return IsKeyPressed(key);
 }
 
 bool LeftMouseButton(void)
 {
- return KInput::getLeftButtonState();
+ return  IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 }
 
 bool RightMouseButton(void)
 {
- return KInput::getRightButtonState();
+ return  IsMouseButtonPressed(MOUSE_BUTTON_RIGHT);
 }
 
 void GetMouseMickeys(int *x, int *y)
 {
- *x = (KInput::getMouseX() - (ScreenWidth() / 2)) * 4;
- *y = (KInput::getMouseY() - (ScreenHeight() / 2)) * 4;
-
- if (gwin->hasFocus()) KInput::mousePointerTo(ScreenWidth() / 2, ScreenHeight() / 2);
+ *x = (GetMouseX() - (ScreenWidth() / 2)) * 4;
+ *y = (GetMouseY() - (ScreenHeight() / 2)) * 4;
+ //TODO:
+// if (IsWindowFocused()) KInput::mousePointerTo(ScreenWidth() / 2, ScreenHeight() / 2);
 }
 
 void AccelerateMouseMickeys(float *x, float *y, float scale, float scale_accel)
@@ -356,22 +364,48 @@ long FileSize(char *FileName)
  return 0;
 }
 
-void BlitTransform(KGraphic *bmp, float x, float y, float w, float h, float angle, float alpha) 
+const char* GetFullPath(const char* filePath)
 {
- int width, height;
- float zoom;
- 
- width = bmp->getWidth();
- height = bmp->getHeight();
+	return filePath;
+}
 
- // Different Width and Height.
- x -= (w / 2);
- y -= (h / 2);
+void Draw(Texture2D* tex, Rectangle source)
+{
+	DrawTexturePro(*tex, source, source, Vector2{ 0,0 }, 0, WHITE);
+}
+void Draw(Texture2D* tex, Rectangle source, Color color)
+{
+	DrawTexturePro(*tex, source, source, Vector2{ 0,0 }, 0, WHITE);
+}
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest)
+{
+	DrawTexturePro(*tex, source, dest, Vector2{ 0,0 }, 0, WHITE);
+}
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest, float alpha)
+{
+	DrawTexturePro(*tex, source, dest, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+}
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest, Color color)
+{
+	DrawTexturePro(*tex, source, dest, Vector2{ 0,0 }, 0, color);
+}
 
- // need -1 for dx2 and dy2 in directX, but not in OpenGL! PTK bug..
- bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
- alpha, 360.0 - RAD_TO_DEG( angle ));
+void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, float alpha) 
+{
+ //int width, height;
+ //float zoom;
+ //
+ //width = bmp->width;
+ //height = bmp->height;
 
+ //// Different Width and Height.
+ //x -= (w / 2);
+ //y -= (h / 2);
+
+ //// need -1 for dx2 and dy2 in directX, but not in OpenGL! PTK bug..
+ //bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
+ //alpha, 360.0 - RAD_TO_DEG( angle ));
+	DrawTexture(*bmp, (x + w), (y + h), ColorFromNormalized({ 1.0f, 1.0f, 1.0f, alpha }));
  return;
 
 /*
@@ -412,115 +446,115 @@ void BlitTransform(KGraphic *bmp, float x, float y, float w, float h, float angl
  */
 }
 
-void SetSolidColour(KGraphic *bmp, Rgba col)
-{
- GLfloat texcols[4];
-
- bmp->setBlitColor(col.r, col.g, col.b, 1.0);
-
- if (game.opengl)
- {
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-
-  texcols[0] = col.r;
-  texcols[1] = col.g;
-  texcols[2] = col.b;
-			
-  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
- }
- else
- {
-  // Demo version of PTK doesn't allow D3D handle.. :'(
-
-  //KGraphicD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-	//KGraphicD3D::_d3d->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
- }
-}
-
-void CancelSolidColour(KGraphic *bmp)
-{
- GLfloat texcols[4];
-
- bmp->setBlitColor(1.0, 1.0, 1.0, 1.0);
-
- if (game.opengl)
- {	 
-  texcols[0] = 1.0;
-  texcols[1] = 1.0;
-  texcols[2] = 1.0;
-
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
- }
- else
- {
-  //KGraphicD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	//KGraphicD3D::_d3d->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
- }
-}
-
-void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4)
-{
- if (game.opengl)
- {
-  glDisable( GL_TEXTURE_2D) ;
-	glDisable( GL_BLEND ) ;
-	glShadeModel( GL_SMOOTH );
-
-	glBegin( GL_TRIANGLE_STRIP);
-
-	y1 = ScreenHeight() - y1;
-	y2 = ScreenHeight() - y2;
-
-	glColor4f(c3.r, c3.g, c3.b, c3.a);
-	glVertex3f(x1, y2, 0);
-	
-	glColor4f(c1.r, c1.g, c1.b, c1.a);
-	glVertex3f(x1, y1, 0);
-
-	glColor4f(c4.r, c4.g, c4.b, c4.a);
-	glVertex3f(x2, y2, 0);
-
-	glColor4f(c2.r, c2.g, c2.b, c2.a);
-	glVertex3f(x2, y1, 0);
-
-	glEnd();
-
-	glEnable( GL_TEXTURE_2D) ;
- }
- else
- {
-  #if !defined __APPLE__
-/*
-  y1++;
-	y2++;
- 	y2 = -y2;
-	y1 = -y1;
-  if ( KGraphicD3D::_directX->TestCooperativeLevel() != DD_OK)		return ;
-	
-	KGraphicD3D::_d3d->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-	KGraphicD3D::_d3d->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-	KGraphicD3D::_d3d->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	KGraphicD3D::_d3d->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	
-	D3DCOLOR col1 = D3DRGBA( c1.r, c1.g, c1.b, c1.a );
-  D3DCOLOR col2 = D3DRGBA( c2.r, c2.g, c2.b, c2.a );
-  D3DCOLOR col3 = D3DRGBA( c3.r, c3.g, c3.b, c3.a );
-  D3DCOLOR col4 = D3DRGBA( c4.r, c4.g, c4.b, c4.a );
-
-	D3DLVERTEX v[4];
-	v[0] = D3DLVERTEX(D3DVECTOR(x1,y2,0), col3, 0, 0, 0);
-	v[1] = D3DLVERTEX(D3DVECTOR(x1,y1,0), col1, 0, 0, 0);
-	v[2] = D3DLVERTEX(D3DVECTOR(x2,y2,0), col4, 0, 0, 0);
-	v[3] = D3DLVERTEX(D3DVECTOR(x2,y1,0), col2, 0, 0, 0);
-
-	KGraphicD3D::_d3d->SetTexture(0, NULL);
-
-	KGraphicD3D::_d3d->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &v[0], 4, 0);
-*/
-  #endif
- }
-}
+//void SetSolidColour(Texture2D *bmp, Rgba col)
+//{
+// GLfloat texcols[4];
+//
+// bmp->setBlitColor(col.r, col.g, col.b, 1.0);
+//
+// if (game.opengl)
+// {
+//  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+//
+//  texcols[0] = col.r;
+//  texcols[1] = col.g;
+//  texcols[2] = col.b;
+//			
+//  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
+// }
+// else
+// {
+//  // Demo version of PTK doesn't allow D3D handle.. :'(
+//
+//  //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+//	//Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+// }
+//}
+//
+//void CancelSolidColour(Texture2D *bmp)
+//{
+// GLfloat texcols[4];
+//
+// bmp->setBlitColor(1.0, 1.0, 1.0, 1.0);
+//
+// if (game.opengl)
+// {	 
+//  texcols[0] = 1.0;
+//  texcols[1] = 1.0;
+//  texcols[2] = 1.0;
+//
+//	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+//	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
+// }
+// else
+// {
+//  //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+//	//Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+// }
+//}
+//
+//void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4)
+//{
+// if (game.opengl)
+// {
+//  glDisable( GL_TEXTURE_2D) ;
+//	glDisable( GL_BLEND ) ;
+//	glShadeModel( GL_SMOOTH );
+//
+//	glBegin( GL_TRIANGLE_STRIP);
+//
+//	y1 = ScreenHeight() - y1;
+//	y2 = ScreenHeight() - y2;
+//
+//	glColor4f(c3.r, c3.g, c3.b, c3.a);
+//	glVertex3f(x1, y2, 0);
+//	
+//	glColor4f(c1.r, c1.g, c1.b, c1.a);
+//	glVertex3f(x1, y1, 0);
+//
+//	glColor4f(c4.r, c4.g, c4.b, c4.a);
+//	glVertex3f(x2, y2, 0);
+//
+//	glColor4f(c2.r, c2.g, c2.b, c2.a);
+//	glVertex3f(x2, y1, 0);
+//
+//	glEnd();
+//
+//	glEnable( GL_TEXTURE_2D) ;
+// }
+// else
+// {
+//  #if !defined __APPLE__
+///*
+//  y1++;
+//	y2++;
+// 	y2 = -y2;
+//	y1 = -y1;
+//  if ( Texture2DD3D::_directX->TestCooperativeLevel() != DD_OK)		return ;
+//	
+//	Texture2DD3D::_d3d->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
+//	Texture2DD3D::_d3d->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
+//	Texture2DD3D::_d3d->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+//	Texture2DD3D::_d3d->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+//	
+//	D3DCOLOR col1 = D3DRGBA( c1.r, c1.g, c1.b, c1.a );
+//  D3DCOLOR col2 = D3DRGBA( c2.r, c2.g, c2.b, c2.a );
+//  D3DCOLOR col3 = D3DRGBA( c3.r, c3.g, c3.b, c3.a );
+//  D3DCOLOR col4 = D3DRGBA( c4.r, c4.g, c4.b, c4.a );
+//
+//	D3DLVERTEX v[4];
+//	v[0] = D3DLVERTEX(D3DVECTOR(x1,y2,0), col3, 0, 0, 0);
+//	v[1] = D3DLVERTEX(D3DVECTOR(x1,y1,0), col1, 0, 0, 0);
+//	v[2] = D3DLVERTEX(D3DVECTOR(x2,y2,0), col4, 0, 0, 0);
+//	v[3] = D3DLVERTEX(D3DVECTOR(x2,y1,0), col2, 0, 0, 0);
+//
+//	Texture2DD3D::_d3d->SetTexture(0, NULL);
+//
+//	Texture2DD3D::_d3d->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &v[0], 4, 0);
+//*/
+//  #endif
+// }
+//}
 
 void CheckGfxExists(int g, char *file, int line)
 {

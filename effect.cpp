@@ -1,11 +1,10 @@
 // Effect (.Cpp)
 // -------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -74,8 +73,8 @@ void do_missile_effect(int g, float speed, int x1, int y1, int x2, int y2)
 
  speed *= 2.5;
  s.gfx = g;
- s.w = gfx[s.gfx]->getWidth();
- s.h = gfx[s.gfx]->getHeight();
+ s.w = gfx[s.gfx]->width;
+ s.h = gfx[s.gfx]->height;
  s.additive_draw = true;
 
  if (g == 38)
@@ -157,8 +156,8 @@ void do_plain_missile_effect(int g, float speed, int x1, int y1, int x2, int y2)
  s.y = y1;
 
  s.gfx = g;
- s.w = gfx[s.gfx]->getWidth();
- s.h = gfx[s.gfx]->getHeight();
+ s.w = gfx[s.gfx]->width;
+ s.h = gfx[s.gfx]->height;
  s.dx = cos(angle) * speed;
  s.dy = sin(angle) * speed;
  s.angle = angle;
@@ -199,8 +198,8 @@ void do_spell_casting_effect(int x, int y, int amount)
 	 s.x = (x * board_info.square_width) + (board_info.square_width / 2) + board_info.start_x + FRand(-4, 4);
    s.y = (y * board_info.square_height) + (board_info.square_height / 2) + board_info.start_y + FRand(-4, 4);
 
-   s.w = gfx[s.gfx]->getWidth();
-   s.h = gfx[s.gfx]->getHeight();
+   s.w = gfx[s.gfx]->width;
+   s.h = gfx[s.gfx]->height;
    s.w_add = FRand(-0.2, -0.3);
    s.h_add = s.w_add;
 
@@ -243,8 +242,8 @@ void do_attack_effect(int x, int y, int times)
 	 s.x = (x * board_info.square_width) + (board_info.square_width / 2) + board_info.start_x + rx;
    s.y = (y * board_info.square_height) + (board_info.square_height / 2) + board_info.start_y + ry;
 
-   s.w = gfx[s.gfx]->getWidth();
-   s.h = gfx[s.gfx]->getHeight();
+   s.w = gfx[s.gfx]->width;
+   s.h = gfx[s.gfx]->height;
 
    s.w_add = FRand(-0.25, -0.5);
  
@@ -282,8 +281,8 @@ void do_explode_effect(int x, int y, int amount)
 	 s.x = (x * board_info.square_width) + (board_info.square_width / 2) + board_info.start_x + rx;
    s.y = (y * board_info.square_height) + (board_info.square_height / 2) + board_info.start_y + ry;
 
-   s.w = gfx[s.gfx]->getWidth();
-   s.h = gfx[s.gfx]->getHeight();
+   s.w = gfx[s.gfx]->width;
+   s.h = gfx[s.gfx]->height;
 
    s.w_add = FRand(-0.2, -0.4);
    //s.alpha_add = -0.01;
@@ -325,9 +324,9 @@ void do_magic_attack_effect(int x, int y, int time, int g)
 	 s.x = (x * board_info.square_width) + (board_info.square_width / 2) + board_info.start_x + rx;
    s.y = (y * board_info.square_height) + (board_info.square_height / 2) + board_info.start_y + ry;
 
-   s.w = gfx[s.gfx]->getWidth();
+   s.w = gfx[s.gfx]->width;
 	 s.w = 1;
-   s.h = gfx[s.gfx]->getHeight();
+   s.h = gfx[s.gfx]->height;
    s.h_add = -0.5;
 	 s.w_add = 1.0;
 	 s.alpha_add = -0.005;
@@ -369,8 +368,8 @@ void do_fire_effect(int x, int y, int times)
 	 s.x = (x * board_info.square_width) + (board_info.square_width / 2) + board_info.start_x + rx;
    s.y = (y * board_info.square_height) + (board_info.square_height / 2) + board_info.start_y + ry;
 
-   s.w = gfx[s.gfx]->getWidth();
-   s.h = gfx[s.gfx]->getHeight();
+   s.w = gfx[s.gfx]->width;
+   s.h = gfx[s.gfx]->height;
 
 	 angle = FRand(-0.2, -0.45);
    s.w_add = angle;
@@ -455,8 +454,8 @@ void do_firework_effect(int x, int y, int amount)
 	 s.x = x;
    s.y = y;
 
-   s.w = gfx[s.gfx]->getWidth();
-   s.h = gfx[s.gfx]->getHeight();
+   s.w = gfx[s.gfx]->width;
+   s.h = gfx[s.gfx]->height;
 
    s.w_add = FRand(-0.25, -0.4);
    //s.alpha_add = -0.01;

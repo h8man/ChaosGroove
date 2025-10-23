@@ -1,10 +1,9 @@
 // Board (.Cpp)
 // ------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
-#include "KPTK.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -21,7 +20,6 @@ using namespace std;
 #include "effect.hpp"
 #include "chat.hpp"
 #include "options.hpp"
-#include "gl.h"
 
 struct board_info_t board_info;
 struct piece_data board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT][MAX_BOARD_LAYERS];
@@ -603,8 +601,9 @@ void draw_board_grid(void)
 
  for (l = 0 ; l < board_info.board_height ; l++)
  {
-  gfx[0]->drawLine(x, y, x + (board_info.board_width * board_info.square_width), y, 0.25, 0.0, 0.5, 
-	board_info.grid_alpha.current);
+	 //TODO:
+ // gfx[0]->drawLine(x, y, x + (board_info.board_width * board_info.square_width), y, 0.25, 0.0, 0.5, 
+	//board_info.grid_alpha.current);
 
   y += board_info.square_height;
  }
@@ -612,8 +611,9 @@ void draw_board_grid(void)
  y = board_info.start_y;
  for (l = 0 ; l < board_info.board_width ; l++)
  {
-  gfx[0]->drawLine(x, y, x, y + (board_info.board_height * board_info.square_height), 0.25, 0.0, 0.5, 
-	board_info.grid_alpha.current);
+	 //TODO:
+ // gfx[0]->drawLine(x, y, x, y + (board_info.board_height * board_info.square_height), 0.25, 0.0, 0.5, 
+	//board_info.grid_alpha.current);
 
   x += board_info.square_width;
  }
@@ -623,7 +623,7 @@ void draw_board(void)
 {
  // Draw map view.
  int x, y, c;
- double alpha;
+ float alpha;
  char text[80];
 
  // Draw clouds first.
@@ -632,48 +632,49 @@ void draw_board(void)
 
  for (y = 0 ; y < board_info.board_height ; y++)
  {
-  for (x = 0 ; x < board_info.board_width ; x++)
-  {
-   alpha = MID(0.0, highlight_board[x][y].alpha.current, 1.0);
-
-	 if (board_info.highlight_x == x && board_info.highlight_y == y && board_info.highlight_alpha.current > 0.0
-	 && highlight_board[x][y].gfx == 36) alpha = 0.0;
-   if (board_info.selected_x == x && board_info.selected_y == y && board_info.selected_alpha.current > 0.0
-	 && highlight_board[x][y].gfx == 36) alpha = 0.0;
-
-	 // Draw highlight effect.
-   if (alpha > 0.0)
+	 for (x = 0; x < board_info.board_width; x++)
 	 {
-		c = highlight_board[x][y].gfx;
-		gfx[c]->setAlphaMode(BLENDER_ALPHA);
+		 alpha = MID(0.0, highlight_board[x][y].alpha.current, 1.0);
 
-	  gfx[c]->setBlitColor(highlight_board[x][y].rgba.r, highlight_board[x][y].rgba.g,
-		highlight_board[x][y].rgba.b, alpha);
+		 if (board_info.highlight_x == x && board_info.highlight_y == y && board_info.highlight_alpha.current > 0.0
+			 && highlight_board[x][y].gfx == 36) alpha = 0.0;
+		 if (board_info.selected_x == x && board_info.selected_y == y && board_info.selected_alpha.current > 0.0
+			 && highlight_board[x][y].gfx == 36) alpha = 0.0;
 
-    gfx[c]->stretchAlphaRect(0, 0, gfx[c]->getWidth(), gfx[c]->getHeight(),
-	  (x * board_info.square_width) + board_info.start_x, (y * board_info.square_height) + board_info.start_y, 
-	  ((x + 1) * board_info.square_width) + board_info.start_x, ((y + 1) * board_info.square_height) + board_info.start_y);
-	 }
-   
-   c = board[x][y][PIECE].gfx;
+		 // Draw highlight effect.
+		 if (alpha > 0.0)
+		 {
+			 //c = highlight_board[x][y].gfx;
+			 //gfx[c]->setAlphaMode(BLENDER_ALPHA);
 
-	 // Don't draw more than first frame if we have shadow form!
-   if (board[x][y][PIECE].shadow_form && c > board[x][y][PIECE].start_gfx) goto end;
+		  // gfx[c]->setBlitColor(highlight_board[x][y].rgba.r, highlight_board[x][y].rgba.g,
+			 //highlight_board[x][y].rgba.b, alpha);
 
-   if (c == BLANK)
-   {
-    // Ok, do we have a body gfx to draw?
-    c = board[x][y][BODY].gfx;   
-    
-    // Nope, so carry on in loop.
-    if (c == BLANK) goto end; // Skip blank map squares.   
-   }
-   
-   if (x == board_info.selected_x && y == board_info.selected_y) draw_selected_effect();
+			 Draw(gfx[c], Rectangle{ 0, 0, (float)gfx[c]->width, (float)gfx[c]->height },
+				 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+			(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y },
+				 ColorFromNormalized({ highlight_board[x][y].rgba.r, highlight_board[x][y].rgba.g, highlight_board[x][y].rgba.b, alpha }));
+		 }
 
-   piece_gfx[c]->stretchAlphaRect(0, 0, piece_gfx[c]->getWidth(), piece_gfx[c]->getHeight(),
-	 (x * board_info.square_width) + board_info.start_x, (y * board_info.square_height) + board_info.start_y, 
-	 ((x + 1) * board_info.square_width) + board_info.start_x, ((y + 1) * board_info.square_height) + board_info.start_y);
+		 c = board[x][y][PIECE].gfx;
+
+		 // Don't draw more than first frame if we have shadow form!
+		 if (board[x][y][PIECE].shadow_form && c > board[x][y][PIECE].start_gfx) goto end;
+
+		 if (c == BLANK)
+		 {
+			 // Ok, do we have a body gfx to draw?
+			 c = board[x][y][BODY].gfx;
+
+			 // Nope, so carry on in loop.
+			 if (c == BLANK) goto end; // Skip blank map squares.   
+		 }
+
+		 if (x == board_info.selected_x && y == board_info.selected_y) draw_selected_effect();
+
+		 Draw(piece_gfx[c], Rectangle{0, 0, (float) piece_gfx[c]->width, (float)piece_gfx[c]->height },
+			 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+			(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y });
 
    end:
 
@@ -696,65 +697,65 @@ void draw_board(void)
  }
  
  draw_highlight_effect();
-
- // Recolour border pieces using current wizard colour.
- for (c = 0 ; c < 8 ; c++)
- {
-  gfx[c]->setBlitColor(wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, 
-	wizard[game.current_wizard].col.b, 1.0);
-
-	gfx[c]->setTextureQuality( false ); // Disable bilinear filtering on border gfx to stop edge linup errors in low res.
- }
-
- // Top left corner
- gfx[0]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x - board_info.border_size, board_info.start_y - board_info.border_size, 
- board_info.start_x, board_info.start_y);
-
- // Top border
- gfx[1]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x, board_info.start_y - board_info.border_size, 
- board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
-
- // Top right corner
- gfx[2]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y - board_info.border_size, 
- board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
-
- // Left border
- gfx[3]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x - board_info.border_size, board_info.start_y, 
- board_info.start_x, board_info.start_y + (board_info.board_height * board_info.square_height));
-
- // Right border
- gfx[4]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y, 
- board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
- board_info.start_y + (board_info.board_height * board_info.square_height));
-
- // Bottom left corner
- gfx[5]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x - board_info.border_size, board_info.start_y + (board_info.board_height * board_info.square_height), 
- board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height) + board_info.border_size);
-
- // Bottom border
- gfx[6]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height), 
- board_info.start_x + (board_info.board_width * board_info.square_width), 
- board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
-
- // Bottom right corner
- gfx[7]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
- board_info.start_x + (board_info.board_width * board_info.square_width), 
- board_info.start_y + (board_info.board_height * board_info.square_height), 
- board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
- board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
+//
+// // Recolour border pieces using current wizard colour.
+// for (c = 0 ; c < 8 ; c++)
+// {
+//  gfx[c]->setBlitColor(wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, 
+//	wizard[game.current_wizard].col.b, 1.0);
+//
+//	gfx[c]->setTextureQuality( false ); // Disable bilinear filtering on border gfx to stop edge linup errors in low res.
+// }
+//
+// // Top left corner
+// gfx[0]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x - board_info.border_size, board_info.start_y - board_info.border_size, 
+// board_info.start_x, board_info.start_y);
+//
+// // Top border
+// gfx[1]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x, board_info.start_y - board_info.border_size, 
+// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
+//
+// // Top right corner
+// gfx[2]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y - board_info.border_size, 
+// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
+//
+// // Left border
+// gfx[3]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x - board_info.border_size, board_info.start_y, 
+// board_info.start_x, board_info.start_y + (board_info.board_height * board_info.square_height));
+//
+// // Right border
+// gfx[4]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y, 
+// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
+// board_info.start_y + (board_info.board_height * board_info.square_height));
+//
+// // Bottom left corner
+// gfx[5]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x - board_info.border_size, board_info.start_y + (board_info.board_height * board_info.square_height), 
+// board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height) + board_info.border_size);
+//
+// // Bottom border
+// gfx[6]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height), 
+// board_info.start_x + (board_info.board_width * board_info.square_width), 
+// board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
+//
+// // Bottom right corner
+// gfx[7]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
+// board_info.start_x + (board_info.board_width * board_info.square_width), 
+// board_info.start_y + (board_info.board_height * board_info.square_height), 
+// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
+// board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
 }
 
 void draw_selected_effect(void)
 {
  int x, y;
- double alpha;
+ float alpha;
 
  alpha = board_info.selected_alpha.current - ((( cos(board_info.highlight_cycle) + 1.0 ) / 4.0));
  if (alpha < 0.0) return; // No selected effect visible.
@@ -762,89 +763,89 @@ void draw_selected_effect(void)
  x = board_info.selected_x;
  y = board_info.selected_y;
  
- gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 1.0, 1.0, alpha);
- gfx[HIGHLIGHT_GFX_BOX]->stretchAlphaRect(0, 0, gfx[HIGHLIGHT_GFX_BOX]->getWidth(), gfx[HIGHLIGHT_GFX_BOX]->getHeight(),
- (x * board_info.square_width) + board_info.start_x, (y * board_info.square_height) + board_info.start_y, 
- ((x + 1) * board_info.square_width) + board_info.start_x, ((y + 1) * board_info.square_height) + board_info.start_y);
+ //gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 1.0, 1.0, alpha);
+ Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
+	 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+	(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
 }
 
 void draw_highlight_effect(void)
 {
- int x, y, g;
- double alpha;
- Rgba rgba;
- 
- x = board_info.highlight_x;
- y = board_info.highlight_y;
+	int x, y, g;
+	double alpha;
+	Rgba rgba;
 
- alpha = board_info.highlight_alpha.current - ((( cos(board_info.highlight_cycle) + 1.0 ) / 4.0));
- if (alpha < 0.0) return;
- if (!wizard[game.current_wizard].human && !game.AI_debug) return;
+	x = board_info.highlight_x;
+	y = board_info.highlight_y;
 
- rgba = Rgba(1.0, 1.0, 1.0, alpha); // White is default.
- g = HIGHLIGHT_GFX_BOX; // Thick Box is default.
+	alpha = board_info.highlight_alpha.current - (((cos(board_info.highlight_cycle) + 1.0) / 4.0));
+	if (alpha < 0.0) return;
+	if (!wizard[game.current_wizard].human && !game.AI_debug) return;
 
- if (board_info.highlight_type == HIGHLIGHT_NONE) return;
- if (board_info.highlight_type == HIGHLIGHT_CAN_CAST) g = HIGHLIGHT_GFX_SPELL;
- if (board_info.highlight_type == HIGHLIGHT_CAN_MOVE)
- {
-	rgba = Rgba(1.0, 1.0, 0.0, alpha);
+	rgba = Rgba(1.0, 1.0, 1.0, alpha); // White is default.
+	g = HIGHLIGHT_GFX_BOX; // Thick Box is default.
 
-	if (board_info.selected_state && board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].flying)
+	if (board_info.highlight_type == HIGHLIGHT_NONE) return;
+	if (board_info.highlight_type == HIGHLIGHT_CAN_CAST) g = HIGHLIGHT_GFX_SPELL;
+	if (board_info.highlight_type == HIGHLIGHT_CAN_MOVE)
 	{
-	 g = HIGHLIGHT_GFX_FLY;
-	 rgba = Rgba(1.0, 1.0, 1.0, alpha);
-	}
- }
+		rgba = Rgba(1.0, 1.0, 0.0, alpha);
 
- if (board_info.highlight_type == HIGHLIGHT_NO_MOVES_LEFT) rgba = Rgba(0.0, 0.5, 1.0, alpha);
- if (board_info.highlight_type == HIGHLIGHT_CAN_ATTACK) rgba = Rgba(1.0, 0.0, 0.0, alpha);
- if (board_info.highlight_type == HIGHLIGHT_CAN_RIDE) rgba = Rgba(0.0, 1.0, 0.0, alpha);
- 
- gfx[g]->setAlphaMode( BLENDER_ALPHA );
- gfx[g]->setBlitColor(rgba.r, rgba.g, rgba.b, rgba.a);
- gfx[g]->stretchAlphaRect(0, 0, gfx[g]->getWidth(), gfx[g]->getHeight(),
- (x * board_info.square_width) + board_info.start_x, (y * board_info.square_height) + board_info.start_y, 
- ((x + 1) * board_info.square_width) + board_info.start_x, ((y + 1) * board_info.square_height) + board_info.start_y);
+		if (board_info.selected_state && board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].flying)
+		{
+			g = HIGHLIGHT_GFX_FLY;
+			rgba = Rgba(1.0, 1.0, 1.0, alpha);
+		}
+	}
+
+	if (board_info.highlight_type == HIGHLIGHT_NO_MOVES_LEFT) rgba = Rgba(0.0, 0.5, 1.0, alpha);
+	if (board_info.highlight_type == HIGHLIGHT_CAN_ATTACK) rgba = Rgba(1.0, 0.0, 0.0, alpha);
+	if (board_info.highlight_type == HIGHLIGHT_CAN_RIDE) rgba = Rgba(0.0, 1.0, 0.0, alpha);
+
+	//gfx[g]->setAlphaMode( BLENDER_ALPHA );
+	//gfx[g]->setBlitColor(rgba.r, rgba.g, rgba.b, rgba.a);
+	Draw(gfx[g], Rectangle{0, 0, (float)gfx[g]->width, (float)gfx[g]->height },
+		Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+	 (float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y });
 }
 
 
 void draw_background_clouds(void)
 {
- int s, x;
+	int s, x;
 
- // Draw two layers of clouds to make nice cloud billowing effect.
- // We convert the float co-ordinates to ints to avoid bilinear filtering causing
- // black edge on texturing of clouds.
+	// Draw two layers of clouds to make nice cloud billowing effect.
+	// We convert the float co-ordinates to ints to avoid bilinear filtering causing
+	// black edge on texturing of clouds.
 
- // Layer 1 (moves horizontally)
- //clouds.Blit((int)map_info.cloud_1_x + panel.map_area_x, 
- //map_info.cloud_1_y + panel.map_area_y);
- s = MAX((board_info.square_width * board_info.board_width), (board_info.square_height * board_info.board_height));
- x = board_info.cloud_x;
+	// Layer 1 (moves horizontally)
+	//clouds.Blit((int)map_info.cloud_1_x + panel.map_area_x, 
+	//map_info.cloud_1_y + panel.map_area_y);
+	s = MAX((board_info.square_width * board_info.board_width), (board_info.square_height * board_info.board_height));
+	x = board_info.cloud_x;
 
- gfx[33]->setAlphaMode(BLENDER_ALPHA);
- gfx[33]->allowTextureWrap(true);
- gfx[33]->setBlitColor(0.3, 0.0, 0.5, 0.25);
- 
- // Layer 1
- gfx[33]->stretchAlphaRect(1, 1, gfx[33]->getWidth() - 1, gfx[33]->getHeight() - 1,
- board_info.start_x + x, board_info.start_y, board_info.start_x + x + s, board_info.start_y + s);
+	//gfx[33]->setAlphaMode(BLENDER_ALPHA);
+	//gfx[33]->allowTextureWrap(true);
+	//gfx[33]->setBlitColor(0.3, 0.0, 0.5, 0.25);
+
+	// Layer 1
+	Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
+		Rectangle{ (float)board_info.start_x + x, (float)board_info.start_y, (float)board_info.start_x + x + s, (float)board_info.start_y + s });
 
  if (x > 0)
  {
-  gfx[33]->stretchAlphaRect(1, 1, gfx[33]->getWidth() - 1, gfx[33]->getHeight() - 1,
-  board_info.start_x + x - s, board_info.start_y, board_info.start_x + x, board_info.start_y + s);
+	 Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
+		 Rectangle {(float)board_info.start_x + x - s, (float)board_info.start_y, (float)board_info.start_x + x, (float)board_info.start_y + s});
  }
 
  // Layer 2
- gfx[33]->stretchAlphaRect(1, 0, gfx[33]->getWidth() - 1, gfx[33]->getHeight() - 0,
- board_info.start_x, board_info.start_y + x, board_info.start_x + s, board_info.start_y + x + s);
+ Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
+ Rectangle{(float)board_info.start_x, (float)board_info.start_y + x, (float)board_info.start_x + s, (float)board_info.start_y + x + s});
 
  if (x > 0)
  {
-  gfx[33]->stretchAlphaRect(1, 0, gfx[33]->getWidth() - 1, gfx[33]->getHeight() - 0,
-  board_info.start_x, board_info.start_y + x - s, board_info.start_x + s, board_info.start_y + x);
+	 Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
+		 Rectangle{ (float)board_info.start_x, (float)board_info.start_y + x - s, (float)board_info.start_x + s, (float)board_info.start_y + x });
  }
 
 }

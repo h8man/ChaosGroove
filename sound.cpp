@@ -1,12 +1,11 @@
 // Sound (.Cpp)
 // ------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
 #include <string.h>
-#include "KPTK.h"
+#include "raylib.h"
 #include "time.h"
 
 using namespace std;
@@ -28,7 +27,6 @@ using namespace std;
 #include "ai.hpp"
 #include "effect.hpp"
 #include "options.hpp"
-#include "Ksound.h"
 #include "sound.hpp"
 
 struct sound_t sound;
@@ -52,7 +50,7 @@ bool load_music(void)
  char name[MAX_STRING], text[MAX_STRING];
 
  sprintf(name, "\\text_files\\title_music.ini");
- sprintf(name, "%s", KMiscTools::makeFilePath(name));
+ sprintf(name, "%s", GetFullPath(name));
  
  if (!set_config_file_new(CONFIG_TITLE_MUSIC, name, false))
  {
@@ -62,19 +60,20 @@ bool load_music(void)
  
  if (music.mod)
  {
-	music.mod->stopModule();
+	StopSound(*music.mod);
  }
 
  music.mod = NULL;
- music.mod = new KSound;
+ //music.mod = new Sound;
  
  find_random_line_from_text_config(CONFIG_TITLE_MUSIC, text);
  log("Loading Music: %s", text);
 
  sprintf(name, "Music\\%s.mod", text);
- sprintf(name, "%s", KMiscTools::makeFilePath(name));
+ sprintf(name, "%s", GetFullPath(name));
 
- if (!music.mod->loadModule( name ) )
+ music.mod = &LoadSound(name);
+ if (!IsSoundValid(*music.mod) )
  {
 	log("Couldn't load music from : %s", name);
 	return false;
@@ -89,8 +88,8 @@ void play_music(void)
 {
  if (music.mod)
  {
-	music.mod->stopModule();
-	music.mod->playModule( true );
+	StopSound(*music.mod);
+	PlaySound(*music.mod);
 	
 	//music.volume.current = 0.0;
 	music.volume.target = 1.0;
@@ -106,29 +105,29 @@ void do_music_logic(void)
  if (music.mod)
  {
   find_option_choice_variables(CONFIG_OPTIONS, "SOUND", "MUSIC VOLUME", &c, NULL, NULL, NULL);
-	music.mod->setVolume(music.volume.current * c);
+	SetSoundVolume(*music.mod, music.volume.current * c);
 
   c = find_current_option_choice(CONFIG_OPTIONS, "SOUND", "SOUND BALANCE");
 
-	if (c == 0) music.mod->setPan(-100);
-  if (c == 1) music.mod->setPan(0);
-	if (c == 2) music.mod->setPan(100);
+	if (c == 0) SetSoundPan(*music.mod,0);
+    if (c == 1) SetSoundPan(*music.mod,0.5);
+	if (c == 2) SetSoundPan(*music.mod, 1.0);
  }
 
  // Switched away?
  if (!CheckWindowFocus())
  {
-  if (music.mod && music.mod->isPlaying())
+  if (music.mod && IsSoundPlaying(*music.mod))
   {
-   music.mod->pauseModule();
+   PauseSound(*music.mod);
   }
  }
  else
  {
   // No, but have we just switched back in?
-  if (music.mod && !music.mod->isPlaying())
+  if (music.mod && !IsSoundPlaying(*music.mod))
 	{
-	 music.mod->continueModule();
+	  ResumeSound(*music.mod);
 	}
  }
 }
@@ -142,8 +141,15 @@ bool load_all_memory_sounds(void)
  sound.available_sounds = 1;
 
  sprintf(name, "Sounds\\Memory\\*.*");
- sprintf(filepath, "%s", KMiscTools::makeFilePath(name));
- KMiscTools::enumerateFolder( filepath , load_sound ) ;
+ sprintf(filepath, "%s", GetFullPath(name));
+ //KMiscTools::enumerateFolder( filepath , load_sound ) ;
+
+ FilePathList list = LoadDirectoryFiles(filepath);
+ for (int i = 0; i < list.count; i++)
+ {
+	 if (!load_sound(list.paths[i], false, NULL)) break;
+ }
+ UnloadDirectoryFiles(list);
 
  log("Loaded %d sounds into memory..", sound.available_sounds);
 
@@ -157,12 +163,12 @@ bool load_all_memory_sounds(void)
   if (isFolder) return true; // Skip folders.
 
 	sprintf(name, "Sounds\\Memory\\%s", f);
-  sprintf(name, "%s", KMiscTools::makeFilePath(name));
+    sprintf(name, "%s", GetFullPath(name));
 
 	sound.sample[sound.available_sounds] = NULL;
-	sound.sample[sound.available_sounds] = new KSound;
+	sound.sample[sound.available_sounds] = &LoadSound(name);
 
-	if (!sound.sample[sound.available_sounds]->loadSample(name)) return true; // Can't load this sound.
+	if (!IsSoundValid(*sound.sample[sound.available_sounds])) return true; // Can't load this sound.
 
 	sprintf(sound.name[sound.available_sounds], "%s", f);
   sound.available_sounds++;
@@ -202,20 +208,20 @@ int play_sound(char *name, bool wait)
  find_option_choice_variables(CONFIG_OPTIONS, "SOUND", "SOUND EFFECTS VOLUME", &v, NULL, NULL, NULL);
  if (v <= 0) return s;
 
- sound.sample[s]->playSample();
- sound.sample[s]->setVolume(v);
+ PlaySound(*sound.sample[s]);
+ SetSoundVolume(*sound.sample[s],v);
 
  v = find_current_option_choice(CONFIG_OPTIONS, "SOUND", "SOUND BALANCE");
 
- if (v == 0) sound.sample[s]->setPan(-100);
- if (v == 1) sound.sample[s]->setPan(0);
- if (v == 2) sound.sample[s]->setPan(100);
+ if (v == 0) SetSoundPan(*sound.sample[s],0);
+ if (v == 1) SetSoundPan(*sound.sample[s],0.5);
+ if (v == 2) SetSoundPan(*sound.sample[s],1.0);
 
  if (wait && !game.AI_debug)
  do
  {
   wait_time(1);
- } while (sound.sample[s]->isPlaying());
+ } while (IsSoundPlaying(*sound.sample[s]));
 
  return s;
 }

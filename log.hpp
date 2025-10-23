@@ -12,7 +12,7 @@ extern FILE *log_file;
 // Logging functions:
 // ------------------
 
-int open_log(char *filename);
+int open_log(const char *filename);
 int log(char *format, ...);
 int log_no_cr(char *format, ...);
 int close_log(void);

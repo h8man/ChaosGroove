@@ -6,13 +6,13 @@
 struct sound_t
 {
  char name[512][MAX_SOUNDS];
- KSound *sample[MAX_SOUNDS];
+ Sound *sample[MAX_SOUNDS];
  int available_sounds;
 };
 
 struct music_t
 {
- KSound *mod;
+ Sound *mod;
  struct alpha volume;
 };
 
