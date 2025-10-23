@@ -1,10 +1,9 @@
 // Piece (.Cpp)
 // ------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
-#include "KPTK.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -36,7 +35,7 @@ void load_all_pieces(void)
 
  // First we look at the info file to find all the piece names to load..
  sprintf(text, "Pieces\\info.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(file, "%s", GetFullPath(text));
 
  if (!set_config_file_new(CONFIG_TEMP, file, true)) return;
 
@@ -55,11 +54,11 @@ void load_all_pieces(void)
   sprintf(section, "GROOVE");
 
   sprintf(text, "Pieces\\%s\\%s\\", piece[piece_num].name, section );
-  sprintf(file, "%s", KMiscTools::makeFilePath(text));
+  sprintf(file, "%s", GetFullPath(text));
   frames = LoadAndAddBitmaps(&piece_gfx, file, "png");
 
   sprintf(text, "Pieces\\%s\\info.ini", piece[piece_num].name);
-  sprintf(file, "%s", KMiscTools::makeFilePath(text));
+  sprintf(file, "%s", GetFullPath(text));
 
   if (!set_config_file_new(CONFIG_TEMP, file, true)) return;
 

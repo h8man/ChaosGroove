@@ -21,6 +21,8 @@
 #define BLENDER_SUB												2
 #define BLENDER_COPY											3
 
+#define COMPTO_F(c) (float)c/255.0f
+
 class Rgba {
 public:
    // Construct the color from float (0.0 ... 1.0) or integer color components (0..255) /
@@ -37,7 +39,7 @@ public:
    float r, g, b, a;
    
    // Some default colors //
-   static Rgba BLACK, WHITE, RED, YELLOW, GREEN, BLUE;
+   //static Rgba BLACK, WHITE, RED, YELLOW, GREEN, BLUE; raylibclash
    static Rgba INVISIBLE; // Has zero alpha //
    
    // Returns a color interpolated between this and otherColor //
@@ -74,7 +76,13 @@ private:
    bool IsValid();
 };
 
-extern KWindow *gwin;
+const char* GetFullPath(const char* filePath);
+
+void Draw(Texture2D* tex, Rectangle source);
+void Draw(Texture2D* tex, Rectangle source, Color color);
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest, float alpha);
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest);
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest, Color color);
 
 struct rand_info
 {
@@ -89,12 +97,12 @@ unsigned int SeedFromTime(void);
 float FRand( float min, float max );
 int IRand(int min, int max);
 
-vector < KGraphic *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers);
-int LoadAndAddBitmaps(vector< KGraphic *> *bitmapList, string filenameBegin, string extension);
+vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers);
+int LoadAndAddBitmaps(vector< Texture2D *> *bitmapList, string filenameBegin, string extension);
 
 bool CreateGameScreen(int width, int height, bool window, bool dx);
 void ListScreenModes(void);
-bool ListDisplays(KDisplay * kd);
+bool ListDisplays(int display);
 int get_desktop_resolution(int *width, int *height);
 
 int ScreenWidth(void);
@@ -114,10 +122,10 @@ bool RightMouseButton(void);
 
 long FileSize(char *FileName);
 
-void BlitTransform(KGraphic *bmp, float x, float y, float w, float h, float angle, float alpha) ;
+void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, float alpha) ;
 void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4);
-void SetSolidColour(KGraphic *bmp, Rgba col);
-void CancelSolidColour(KGraphic *bmp);
+void SetSolidColour(Texture2D *bmp, Rgba col);
+void CancelSolidColour(Texture2D *bmp);
 
 void CheckGfxExists(int g, char *file, int line);
 int slprintf(char *buffer, size_t count, const char *fmt, ...);

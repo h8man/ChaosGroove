@@ -1,13 +1,11 @@
 // Chat (.Cpp)
 // -----------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
 #include "math.h"
-#include "gl.h"
-#include "KPTK.h"
+#include "raylib.h"
 
 using namespace std;
 

@@ -1,11 +1,10 @@
 // AI (.Cpp)
 // ---------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
+#include "raylib.h"
 #include "time.h"
 
 using namespace std;

@@ -4,15 +4,15 @@
 #ifndef __Scene_hpp__
 #define __Scene_hpp__ 
 
-extern std::vector <KGraphic *> gfx;
-extern std::vector <KGraphic *> piece_gfx;
-extern std::vector <KGraphic *> spell_icon_gfx;
+extern std::vector <Texture2D *> gfx;
+extern std::vector <Texture2D *> piece_gfx;
+extern std::vector <Texture2D *> spell_icon_gfx;
 
 #define MAX_COLS               16
 
 #define MAX_FONTS							 4
 
-extern KText *fonty[MAX_FONTS];
+extern Font *fonty[MAX_FONTS];
 
 #define TYPE_EMITTER           0
 #define TYPE_PARTICLE          1
@@ -78,8 +78,8 @@ struct bar_effect_t
 
 extern struct bar_effect_t bar_effect;
 
-extern KFont largefontTablePtr[256];
-extern KFont smallfontTablePtr[256];
+extern Font largefontTablePtr[256];
+extern Font smallfontTablePtr[256];
 
 extern list < sprite_t > sprites;
 extern struct mouse_t mouse;

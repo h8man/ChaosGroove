@@ -11,11 +11,11 @@
 
 // This is the main file which contains the overall inner game loops.
 
-#include <ptk.h>
+
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
+#include "raylib.h"
 #include "time.h"
 
 using namespace std;
@@ -42,49 +42,7 @@ using namespace std;
 struct game_t game;
 struct screen_t screen;
 
-int WINAPI WinMain(IN HINSTANCE hInstance, 
-									 IN HINSTANCE hPrevInstance, 
-									 IN LPSTR lpCmdLine, 
-									 IN int nShowCmd )
-{
 
-	// Do first time setup stuff, quitting on error.
-	if (!first_time_setup()) return 0;
-
-	game.exit = false;
-
-  start:
-
-	if (game.exit) goto end_game;
-
-	// We always start with the title screen.
-  game.stage = GAME_MENUS;//GAME_INGAME;
-
-	// Ingame Loop
-	// -----------
-
-	if (game.stage == GAME_MENUS)
-	{
-   menu_loop();
-   if (game.exit) goto end_game;
-	}
-
-	game.stage = GAME_INGAME;
-
-	if (game.stage == GAME_INGAME)
-	{
-	 ingame_loop();
-	}
-
-	if (!game.exit) goto start;
-
-  end_game:
-
-	log("Exiting Game..");
-  do_exit_cleanup();
-
-	return 0;
-}
 
 bool setup_display(void)
 {
@@ -93,8 +51,8 @@ bool setup_display(void)
  log("");
  log("Loading in display data from display.ini file");
 
- sprintf(text, "\\text_files\\display.ini");
- sprintf(file, "%s", KMiscTools::makeFilePath(text));
+ sprintf(text, "Text_Files\\display.ini");
+ sprintf(file, "%s", GetFullPath(text));
 
  if (set_config_file_new(CONFIG_DISPLAY, file, false))
  {
@@ -132,11 +90,11 @@ bool setup_display(void)
 bool first_time_setup(void)
 {
  // Setup logfile.
- open_log( KMiscTools::makeFilePath("logfile.txt") );
+ open_log( GetFullPath("logfile.txt") );
  log_header();
 
  // Setup screen.
-
+ InitWindow(100, 100, "Initializing...");
  get_desktop_resolution(&screen.desktop_w, &screen.desktop_h);
  log("Desktop resolution : %d x %d", screen.desktop_w, screen.desktop_h);
 
@@ -153,7 +111,7 @@ bool first_time_setup(void)
  log("  Successful.");
  log("");
 
- KInput::hidePointer( ) ;
+ HideCursor( ) ;
 
  // Setup timer.
  start_timer();
@@ -166,7 +124,7 @@ bool first_time_setup(void)
 
  // Load options.
  load_options();
-
+ return false;
  // Load all texture images.
  if (!load_all_images()) return false;
 
@@ -204,103 +162,18 @@ bool first_time_setup(void)
 
 bool setup_fonts(void)
 {
- int c;
+	int c;
 
- log_no_cr("Loading gfx fonts.. ");
+	log_no_cr("Loading gfx fonts.. ");
 
- // Blank Font tables..
- for (c = 0 ; c < 255 ; c++)
- {
-  largefontTablePtr[c]._c = 0;
-	smallfontTablePtr[c]._c = 0;
- }
+	return true;
 
- // Large
- add_font_letters(largefontTablePtr, 0, '-', 0, 0, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 1, '!', 16, 0, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 2, '0', 32, 0, 16, 16, 16, 16, 10);
- add_font_letters(largefontTablePtr, 12, ':', 64, 16, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 13, ';', 80, 16, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 14, '?', 96, 16, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 15, 39, 112, 16, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 16, 'A', 0, 32, 16, 16, 16, 16, 26);
- add_font_letters(largefontTablePtr, 42, '(', 32, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 43, ')', 48, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 44, ',', 64, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 45, '.', 80, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 46, '/', 96, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 47, '%', 112, 80, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 48, ' ', 32, 96, 16, 16, 16, 16, 1);
- add_font_letters(largefontTablePtr, 49, 'a', 0, 32, 16, 16, 16, 16, 26);
- add_font_letters(largefontTablePtr, 75, '+', 0, 96, 16, 16, 16, 16, 1);
-
- fonty[FONT_LARGE] = new KText( KMiscTools::makeFilePath( "Gfx\\Fonts\\large.png"), largefontTablePtr);
- 
- if (!fonty[FONT_LARGE])
- {
-  log("Couldn't open large font gfx!");
-	return false;
- }
- fonty[FONT_LARGE]->getKGraphicPtr()->setTextureQuality(true);
- fonty[FONT_LARGE]->getKGraphicPtr()->allowTextureWrap(true);
-
- // Small
- add_font_letters(smallfontTablePtr, 0, 'A', 0, 0, 13, 13, 14, 18, 26);
- add_font_letters(smallfontTablePtr, 26, 'a', 0, 0, 13, 13, 14, 18, 26);
- add_font_letters(smallfontTablePtr, 52, ' ', 104, 26, 13, 12, 14, 18, 1);
- add_font_letters(smallfontTablePtr, 53, '-', 0, 39, 13, 13, 14, 18, 1);
- add_font_letters(smallfontTablePtr, 54, '.', 26, 52, 13, 13, 14, 18, 1);
- add_font_letters(smallfontTablePtr, 55, ',', 39, 52, 13, 13, 14, 18, 1);
- add_font_letters(smallfontTablePtr, 56, '0', 13, 39, 13, 13, 14, 18, 10);
- add_font_letters(smallfontTablePtr, 66, '%', 52, 52, 13, 13, 14, 18, 1);
- add_font_letters(smallfontTablePtr, 67, ':', 65, 52, 13, 13, 14, 18, 1);
-
- fonty[FONT_SMALL] = new KText( KMiscTools::makeFilePath( "Gfx\\Fonts\\small.png"), smallfontTablePtr);
-
- if (!fonty[FONT_SMALL])
- {
-  log("Couldn't open small font gfx!");
-	return false;
- }
- fonty[FONT_SMALL]->getKGraphicPtr()->setTextureQuality(true);
- fonty[FONT_SMALL]->getKGraphicPtr()->allowTextureWrap(false);
-
- log("Done");
-
- return true;
 }
-
-void add_font_letters(struct KFont *table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num)
-{
- int n;
-
- for (n = 0 ; n < num ; n++)
- {
-  table[place]._c = c;
-	table[place]._x1 = x;
-	table[place]._y1 = y;
-	table[place]._w = w2;
-	table[place]._h = h2;
-	table[place]._x2 = x + w - 2;
-	table[place]._y2 = y + h - 2;
-  x += w;
-	
-	if (128 - x < w)
-	{
-   x = 0;
-	 y += h;
-	}
-
-	place++;
-	c++;
- }
-}
-
 bool load_all_images(void)
 {
  // Load Sprite images
  log_no_cr("Loading Sprites : ");
- gfx = LoadListOfBitmaps( KMiscTools::makeFilePath("Gfx\\Sprites\\"), "png", 3);
+ gfx = LoadListOfBitmaps( GetFullPath("Gfx\\Sprites\\"), "png", 3);
    
  if ( gfx.empty() )
  {
@@ -324,7 +197,7 @@ void do_exit_cleanup(void)
 
  for (n = 0 ; n < num ; n++)
  {
-  gfx[n]->freePicture(); 
+   UnloadTexture(*gfx[n]); 
  }
 
  log("Freeing config files..");
@@ -1052,7 +925,7 @@ void menu_loop(void)
 
  music.volume.target = 0.0;
  wait_time(240);
- music.mod->pauseModule();
+ PauseSound(* music.mod);
 }
 
 void check_for_exit_key(void)
@@ -1060,7 +933,7 @@ void check_for_exit_key(void)
  game.old_exit_key = game.exit_key;
  game.exit_key = false;
 
- if (CheckQuit() || Key(K_VK_ESCAPE))
+ if (CheckQuit() || Key(KEY_ESCAPE))
  {
 	game.exit_key = true;
  }

@@ -1,13 +1,11 @@
 // Scene (.Cpp)
 // ------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
 #include "math.h"
-#include "gl.h"
-#include "KPTK.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -29,20 +27,23 @@ using namespace std;
 #include "sound.hpp"
 
 // Gfx Images.
-vector <KGraphic *> gfx;
-vector <KGraphic *> piece_gfx;
-vector <KGraphic *> spell_icon_gfx;
+
+#define GFX_MOUSE 9
+
+vector <Texture2D *> gfx;
+vector <Texture2D *> piece_gfx;
+vector <Texture2D *> spell_icon_gfx;
 
 // The list of active sprites.
 list < sprite_t > sprites;
 
-KText *fonty[MAX_FONTS];
+Font *fonty[MAX_FONTS];
 
 struct mouse_t mouse;
 struct bar_effect_t bar_effect;
 
-struct KFont largefontTablePtr[256];
-struct KFont smallfontTablePtr[256];
+struct Font largefontTablePtr[256];
+struct Font smallfontTablePtr[256];
 
 // Alpha logic code. Used to deal with moving our current value towards our target value
 // at different speeds. Good for fading effects in and out, but could be done better. :)
@@ -119,7 +120,9 @@ void draw_scene(void)
  // We have to scale the x and y by the new viewing angle too.
  x = x * a;
  y = y * a;
- gwin->setWorldView(x, y, 0, a, true);
+
+ //TODO: SetWindowSize(int width, int height);    
+ //gwin->setWorldView(x, y, 0, a, true);
 
  // Now we can draw all the gfx:
  if (game.stage == GAME_INGAME)
@@ -141,22 +144,23 @@ void draw_scene(void)
  //log("height: %d, width: %d, scale: %f, x: %f, y: %f, a: %f", ScreenHeight(), ScreenWidth(), scale, x, y, a);
 
  // Draw black borders to get rid of overdraw from clouds.
- if (scale > 0.75) // Portrait display
- {
-  gfx[0]->drawRect(0, -(ScreenHeight() / a), 1280, 0, 0.0, 0.0, 0.0, 1.0);
-  gfx[0]->drawRect(0, 960, 1280, 992 / a, 0.0, 0.0, 0.0, 1.0);
- }
- if (scale < 0.75) // Widescreen
- {
-  gfx[0]->drawRect(-(ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
-  gfx[0]->drawRect(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
- }
+ // TODO:
+// if (scale > 0.75) // Portrait display
+// {
+//  gfx[0]->drawRect(0, -(ScreenHeight() / a), 1280, 0, 0.0, 0.0, 0.0, 1.0);
+//  gfx[0]->drawRect(0, 960, 1280, 992 / a, 0.0, 0.0, 0.0, 1.0);
+// }
+// if (scale < 0.75) // Widescreen
+// {
+//  gfx[0]->drawRect(-(ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
+//  gfx[0]->drawRect(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
+// }
 }
 
 // Basically tell OpenGL to draw screen.
 void refresh_screen(void)
 {
- UpdateScreen();
+ //UpdateScreen();
  timer.gfx_frames++; // Keep track of 'screens' drawn.
 }
 
@@ -250,8 +254,11 @@ void do_mouse_logic(void)
 
 void draw_mouse(void)
 {
- gfx[9]->setBlitColor(mouse.rgba.r, mouse.rgba.g, mouse.rgba.b, 1.0);
- BlitTransform(gfx[9], mouse.x, mouse.y, 32, 32, 0.0, mouse.alpha.current);
+	Color tint = ColorFromNormalized({ mouse.rgba.r, mouse.rgba.g, mouse.rgba.b, 1.0 });
+	DrawTexture(*gfx[GFX_MOUSE], mouse.x, mouse.y, tint);
+ //gfx[9]->setBlitColor(mouse.rgba.r, mouse.rgba.g, mouse.rgba.b, 1.0);
+ //BlitTransform(gfx[9], mouse.x, mouse.y, 32, 32, 0.0, mouse.alpha.current);
+
 }
 
 void draw_bar_effect(void)
@@ -266,9 +273,9 @@ void draw_bar_effect(void)
  y = board_info.start_y + ((board_info.board_height * board_info.square_height) / 2) + 1;
  h = 80;
 
- gfx[13]->stretchAlphaRect(0, 0, 16, 4, x - w, y - h, x + w, y - h + 4, 1.0, 0.0); // Top
- gfx[13]->stretchAlphaRect(0, 4, 16, 12, x - w, y - h + 4, x + w, y + h - 4, 1.0, 0.0); // Middle
- gfx[13]->stretchAlphaRect(0, 12, 16, 16, x - w, y + h - 4, x + w, y + h, 1.0, 0.0); // Bottom
+ DrawTexturePro(*gfx[13], Rectangle{ 0, 0, 16, 4 }, Rectangle{ x - w, y - h, x + w, y - h + 4 }, Vector2{ 0, 0 }, 0.0f, WHITE); // Top
+ DrawTexturePro(*gfx[13], Rectangle{ 0, 4, 16, 12 }, Rectangle{ x - w, y - h + 4, x + w, y + h - 4 }, Vector2{ 0, 0 }, 0.0f, WHITE); // Middle
+ DrawTexturePro(*gfx[13], Rectangle{ 0, 12, 16, 16 }, Rectangle{ x - w, y + h - 4, x + w, y + h }, Vector2{ 0, 0 }, 0.0f, WHITE); // Bottom
 
  y = y - (h * 0.75) + 1;
  
@@ -304,8 +311,8 @@ void draw_bar_effect(void)
 	draw_text(bar_effect.text, board_info.start_x, board_info.start_x + (panel.info_area_w), y + 88, FONT_LARGE, 0, 
   wizard[game.current_wizard].col, bar_effect.alpha.current, TEXT_CENTRE);
 
-  gfx[48]->blitAlphaRectFx(0, 0, 255, 48, x - 239, y, 0.0, 1.0, bar_effect.alpha.current); 
-  gfx[48]->blitAlphaRectFx(0, 48, 255, 96, x + 16, y, 0.0, 1.0, bar_effect.alpha.current); 
+	DrawTextureRec(*gfx[48], Rectangle{ 0, 0, 255, 48 }, Vector2{ x - 239, y }, ColorFromNormalized(Vector4{1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
+	DrawTextureRec(*gfx[48], Rectangle{ 0, 48, 255, 96 }, Vector2{ x + 16, y }, ColorFromNormalized(Vector4{ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
  }
 }
 
@@ -422,16 +429,16 @@ void draw_sprites(void)
 	{
 	 if (!iter->use_piece_gfx)
 	 {
-	  gfx[iter->gfx]->setBlitColor(iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a);
-	  if (iter->additive_draw)
-	  {
-       if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
-	   if (!game.opengl) gfx[iter->gfx]->setAlphaMode(1);  
-	  }
-	  else
-	  {
-     gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-	  }
+		 Color tint = ColorFromNormalized({ iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a });
+	  //if (iter->additive_draw)
+	  //{
+   //    if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
+	  // if (!game.opengl) gfx[iter->gfx]->setAlphaMode(1);  
+	  //}
+	  //else
+	  //{
+   //    gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
+	  //}
 
 	  if (iter->alpha > 0.0) BlitTransform(gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->alpha);
 	 }
@@ -439,10 +446,10 @@ void draw_sprites(void)
 	 {
     if (iter->alpha > 0.0)
 		{
-		 SetSolidColour(piece_gfx[iter->gfx], iter->rgba);	
-		 piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
+		 //SetSolidColour(piece_gfx[iter->gfx], iter->rgba);	
+		 //piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
 		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->alpha);
-		 CancelSolidColour(piece_gfx[iter->gfx]);
+		 //CancelSolidColour(piece_gfx[iter->gfx]);
 		}
 	 }
 	}
@@ -474,12 +481,13 @@ int draw_text(char *txt, int x, int x2, int y, int font, int kerning, Rgba col, 
 
  old_x = x;
 
- fonty[font]->setColor(col.r, col.g, col.b, col.a * alpha);
+ DrawText(txt, x, y, 10, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
+ //fonty[font]->setColor(col.r, col.g, col.b, col.a * alpha);
 
- if (orient == TEXT_LEFT) fonty[font]->drawStringFromLeft( txt, x, y, kerning);
- if (orient == TEXT_CENTRE) fonty[font]->drawStringCentered( txt, x, x2, y, kerning); 
- if (orient == TEXT_RIGHT) fonty[font]->drawStringFromRight( txt, x2, y, kerning);
- if (orient == TEXT_WRAP) fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
+ //if (orient == TEXT_LEFT) fonty[font]->drawStringFromLeft( txt, x, y, kerning);
+ //if (orient == TEXT_CENTRE) fonty[font]->drawStringCentered( txt, x, x2, y, kerning); 
+ //if (orient == TEXT_RIGHT) fonty[font]->drawStringFromRight( txt, x2, y, kerning);
+ //if (orient == TEXT_WRAP) fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
 
 
  /*

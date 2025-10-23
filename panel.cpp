@@ -1,12 +1,11 @@
 // Panel (.Cpp)
 // ------------
 
-#include <ptk.h>
 #include <vector>
 #include <list>
 #include <sstream>
-#include "KPTK.h"
 #include "time.h"
+#include "raylib.h"
 
 using namespace std;
 
@@ -248,20 +247,19 @@ void draw_panels(void)
  char text[512];
 
  // Set glow colour (from wizard).
- gfx[8]->setBlitColor(wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, 
- wizard[game.current_wizard].col.b, 1.0);
+ Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
 
  // Blank any old cloud data in panel.
- gfx[0]->drawRect(0, panel.info_area_y, 1280, 960, 0.0, 0.0, 0.0, 1.0);
+ DrawTexture(*gfx[0], 0.0, 0.0, WHITE);
 
  // Now draw 'reflection' glow effect on info panel.
- gfx[8]->stretchAlphaRect(1, 1, gfx[8]->getWidth() - 1, gfx[8]->getHeight() - 1,
- panel.info_area_x, panel.info_area_y, panel.info_area_x + panel.info_area_w, panel.info_area_y + panel.info_area_h); 
+ DrawTexturePro(*gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height - 1 },
+	 Rectangle{ (float)panel.info_area_x, (float)panel.info_area_y, (float)panel.info_area_x + panel.info_area_w, (float)panel.info_area_y + panel.info_area_h }, Vector2{0,0}, 0, tint);
 
  // Now draw 'reflection' glow effect on spell panel.
- gfx[8]->stretchAlphaRect(1, 1, gfx[8]->getWidth() - 1, gfx[8]->getHeight() - 1,
- board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, panel.spell_area_y, 
- 1280, panel.spell_area_y + panel.spell_area_h); 
+ DrawTexturePro(*gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height },
+	 Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, (float)panel.spell_area_y,
+ 1280,(float)panel.spell_area_y + panel.spell_area_h }, Vector2{ 0,0 }, 0, tint);
 
  if (panel.info_area_show_piece_stats)
  {
@@ -742,36 +740,36 @@ void draw_spell_icons(void)
 	 if (spell_list[t][game.current_wizard].bonus)
 	 {
 	  // Draw Green outline.
-		gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(0.0, 1.0, 0.0, alpha);
-    gfx[HIGHLIGHT_GFX_BOX]->stretchAlphaRect(0, 0, gfx[HIGHLIGHT_GFX_BOX]->getWidth(), 
-		gfx[HIGHLIGHT_GFX_BOX]->getHeight(), x - 4, y - 4, x + panel.spell_icon_w + 4, y + panel.spell_icon_h + 4);
+		//gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(0.0, 1.0, 0.0, alpha);
+		 DrawTexturePro(*gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
+			 Rectangle{ (float)x - 4, (float)y - 4, (float)x + panel.spell_icon_w + 4, (float)y + panel.spell_icon_h + 4 }, Vector2{0,0}, 0, ColorFromNormalized({ 0.0, 1.0, 0.0, alpha }));
 	 }
 
 	 // Can we cast this spell?
 	 if (!spell_list[t][game.current_wizard].cast)
 	 {
 	  // Draw Red outline.
-		gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 0.0, 0.0, alpha);
-    gfx[HIGHLIGHT_GFX_BOX]->stretchAlphaRect(0, 0, gfx[HIGHLIGHT_GFX_BOX]->getWidth(), 
-		gfx[HIGHLIGHT_GFX_BOX]->getHeight(), x - 4, y - 4, x + panel.spell_icon_w + 4, y + panel.spell_icon_h + 4);
+		//gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 0.0, 0.0, alpha);
+		 DrawTexturePro(*gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
+			 Rectangle{ (float)x - 4, (float)y - 4, (float)x + panel.spell_icon_w + 4, (float)y + panel.spell_icon_h + 4 }, Vector2{0,0}, 0, ColorFromNormalized({ 1.0, 0.0, 0.0, alpha }));
 	 }
 
-	 gfx[0]->drawRect(x, y, x + panel.spell_icon_w, y + panel.spell_icon_h, 0.0, 0.0, 0.0, alpha);
+	 DrawRectangleLinesEx(Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, 1, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+  
+	 //gfx[0]->drawRect(, 0.0, 0.0, 0.0, alpha);
   
    if (g > -1 && !spell_icon)
 	 {
-	  piece_gfx[g]->setBlitColor(1.0, 1.0, 1.0, alpha);
-		piece_gfx[g]->stretchAlphaRect(0, 0, piece_gfx[g]->getWidth(), piece_gfx[g]->getHeight(),
-	  x, y, x + panel.spell_icon_w, y + panel.spell_icon_h);
-		piece_gfx[g]->setBlitColor(1.0, 1.0, 1.0, 1.0);
+	   DrawTexturePro(*spell_icon_gfx[g], Rectangle{ 0, 0, (float)spell_icon_gfx[g]->width, (float)spell_icon_gfx[g]->height },
+		   Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+
 	 }
 
 	 if (g > -1 && spell_icon)
 	 {
-		spell_icon_gfx[g]->setBlitColor(1.0, 1.0, 1.0, alpha);
-		spell_icon_gfx[g]->stretchAlphaRect(0, 0, spell_icon_gfx[g]->getWidth(), spell_icon_gfx[g]->getHeight(), 
-		x, y, x + panel.spell_icon_w, y + panel.spell_icon_h);
-		spell_icon_gfx[g]->setBlitColor(1.0, 1.0, 1.0, alpha);
+		DrawTexturePro(*spell_icon_gfx[g], Rectangle{ 0, 0, (float)spell_icon_gfx[g]->width, (float)spell_icon_gfx[g]->height }, 
+			Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+
 	 }
   }
 
@@ -802,20 +800,20 @@ void draw_control_icons(void)
 
  if (game.phase == PHASE_SPELLSELECT)
  {
-  // Draw No Spell control icon.
-  gfx[15]->blitAlphaRectFx(0, 64, 128, 128, x + 4, y + 8, 0.0, 1.0, alpha);
+	 // Draw No Spell control icon.
+	 DrawTextureRec(*gfx[15], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
  if (game.phase == PHASE_SPELLCAST)
  {
   // Draw Skip Spell control icon.
-  gfx[10]->blitAlphaRectFx(0, 0, 128, 64, x + 4, y + 8, 0.0, 1.0, alpha);
+	 DrawTextureRec(*gfx[10], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
  (!board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_moved ||
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_attacked))
  {
   // Draw End Move control icon.
-  gfx[10]->blitAlphaRectFx(0, 64, 128, 128, x + 4, y + 8, 0.0, 1.0, alpha);
+	 DrawTextureRec(*gfx[10], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
  
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
@@ -824,20 +822,20 @@ void draw_control_icons(void)
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_shot)
  {
   // Draw End Fire control icon.
-  gfx[17]->blitAlphaRectFx(0, 0, 128, 64, x + 4, y + 8, 0.0, 1.0, alpha);
+	 DrawTextureRec(*gfx[17], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
 
  if (game.phase == PHASE_MOVEMENT && !board_info.selected_state)
  {
   // Draw End Turn control icon.
-  gfx[11]->blitAlphaRectFx(0, 0, 128, 64, x + 4, y + 8, 0.0, 1.0, alpha);
+	 DrawTextureRec(*gfx[11], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state && board_info.selected_layer == PIECE &&
  board[board_info.selected_x][board_info.selected_y][MOUNTED].gfx != BLANK &&
  !board[board_info.selected_x][board_info.selected_y][MOUNTED].has_moved)
  {
   // Draw Dismounted control icon.
-  gfx[11]->blitAlphaRectFx(0, 64, 128, 128, x + 4, y + 80, 0.0, 1.0, alpha);
+	 DrawTextureRec(*gfx[11], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 80 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
  }
 }
 
