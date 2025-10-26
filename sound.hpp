@@ -12,7 +12,7 @@ struct sound_t
 
 struct music_t
 {
- Sound *mod;
+ Music mod;
  struct alpha volume;
 };
 

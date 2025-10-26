@@ -37,7 +37,7 @@ vector <Texture2D *> spell_icon_gfx;
 // The list of active sprites.
 list < sprite_t > sprites;
 
-Font *fonty[MAX_FONTS];
+Font fonty[MAX_FONTS];
 
 struct mouse_t mouse;
 struct bar_effect_t bar_effect;
@@ -107,7 +107,7 @@ void draw_scene(void)
 {
  float x, y, a, scale;
  int x2, y2;
-
+ BeginDrawing();
  // Find angle to fit 1280 x 960 area into current screen size..
  x = ScreenWidth() / 1280.0;
  y = ScreenHeight() / 960.0;
@@ -160,8 +160,9 @@ void draw_scene(void)
 // Basically tell OpenGL to draw screen.
 void refresh_screen(void)
 {
+	EndDrawing();
  //UpdateScreen();
- timer.gfx_frames++; // Keep track of 'screens' drawn.
+	timer.gfx_frames++; // Keep track of 'screens' drawn.
 }
 
 void do_mouse_logic(void)
