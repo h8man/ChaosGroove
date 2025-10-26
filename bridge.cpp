@@ -127,12 +127,13 @@ vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension,
       
       string filename = filenameBegin + numbers + string(".") + extension;
 
-      Texture2D *frame = NULL;
-	  frame = &LoadTexture(GetFullPath(filename.c_str()));
-      
+      Texture2D *frame = new Texture2D();
+	  memcpy(frame, &LoadTexture(GetFullPath(filename.c_str())), sizeof(Texture2D));
+
 	  if( !IsTextureValid(*frame))
 	  {
 		  UnloadTexture(*frame);
+		  delete frame;
           break;
       }
       //TODO:
@@ -155,18 +156,19 @@ int LoadAndAddBitmaps(vector< Texture2D *> *bitmapList, string filenameBegin, st
       
       string filename = filenameBegin + numbers + string(".") + extension;
 
-      Texture2D *frame = NULL;
-	  frame = &LoadTexture(GetFullPath(filename.c_str()));
+      Texture2D* frame = new Texture2D();
+	  memcpy(frame, &LoadTexture(GetFullPath(filename.c_str())),sizeof(Texture2D));
 
 	  if (!IsTextureValid(*frame))
 	  {
 		  UnloadTexture(*frame);
+		  delete frame;
 		  break;
 	  }
 	  //TODO:
 	  //frame->setTextureQuality( true );
 	  //frame->setAlphaMode( 0 );
-      bitmapList->push_back( frame );
+      bitmapList->push_back(frame );
 			num++;
    }
    
@@ -272,7 +274,7 @@ int ScreenHeight(void)
 void ClearScreen(void)
 {
 	// Clear newly created screen.
-	ClearBackground(BLACK);
+	ClearBackground(DARKBLUE);
 }
 
 void MessageBox(char *title, char *maintext)

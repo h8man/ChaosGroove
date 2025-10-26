@@ -124,7 +124,7 @@ bool first_time_setup(void)
 
  // Load options.
  load_options();
- return false;
+
  // Load all texture images.
  if (!load_all_images()) return false;
 
@@ -151,10 +151,11 @@ bool first_time_setup(void)
  mouse.y = 480;
 
  // Net setup.
- log("Setting up network code..");
+ //log("Setting up network code..");
+ log("Skip setting up network code..");
  
- setup_users();
- setup_chat_lines();
+ //setup_users();
+ //setup_chat_lines();
 
  log("Setup completed!");
  return true;
@@ -166,9 +167,100 @@ bool setup_fonts(void)
 
 	log_no_cr("Loading gfx fonts.. ");
 
-	return true;
+	//// Blank Font tables..
+	//for (c = 0; c < 255; c++)
+	//{
+	//	largefontTablePtr[c]._c = 0;
+	//	smallfontTablePtr[c]._c = 0;
+	//}
 
+	//// Large
+	//add_font_letters(largefontTablePtr, 0, '-', 0, 0, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 1, '!', 16, 0, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 2, '0', 32, 0, 16, 16, 16, 16, 10);
+	//add_font_letters(largefontTablePtr, 12, ':', 64, 16, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 13, ';', 80, 16, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 14, '?', 96, 16, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 15, 39, 112, 16, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 16, 'A', 0, 32, 16, 16, 16, 16, 26);
+	//add_font_letters(largefontTablePtr, 42, '(', 32, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 43, ')', 48, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 44, ',', 64, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 45, '.', 80, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 46, '/', 96, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 47, '%', 112, 80, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 48, ' ', 32, 96, 16, 16, 16, 16, 1);
+	//add_font_letters(largefontTablePtr, 49, 'a', 0, 32, 16, 16, 16, 16, 26);
+	//add_font_letters(largefontTablePtr, 75, '+', 0, 96, 16, 16, 16, 16, 1);
+
+	Image fontImage = LoadImage("Gfx\\Fonts\\large.png");
+
+	// Manually load ASCII characters from the image grid
+	fonty[FONT_LARGE] = LoadFontFromImage(fontImage, BLACK, 65); // 32 = starting ASCII code (' ')
+	UnloadImage(fontImage);
+
+	if (!IsFontValid(fonty[FONT_LARGE]))
+	{
+		log("Couldn't open large font gfx!");
+		return false;
+	}
+	//fonty[FONT_LARGE]->getKGraphicPtr()->setTextureQuality(true);
+	//fonty[FONT_LARGE]->getKGraphicPtr()->allowTextureWrap(true);
+
+	//// Small
+	//add_font_letters(smallfontTablePtr, 0, 'A', 0, 0, 13, 13, 14, 18, 26);
+	//add_font_letters(smallfontTablePtr, 26, 'a', 0, 0, 13, 13, 14, 18, 26);
+	//add_font_letters(smallfontTablePtr, 52, ' ', 104, 26, 13, 12, 14, 18, 1);
+	//add_font_letters(smallfontTablePtr, 53, '-', 0, 39, 13, 13, 14, 18, 1);
+	//add_font_letters(smallfontTablePtr, 54, '.', 26, 52, 13, 13, 14, 18, 1);
+	//add_font_letters(smallfontTablePtr, 55, ',', 39, 52, 13, 13, 14, 18, 1);
+	//add_font_letters(smallfontTablePtr, 56, '0', 13, 39, 13, 13, 14, 18, 10);
+	//add_font_letters(smallfontTablePtr, 66, '%', 52, 52, 13, 13, 14, 18, 1);
+	//add_font_letters(smallfontTablePtr, 67, ':', 65, 52, 13, 13, 14, 18, 1);
+	fontImage = LoadImage("Gfx\\Fonts\\smal.png");
+
+	fonty[FONT_SMALL] = LoadFontFromImage(fontImage, BLACK, 65);
+
+	UnloadImage(fontImage);
+
+	if (!IsFontValid(fonty[FONT_SMALL]))
+	{
+		log("Couldn't open small font gfx!");
+		return false;
+	}
+	//fonty[FONT_SMALL]->getKGraphicPtr()->setTextureQuality(true);
+	//fonty[FONT_SMALL]->getKGraphicPtr()->allowTextureWrap(false);
+
+	log("Done");
+
+	return true;
 }
+
+//void add_font_letters(struct KFont* table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num)
+//{
+//	int n;
+//
+//	for (n = 0; n < num; n++)
+//	{
+//		table[place]._c = c;
+//		table[place]._x1 = x;
+//		table[place]._y1 = y;
+//		table[place]._w = w2;
+//		table[place]._h = h2;
+//		table[place]._x2 = x + w - 2;
+//		table[place]._y2 = y + h - 2;
+//		x += w;
+//
+//		if (128 - x < w)
+//		{
+//			x = 0;
+//			y += h;
+//		}
+//
+//		place++;
+//		c++;
+//	}
+//}
 bool load_all_images(void)
 {
  // Load Sprite images
@@ -925,7 +1017,7 @@ void menu_loop(void)
 
  music.volume.target = 0.0;
  wait_time(240);
- PauseSound(* music.mod);
+ PauseMusicStream(music.mod);
 }
 
 void check_for_exit_key(void)

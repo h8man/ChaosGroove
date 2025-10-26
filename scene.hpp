@@ -12,7 +12,7 @@ extern std::vector <Texture2D *> spell_icon_gfx;
 
 #define MAX_FONTS							 4
 
-extern Font *fonty[MAX_FONTS];
+extern Font fonty[MAX_FONTS];
 
 #define TYPE_EMITTER           0
 #define TYPE_PARTICLE          1

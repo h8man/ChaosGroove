@@ -36,6 +36,8 @@ bool setup_sound_system(void)
 {
  log("Setting up sounds..");
 
+ InitAudioDevice();
+
  load_all_memory_sounds();
 
  music.volume.current = 0.0;
@@ -49,7 +51,7 @@ bool load_music(void)
 {
  char name[MAX_STRING], text[MAX_STRING];
 
- sprintf(name, "\\text_files\\title_music.ini");
+ sprintf(name, "text_files\\title_music.ini");
  sprintf(name, "%s", GetFullPath(name));
  
  if (!set_config_file_new(CONFIG_TITLE_MUSIC, name, false))
@@ -58,22 +60,22 @@ bool load_music(void)
   return false;
  }
  
- if (music.mod)
+ if (IsMusicValid(music.mod))
  {
-	StopSound(*music.mod);
+	StopMusicStream(music.mod);
  }
 
- music.mod = NULL;
+ //music.mod = NULL;
  //music.mod = new Sound;
  
  find_random_line_from_text_config(CONFIG_TITLE_MUSIC, text);
  log("Loading Music: %s", text);
 
- sprintf(name, "Music\\%s.mod", text);
+ sprintf(name, "Music\\%s.ogg", text);
  sprintf(name, "%s", GetFullPath(name));
 
- music.mod = &LoadSound(name);
- if (!IsSoundValid(*music.mod) )
+ music.mod = LoadMusicStream(name);
+ if (!IsMusicValid(music.mod) )
  {
 	log("Couldn't load music from : %s", name);
 	return false;
@@ -86,10 +88,10 @@ bool load_music(void)
 
 void play_music(void)
 {
- if (music.mod)
+ if (IsMusicValid(music.mod))
  {
-	StopSound(*music.mod);
-	PlaySound(*music.mod);
+	StopMusicStream(music.mod);
+	PlayMusicStream(music.mod);
 	
 	//music.volume.current = 0.0;
 	music.volume.target = 1.0;
@@ -102,32 +104,33 @@ void do_music_logic(void)
  int c;
 
  do_alpha_logic(&music.volume);
- if (music.mod)
+ if (IsMusicValid(music.mod))
  {
+UpdateMusicStream(music.mod);
   find_option_choice_variables(CONFIG_OPTIONS, "SOUND", "MUSIC VOLUME", &c, NULL, NULL, NULL);
-	SetSoundVolume(*music.mod, music.volume.current * c);
+  SetMusicVolume(music.mod, music.volume.current * c/100.0f);
 
   c = find_current_option_choice(CONFIG_OPTIONS, "SOUND", "SOUND BALANCE");
 
-	if (c == 0) SetSoundPan(*music.mod,0);
-    if (c == 1) SetSoundPan(*music.mod,0.5);
-	if (c == 2) SetSoundPan(*music.mod, 1.0);
+	if (c == 0) SetMusicPan(music.mod,0);
+    if (c == 1) SetMusicPan(music.mod,0.5);
+	if (c == 2) SetMusicPan(music.mod, 1.0);
  }
 
  // Switched away?
  if (!CheckWindowFocus())
  {
-  if (music.mod && IsSoundPlaying(*music.mod))
+  if (IsMusicValid(music.mod) && IsMusicStreamPlaying(music.mod))
   {
-   PauseSound(*music.mod);
+   PauseMusicStream(music.mod);
   }
  }
  else
  {
   // No, but have we just switched back in?
-  if (music.mod && !IsSoundPlaying(*music.mod))
+  if (IsMusicValid(music.mod) && !IsMusicStreamPlaying(music.mod))
 	{
-	  ResumeSound(*music.mod);
+	  ResumeMusicStream(music.mod);
 	}
  }
 }
