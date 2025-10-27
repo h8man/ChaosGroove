@@ -174,30 +174,36 @@ bool setup_fonts(void)
 	//	smallfontTablePtr[c]._c = 0;
 	//}
 
-	//// Large
-	//add_font_letters(largefontTablePtr, 0, '-', 0, 0, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 1, '!', 16, 0, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 2, '0', 32, 0, 16, 16, 16, 16, 10);
-	//add_font_letters(largefontTablePtr, 12, ':', 64, 16, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 13, ';', 80, 16, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 14, '?', 96, 16, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 15, 39, 112, 16, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 16, 'A', 0, 32, 16, 16, 16, 16, 26);
-	//add_font_letters(largefontTablePtr, 42, '(', 32, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 43, ')', 48, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 44, ',', 64, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 45, '.', 80, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 46, '/', 96, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 47, '%', 112, 80, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 48, ' ', 32, 96, 16, 16, 16, 16, 1);
-	//add_font_letters(largefontTablePtr, 49, 'a', 0, 32, 16, 16, 16, 16, 26);
-	//add_font_letters(largefontTablePtr, 75, '+', 0, 96, 16, 16, 16, 16, 1);
-
 	Image fontImage = LoadImage("Gfx\\Fonts\\large.png");
 
 	// Manually load ASCII characters from the image grid
-	fonty[FONT_LARGE] = LoadFontFromImage(fontImage, BLACK, 65); // 32 = starting ASCII code (' ')
+	fonty[FONT_LARGE] = Font();//LoadFontFromImage(fontImage, BLACK, 65); // 32 = starting ASCII code (' ')
+	fonty[FONT_LARGE].baseSize = 16;
+	fonty[FONT_LARGE].glyphCount = 256;
+	fonty[FONT_LARGE].glyphs = largefontGlyph;
+	fonty[FONT_LARGE].recs = largefontRect;
+	fonty[FONT_LARGE].texture = LoadTextureFromImage(fontImage);
+
 	UnloadImage(fontImage);
+
+	//// Large
+	add_font_letters(fonty[FONT_LARGE], 0, '-', 0, 0, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 1, '!', 16, 0, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 2, '0', 32, 0, 16, 16, 16, 16, 10);
+	add_font_letters(fonty[FONT_LARGE], 12, ':', 64, 16, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 13, ';', 80, 16, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 14, '?', 96, 16, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 15, 39, 112, 16, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 16, 'A', 0, 32, 16, 16, 16, 16, 26);
+	add_font_letters(fonty[FONT_LARGE], 42, '(', 32, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 43, ')', 48, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 44, ',', 64, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 45, '.', 80, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 46, '/', 96, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 47, '%', 112, 80, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 48, ' ', 32, 96, 16, 16, 16, 16, 1);
+	add_font_letters(fonty[FONT_LARGE], 49, 'a', 0, 32, 16, 16, 16, 16, 26);
+	add_font_letters(fonty[FONT_LARGE], 75, '+', 0, 96, 16, 16, 16, 16, 1);
 
 	if (!IsFontValid(fonty[FONT_LARGE]))
 	{
@@ -207,21 +213,26 @@ bool setup_fonts(void)
 	//fonty[FONT_LARGE]->getKGraphicPtr()->setTextureQuality(true);
 	//fonty[FONT_LARGE]->getKGraphicPtr()->allowTextureWrap(true);
 
-	//// Small
-	//add_font_letters(smallfontTablePtr, 0, 'A', 0, 0, 13, 13, 14, 18, 26);
-	//add_font_letters(smallfontTablePtr, 26, 'a', 0, 0, 13, 13, 14, 18, 26);
-	//add_font_letters(smallfontTablePtr, 52, ' ', 104, 26, 13, 12, 14, 18, 1);
-	//add_font_letters(smallfontTablePtr, 53, '-', 0, 39, 13, 13, 14, 18, 1);
-	//add_font_letters(smallfontTablePtr, 54, '.', 26, 52, 13, 13, 14, 18, 1);
-	//add_font_letters(smallfontTablePtr, 55, ',', 39, 52, 13, 13, 14, 18, 1);
-	//add_font_letters(smallfontTablePtr, 56, '0', 13, 39, 13, 13, 14, 18, 10);
-	//add_font_letters(smallfontTablePtr, 66, '%', 52, 52, 13, 13, 14, 18, 1);
-	//add_font_letters(smallfontTablePtr, 67, ':', 65, 52, 13, 13, 14, 18, 1);
 	fontImage = LoadImage("Gfx\\Fonts\\smal.png");
 
 	fonty[FONT_SMALL] = LoadFontFromImage(fontImage, BLACK, 65);
-
+	fonty[FONT_SMALL].baseSize = 16;
+	fonty[FONT_SMALL].glyphCount = 256;
+	fonty[FONT_SMALL].glyphs = smallfontGlyph;
+	fonty[FONT_SMALL].recs = smallfontRect;
+	fonty[FONT_SMALL].texture = LoadTextureFromImage(fontImage);
 	UnloadImage(fontImage);
+
+	//// Small
+	add_font_letters(fonty[FONT_SMALL], 0, 'A', 0, 0, 13, 13, 14, 18, 26);
+	add_font_letters(fonty[FONT_SMALL], 26, 'a', 0, 0, 13, 13, 14, 18, 26);
+	add_font_letters(fonty[FONT_SMALL], 52, ' ', 104, 26, 13, 12, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 53, '-', 0, 39, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 54, '.', 26, 52, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 55, ',', 39, 52, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 56, '0', 13, 39, 13, 13, 14, 18, 10);
+	add_font_letters(fonty[FONT_SMALL], 66, '%', 52, 52, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 67, ':', 65, 52, 13, 13, 14, 18, 1);
 
 	if (!IsFontValid(fonty[FONT_SMALL]))
 	{
@@ -236,31 +247,32 @@ bool setup_fonts(void)
 	return true;
 }
 
-//void add_font_letters(struct KFont* table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num)
-//{
-//	int n;
-//
-//	for (n = 0; n < num; n++)
-//	{
-//		table[place]._c = c;
-//		table[place]._x1 = x;
-//		table[place]._y1 = y;
-//		table[place]._w = w2;
-//		table[place]._h = h2;
-//		table[place]._x2 = x + w - 2;
-//		table[place]._y2 = y + h - 2;
-//		x += w;
-//
-//		if (128 - x < w)
-//		{
-//			x = 0;
-//			y += h;
-//		}
-//
-//		place++;
-//		c++;
-//	}
-//}
+void add_font_letters(struct Font table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num)
+{
+	int n;
+
+	for (n = 0; n < num; n++)
+	{
+		table.glyphCount = place;
+		table.glyphs[place].value = c;
+		table.recs[place].x = x;
+		table.recs[place].y = y;
+		table.recs[place].width = w2;
+		table.recs[place].height = h2;
+		//table[place]._x2 = x + w - 2;
+		//table[place]._y2 = y + h - 2;
+		x += w;
+
+		if (128 - x < w)
+		{
+			x = 0;
+			y += h;
+		}
+
+		place++;
+		c++;
+	}
+}
 bool load_all_images(void)
 {
  // Load Sprite images

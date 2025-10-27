@@ -43,7 +43,7 @@ extern struct screen_t screen;
 bool first_time_setup(void);
 bool setup_display(void);
 bool setup_fonts(void);
-void add_font_letters(struct KFont *table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num);
+void add_font_letters(struct Font table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num);
 bool load_all_images(void);
 void do_exit_cleanup(void);
 

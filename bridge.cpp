@@ -274,7 +274,7 @@ int ScreenHeight(void)
 void ClearScreen(void)
 {
 	// Clear newly created screen.
-	ClearBackground(DARKBLUE);
+	ClearBackground(MAGENTA);
 }
 
 void MessageBox(char *title, char *maintext)
@@ -318,8 +318,8 @@ void GetMouseMickeys(int *x, int *y)
 {
  *x = (GetMouseX() - (ScreenWidth() / 2)) * 4;
  *y = (GetMouseY() - (ScreenHeight() / 2)) * 4;
- //TODO:
-// if (IsWindowFocused()) KInput::mousePointerTo(ScreenWidth() / 2, ScreenHeight() / 2);
+
+ if (IsWindowFocused()) SetMousePosition(ScreenWidth() / 2, ScreenHeight() / 2);
 }
 
 void AccelerateMouseMickeys(float *x, float *y, float scale, float scale_accel)
