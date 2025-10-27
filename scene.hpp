@@ -78,8 +78,10 @@ struct bar_effect_t
 
 extern struct bar_effect_t bar_effect;
 
-extern Font largefontTablePtr[256];
-extern Font smallfontTablePtr[256];
+extern  GlyphInfo largefontGlyph[256];
+extern  Rectangle largefontRect[256];
+extern  GlyphInfo smallfontGlyph[256];
+extern  Rectangle smallfontRect[256];
 
 extern list < sprite_t > sprites;
 extern struct mouse_t mouse;

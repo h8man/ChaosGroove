@@ -14,7 +14,7 @@ Width : 1280, Height : 1024, DirectX : 0, Windowed : 1
 Attempting to open a screen with these settings..  Successful.
 
 Started timer.
-Random Seed: 1761521301
+Random Seed: 1761605984
 Loading Sprites : Done.
 Done.
 Loading gfx fonts.. Done
@@ -27,7 +27,7 @@ Setting up sounds..
 Loaded 1 sounds into memory..
 Skip setting up network code..
 Setup completed!
-Loading Music: Wastelands
+Loading Music: StardustMemories
 
 Exiting Game..
 Destroying 50 gfx..

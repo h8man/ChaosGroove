@@ -42,8 +42,10 @@ Font fonty[MAX_FONTS];
 struct mouse_t mouse;
 struct bar_effect_t bar_effect;
 
-struct Font largefontTablePtr[256];
-struct Font smallfontTablePtr[256];
+struct GlyphInfo largefontGlyph[256];
+struct Rectangle largefontRect[256];
+struct GlyphInfo smallfontGlyph[256];
+struct Rectangle smallfontRect[256];
 
 // Alpha logic code. Used to deal with moving our current value towards our target value
 // at different speeds. Good for fading effects in and out, but could be done better. :)
@@ -108,6 +110,7 @@ void draw_scene(void)
  float x, y, a, scale;
  int x2, y2;
  BeginDrawing();
+ ClearScreen();
  // Find angle to fit 1280 x 960 area into current screen size..
  x = ScreenWidth() / 1280.0;
  y = ScreenHeight() / 960.0;
@@ -482,7 +485,7 @@ int draw_text(char *txt, int x, int x2, int y, int font, int kerning, Rgba col, 
 
  old_x = x;
 
- DrawText(txt, x, y, 10, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
+ DrawTextEx(fonty[font], txt, Vector2 { (float)x, (float)y }, 16, kerning, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
  //fonty[font]->setColor(col.r, col.g, col.b, col.a * alpha);
 
  //if (orient == TEXT_LEFT) fonty[font]->drawStringFromLeft( txt, x, y, kerning);

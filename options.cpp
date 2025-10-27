@@ -247,7 +247,8 @@ void do_options(bool draw)
  //log("game.exit_key: %d", game.exit_key);
  if (draw)
  {
-	 Draw(gfx[43], Rectangle{ 1, 1, (float)gfx[43]->width - 1, (float)gfx[43]->height - 1 }, Rectangle{ 0, 0, 1280, 960 });
+	//TODO:
+	Draw(gfx[43], Rectangle{ 1, 1, (float)gfx[43]->width - 1, (float)gfx[43]->height - 1 }, Rectangle{ 0, 0, 1280, 960 });
 
 	draw_scrolly();
 
@@ -391,20 +392,21 @@ void do_options(bool draw)
 
 void draw_scrolly(void)
 {
- char text[81];
- char *pos;
- int c, s, offset;
+ char buffer[82];
+ char *p;
+ int i, pos, offset;
 
- s = (int)((menu_info.scrolly_pos / 16)) % config[CONFIG_SCROLLY].length;
+ pos = (int)((menu_info.scrolly_pos / 16)) % config[CONFIG_SCROLLY].length;
  offset = (int)(menu_info.scrolly_pos) % 16;
 
- pos = config[CONFIG_SCROLLY].data;
- for (c = 0 ; c < 81 ; c++)
+ p = config[CONFIG_SCROLLY].data;
+ for (i = 0 ; i < 81 ; i++)
  {
-  text[c] = pos[s];
-	s++;
-	if (s > config[CONFIG_SCROLLY].length) s--;
+	buffer[i] = p[pos];
+	pos++;
+	//trailing ....
+	if (pos > config[CONFIG_SCROLLY].length) pos--;
  }
-
- draw_text(text, 0 - offset, 1280, 930, FONT_LARGE, 0, Rgba(1.0, 1.0, 1.0), 1.0, TEXT_LEFT);
+ buffer[81] = 0;
+ draw_text(buffer, 0 - offset, 1280, 930, FONT_LARGE, 0, Rgba(1.0, 1.0, 1.0), 1.0, TEXT_LEFT);
 }
