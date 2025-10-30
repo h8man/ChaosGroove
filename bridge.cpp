@@ -274,7 +274,7 @@ int ScreenHeight(void)
 void ClearScreen(void)
 {
 	// Clear newly created screen.
-	ClearBackground(MAGENTA);
+	ClearBackground(BLACK);
 }
 
 void MessageBox(char *title, char *maintext)

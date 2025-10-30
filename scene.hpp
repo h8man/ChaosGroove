@@ -103,6 +103,6 @@ void do_sprites_logic(void);
 void draw_sprites(void);
 void destroy_all_sprites(void);
 
-int draw_text(char *txt, int x, int x2, int y, int font, int kerning, Rgba col, float alpha, int orient);
+int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba col, float alpha, int orient);
 
 #endif
