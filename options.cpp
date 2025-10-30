@@ -247,24 +247,26 @@ void do_options(bool draw)
  //log("game.exit_key: %d", game.exit_key);
  if (draw)
  {
-	//TODO:
-	Draw(gfx[43], Rectangle{ 1, 1, (float)gfx[43]->width - 1, (float)gfx[43]->height - 1 }, Rectangle{ 0, 0, 1280, 960 });
+	//Draw gradients
+	SetTextureWrap(*gfx[43], TEXTURE_WRAP_CLAMP);
+	SetTextureFilter(*gfx[43], TEXTURE_FILTER_BILINEAR);
+	Draw(gfx[43], Rectangle{ 1, 0, (float)gfx[43]->width-1, (float)gfx[43]->height-0}, Rectangle{ 0, 0, 1280, 960 });
 
 	draw_scrolly();
 
 	if (strcmp(menu_info.section_name, "TITLE") == 0)
 	{
-	 // Chaos Logo
-		Draw(gfx[44], Rectangle{ 0, 0, 512, 255 }, Rectangle{ 196, 48, 0.0, 1.0 }, menu_info.alpha.current);
-		Draw(gfx[44], Rectangle{ 112, 256, 512, 512 }, Rectangle{ 196 + 512, 48, 0.0 , 1.0 }, menu_info.alpha.current);
+	 // Chaos Logo 512x512
+		Draw(gfx[44], Rectangle{ 0, 0, 512, 255 }, Rectangle{ 196, 48, 512, 255 }, menu_info.alpha.current);
+		Draw(gfx[44], Rectangle{ 112, 256, 512-112, 255 }, Rectangle{ 196 + 512, 48, 512-112, 255 }, menu_info.alpha.current);
  
-	 // Groove Logo
+	 // Groove Logo 96x56
 	 x = 396;
 
 	 for (o = 0 ; o < 3 ; o++)
 	 {
-		 Draw(gfx[45], Rectangle{ (float)o * 32, 0, (float)(o * 32) + 32, 24 }, Rectangle{ (float)(o * 96) + x, 312, 0.0, 1.0 }, menu_info.alpha.current);
-		 Draw(gfx[45], Rectangle{ (float)o * 32, 28, (float)(o * 32) + 32, 52 }, Rectangle{ (float)((o + 3) * 96) + x, 312, 0.0, 1.0 }, menu_info.alpha.current);
+		 Draw(gfx[45], Rectangle{ (float)o * 32, 0, 32, 24 }, Rectangle{ (float)(o * 96) + x, 312, 32, 24 }, menu_info.alpha.current);
+		 Draw(gfx[45], Rectangle{ (float)o * 32, 28, 32, 24 }, Rectangle{ (float)((o + 3) * 96) + x, 312, 32, 24 }, menu_info.alpha.current);
 	 }
 
 	 // Author text
@@ -306,8 +308,8 @@ void do_options(bool draw)
 	 allign = TEXT_LEFT;
 	}
 
-	if ((!draw && mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && 
-	mouse.y - 12 < y + 16) || (!draw && game.exit_key && !game.old_exit_key && exit == o))
+	if ((!draw && mouse.x > x && mouse.x < x + w && mouse.y > y && 
+	mouse.y < y + 16) || (!draw && game.exit_key && !game.old_exit_key && exit == o))
 	{
 	 // Clicked on button, so store button Action in menu.
 	 GetConfigString(menu_info.config, name, "OPTION_ACTION", menu_info.action, MAX_STRING);
@@ -326,13 +328,11 @@ void do_options(bool draw)
 	 GetConfigString(menu_info.config, name, "OPTION_ACTION", action, MAX_STRING);
 
 	 // Draw highlighting over option if our mouse is over it and it has an action..
-	 if (mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && mouse.y - 12 < y + 16 && choices == -1
+	 if (mouse.x > x && mouse.x < x + w && mouse.y > y && mouse.y < y + 16 && choices == -1
 	 && strlen(action) > 0)
 	 {
-	 // gfx[46]->setAlphaMode(0);
-	 // gfx[46]->setBlitColor(r, g, b, menu_info.alpha.current);
-		//gfx[46]->allowTextureWrap(true);
-		 Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float)x + w, (float)y + 21 }, ColorFromNormalized({ COMPTO_F(r), COMPTO_F(g), COMPTO_F(b), menu_info.alpha.current }));
+		 //Draw underline higlight
+		 Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float)w, 21 }, ColorFromNormalized({ COMPTO_F(r), COMPTO_F(g), COMPTO_F(b), menu_info.alpha.current }));
 	 }
 	 draw_text(text, x, 1248, y, font, 0, Rgba(r, g, b), menu_info.alpha.current, allign);
 	}
@@ -358,20 +358,17 @@ void do_options(bool draw)
 	 if (draw)
 	 {
 		// Draw highlighting over option..
-	  if (mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && mouse.y - 12 < y + 16 && c != choice)
+	  if (mouse.x > x && mouse.x < x + w && mouse.y > y && mouse.y < y + 16 && c != choice)
 	  {
-	 // gfx[46]->setAlphaMode(0);
-	 // gfx[46]->setBlitColor(1.0, 1.0, 1.0, menu_info.alpha.current);
-		//gfx[46]->allowTextureWrap(true);
-		  Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float)x + w, (float)y + 21 }, menu_info.alpha.current);
+		  Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float) w, 21 }, menu_info.alpha.current);
 	  }
     
 		draw_text(text, x, 1280, y, font, 0, col, menu_info.alpha.current, TEXT_LEFT);
 	 }
 
 	 // Clicked on an option choice?
-	 if (!draw && mouse.x - 16 > x && mouse.x - 16 < x + w && mouse.y - 12 > y && 
-	 mouse.y - 12 < y + 16 && c != choice)
+	 if (!draw && mouse.x > x && mouse.x < x + w && mouse.y > y && 
+	 mouse.y < y + 16 && c != choice)
 	 {
 	  // Ok, change option choice to current one.
 	  sprintf(text, "%d", c);

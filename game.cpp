@@ -213,14 +213,15 @@ bool setup_fonts(void)
 	//fonty[FONT_LARGE]->getKGraphicPtr()->setTextureQuality(true);
 	//fonty[FONT_LARGE]->getKGraphicPtr()->allowTextureWrap(true);
 
-	fontImage = LoadImage("Gfx\\Fonts\\smal.png");
+	fontImage = LoadImage("Gfx\\Fonts\\small.png");
 
-	fonty[FONT_SMALL] = LoadFontFromImage(fontImage, BLACK, 65);
-	fonty[FONT_SMALL].baseSize = 16;
+	fonty[FONT_SMALL] = Font();
+	fonty[FONT_SMALL].baseSize = 13;
 	fonty[FONT_SMALL].glyphCount = 256;
 	fonty[FONT_SMALL].glyphs = smallfontGlyph;
 	fonty[FONT_SMALL].recs = smallfontRect;
 	fonty[FONT_SMALL].texture = LoadTextureFromImage(fontImage);
+
 	UnloadImage(fontImage);
 
 	//// Small
@@ -257,8 +258,8 @@ void add_font_letters(struct Font table, int place, int c, int x, int y, int w, 
 		table.glyphs[place].value = c;
 		table.recs[place].x = x;
 		table.recs[place].y = y;
-		table.recs[place].width = w2;
-		table.recs[place].height = h2;
+		table.recs[place].width = w;
+		table.recs[place].height = h;
 		//table[place]._x2 = x + w - 2;
 		//table[place]._y2 = y + h - 2;
 		x += w;

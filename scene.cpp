@@ -260,9 +260,6 @@ void draw_mouse(void)
 {
 	Color tint = ColorFromNormalized({ mouse.rgba.r, mouse.rgba.g, mouse.rgba.b, 1.0 });
 	DrawTexture(*gfx[GFX_MOUSE], mouse.x, mouse.y, tint);
- //gfx[9]->setBlitColor(mouse.rgba.r, mouse.rgba.g, mouse.rgba.b, 1.0);
- //BlitTransform(gfx[9], mouse.x, mouse.y, 32, 32, 0.0, mouse.alpha.current);
-
 }
 
 void draw_bar_effect(void)
@@ -473,9 +470,9 @@ void destroy_all_sprites(void)
 }
 
 
-int draw_text(char *txt, int x, int x2, int y, int font, int kerning, Rgba col, float alpha, int orient)
+int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba col, float alpha, int orient)
 {
- int t, s, a, b, st, l, old_x;
+ int t=0, s, a, b, st, l, old_x;
  char name[MAX_STRING];
 
  if (alpha <= 0.0) return 0;
@@ -485,57 +482,70 @@ int draw_text(char *txt, int x, int x2, int y, int font, int kerning, Rgba col, 
 
  old_x = x;
 
- DrawTextEx(fonty[font], txt, Vector2 { (float)x, (float)y }, 16, kerning, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
- //fonty[font]->setColor(col.r, col.g, col.b, col.a * alpha);
+ Vector2 pos;
+ Vector2 size;
 
- //if (orient == TEXT_LEFT) fonty[font]->drawStringFromLeft( txt, x, y, kerning);
- //if (orient == TEXT_CENTRE) fonty[font]->drawStringCentered( txt, x, x2, y, kerning); 
- //if (orient == TEXT_RIGHT) fonty[font]->drawStringFromRight( txt, x2, y, kerning);
- //if (orient == TEXT_WRAP) fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
-
-
- /*
- if (orient == 99)//TEXT_WRAP) 
+ if (orient == TEXT_LEFT) //fonty[font]->drawStringFromLeft(txt, x, y, kerning)
+ {
+	 pos = Vector2{ (float)x, (float)y };
+ }
+ if (orient == TEXT_CENTRE) //fonty[font]->drawStringCentered( txt, x, x2, y, kerning); 
+ {
+	 size = MeasureTextEx(fonty[font], txt, fonty[font].baseSize, kerning);
+	 pos = Vector2{ (GetScreenWidth() - size.x) / 2, (float)y };
+ }
+ if (orient == TEXT_RIGHT) //fonty[font]->drawStringFromRight( txt, x2, y, kerning);
+ {
+	 size = MeasureTextEx(fonty[font], txt, fonty[font].baseSize, kerning);
+	 pos = Vector2{ (x2 - size.x) / 2, (float)y };
+ }
+ if (orient != TEXT_WRAP) //fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
+ {
+	 DrawTextEx(fonty[font], txt, pos, fonty[font].baseSize, kerning, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
+ }
+ 
+ if (orient == TEXT_WRAP) 
  {
   s = 0;
   st = 0;
 
 	// 3 lines..
-  for (l = 0 ; l < 3 ; l++) 
+  while (txt[t])
 	{
-	 x = old_x;
-   a = 0;
-	 b = 0;
+	x = old_x;
+	a = 0;
+	b = 0;
 
-	 memset(&name, 0, MAX_STRING);
+	memset(&name, 0, MAX_STRING);
 
 	 // Find last space in line.
    for (t = st ; t < strlen(txt) ; t++)
 	 {
 		if (txt[t] == ' ' && t == st) continue; // Skip any odd spaces at start of new line.
-    name[a] = txt[t];
+		name[a] = txt[t];
 		a++;
 
-	  if (txt[t] == ' ' || t == strlen(txt) - 1) 
+		if (txt[t] == ' ' || t == strlen(txt) - 1) 
 		{
-     if (t == strlen(txt) - 1) b = a + 1;
-		 if (x + mainFont[font]->getStringWidth(name, kerning) > x2) break;
+			if (t == strlen(txt) - 1) b = a + 1;
+			size = MeasureTextEx(fonty[font], name, fonty[font].baseSize, kerning);
+			if (x + size.x > x2) break;
 		 
-		 s = t;
-		 b = a;
-	  }
+			s = t;
+			b = a;
+		}
 	 }
 	 name[b] = '\0';
-
+	 //TODO: Justify 
 	 // Now draw upto space.
-   mainFont[font]->drawStringFromLeft(name, x, y, kerning);
-
-   y += mainFont[font]->getHeightPix() + 2;
+	 DrawTextEx(fonty[font], name, Vector2{(float)x,(float)y}, fonty[font].baseSize, kerning, ColorFromNormalized({ col.r, col.g, col.b, col.a * alpha }));
+	 size = MeasureTextEx(fonty[font], name, fonty[font].baseSize, kerning);
+     y += size.y + 2;
 	 st = s + 1;
 
 	 if (st >= strlen(txt) - 1) break;
 	}
  }
-*/
+
  return strlen(txt) * 16;
 }
