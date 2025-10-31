@@ -147,17 +147,17 @@ void draw_scene(void)
  //log("height: %d, width: %d, scale: %f, x: %f, y: %f, a: %f", ScreenHeight(), ScreenWidth(), scale, x, y, a);
 
  // Draw black borders to get rid of overdraw from clouds.
- // TODO:
-// if (scale > 0.75) // Portrait display
-// {
-//  gfx[0]->drawRect(0, -(ScreenHeight() / a), 1280, 0, 0.0, 0.0, 0.0, 1.0);
-//  gfx[0]->drawRect(0, 960, 1280, 992 / a, 0.0, 0.0, 0.0, 1.0);
-// }
-// if (scale < 0.75) // Widescreen
-// {
-//  gfx[0]->drawRect(-(ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
-//  gfx[0]->drawRect(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, 0.0, 0.0, 0.0, 1.0);
-// }
+
+ if (scale > 0.75) // Portrait display
+ {
+	 DrawRectangle(0, -(ScreenHeight() / a), 1280, 0, BLACK);
+	 DrawRectangle(0, 960, 1280, 992 / a, BLACK);
+ }
+ if (scale < 0.75) // Widescreen
+ {
+	 DrawRectangle( - (ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, BLACK);
+	 DrawRectangle(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
+ }
 }
 
 // Basically tell OpenGL to draw screen.
@@ -274,9 +274,9 @@ void draw_bar_effect(void)
  y = board_info.start_y + ((board_info.board_height * board_info.square_height) / 2) + 1;
  h = 80;
 
- DrawTexturePro(*gfx[13], Rectangle{ 0, 0, 16, 4 }, Rectangle{ x - w, y - h, x + w, y - h + 4 }, Vector2{ 0, 0 }, 0.0f, WHITE); // Top
- DrawTexturePro(*gfx[13], Rectangle{ 0, 4, 16, 12 }, Rectangle{ x - w, y - h + 4, x + w, y + h - 4 }, Vector2{ 0, 0 }, 0.0f, WHITE); // Middle
- DrawTexturePro(*gfx[13], Rectangle{ 0, 12, 16, 16 }, Rectangle{ x - w, y + h - 4, x + w, y + h }, Vector2{ 0, 0 }, 0.0f, WHITE); // Bottom
+ Draw(gfx[13], Rectangle{ 0, 0, 16, 4 }, Rectangle{ x - w, y - h, w,  h + 4 }); // Top
+ Draw(gfx[13], Rectangle{ 0, 4, 16, 12 }, Rectangle{ x - w, y - h + 4, w,  h - 4 }); // Middle
+ Draw(gfx[13], Rectangle{ 0, 12, 16, 16 }, Rectangle{ x - w, y + h - 4, w,  h }); // Bottom
 
  y = y - (h * 0.75) + 1;
  
@@ -497,7 +497,7 @@ int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba
  if (orient == TEXT_RIGHT) //fonty[font]->drawStringFromRight( txt, x2, y, kerning);
  {
 	 size = MeasureTextEx(fonty[font], txt, fonty[font].baseSize, kerning);
-	 pos = Vector2{ (x2 - size.x) / 2, (float)y };
+	 pos = Vector2{ (x - size.x), (float)y };
  }
  if (orient != TEXT_WRAP) //fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
  {

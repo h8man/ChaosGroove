@@ -248,18 +248,20 @@ void draw_panels(void)
 
  // Set glow colour (from wizard).
  Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
-
+ //TODO:
  // Blank any old cloud data in panel.
  DrawTexture(*gfx[0], 0.0, 0.0, WHITE);
 
  // Now draw 'reflection' glow effect on info panel.
- DrawTexturePro(*gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height - 1 },
-	 Rectangle{ (float)panel.info_area_x, (float)panel.info_area_y, (float)panel.info_area_x + panel.info_area_w, (float)panel.info_area_y + panel.info_area_h }, Vector2{0,0}, 0, tint);
+ Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height - 1 },
+	 Rectangle{ (float)panel.info_area_x, (float)panel.info_area_y, (float)panel.info_area_w, (float)panel.info_area_h },
+	 tint);
 
  // Now draw 'reflection' glow effect on spell panel.
- DrawTexturePro(*gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height },
+ Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height },
 	 Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, (float)panel.spell_area_y,
- 1280,(float)panel.spell_area_y + panel.spell_area_h }, Vector2{ 0,0 }, 0, tint);
+	(float)panel.spell_area_w,(float)panel.spell_area_h },
+	tint);
 
  if (panel.info_area_show_piece_stats)
  {
@@ -740,18 +742,14 @@ void draw_spell_icons(void)
 	 if (spell_list[t][game.current_wizard].bonus)
 	 {
 	  // Draw Green outline.
-		//gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(0.0, 1.0, 0.0, alpha);
-		 DrawTexturePro(*gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
-			 Rectangle{ (float)x - 4, (float)y - 4, (float)x + panel.spell_icon_w + 4, (float)y + panel.spell_icon_h + 4 }, Vector2{0,0}, 0, ColorFromNormalized({ 0.0, 1.0, 0.0, alpha }));
+		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float) panel.spell_icon_w + 4, (float) panel.spell_icon_h + 4 }, alpha);
 	 }
 
 	 // Can we cast this spell?
 	 if (!spell_list[t][game.current_wizard].cast)
 	 {
 	  // Draw Red outline.
-		//gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 0.0, 0.0, alpha);
-		 DrawTexturePro(*gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
-			 Rectangle{ (float)x - 4, (float)y - 4, (float)x + panel.spell_icon_w + 4, (float)y + panel.spell_icon_h + 4 }, Vector2{0,0}, 0, ColorFromNormalized({ 1.0, 0.0, 0.0, alpha }));
+		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float)panel.spell_icon_w + 4, (float)panel.spell_icon_h + 4 }, alpha);
 	 }
 
 	 DrawRectangleLinesEx(Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, 1, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
@@ -760,16 +758,13 @@ void draw_spell_icons(void)
   
    if (g > -1 && !spell_icon)
 	 {
-	   DrawTexturePro(*spell_icon_gfx[g], Rectangle{ 0, 0, (float)spell_icon_gfx[g]->width, (float)spell_icon_gfx[g]->height },
-		   Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	   Draw(piece_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, alpha);
 
 	 }
 
 	 if (g > -1 && spell_icon)
 	 {
-		DrawTexturePro(*spell_icon_gfx[g], Rectangle{ 0, 0, (float)spell_icon_gfx[g]->width, (float)spell_icon_gfx[g]->height }, 
-			Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
-
+		Draw(spell_icon_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, alpha );
 	 }
   }
 

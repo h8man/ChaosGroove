@@ -371,13 +371,17 @@ const char* GetFullPath(const char* filePath)
 	return filePath;
 }
 
-void Draw(Texture2D* tex, Rectangle source)
+void Draw(Texture2D* tex, Rectangle dest)
 {
-	DrawTexturePro(*tex, source, source, Vector2{ 0,0 }, 0, WHITE);
+	DrawTexturePro(*tex, Rectangle{ 0, 0, (float)tex->width, (float)tex->height }, dest, Vector2{ 0,0 }, 0, WHITE);
 }
-void Draw(Texture2D* tex, Rectangle source, Color color)
+void Draw(Texture2D* tex, Rectangle dest, float alpha)
 {
-	DrawTexturePro(*tex, source, source, Vector2{ 0,0 }, 0, WHITE);
+	DrawTexturePro(*tex, Rectangle{ 0, 0, (float)tex->width, (float)tex->height }, dest, Vector2{ 0,0 }, 0, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+}
+void Draw(Texture2D* tex, Rectangle dest, Color color)
+{
+	DrawTexturePro(*tex, Rectangle{ 0, 0, (float)tex->width, (float)tex->height }, dest, Vector2{ 0,0 }, 0, color);
 }
 void Draw(Texture2D* tex, Rectangle source, Rectangle dest)
 {
