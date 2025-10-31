@@ -8,6 +8,8 @@
 
 using namespace std;
 
+
+
 int WINAPI WinMain(IN HINSTANCE hInstance,
 	IN HINSTANCE hPrevInstance,
 	IN LPSTR lpCmdLine,

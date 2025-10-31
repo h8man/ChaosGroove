@@ -601,9 +601,7 @@ void draw_board_grid(void)
 
  for (l = 0 ; l < board_info.board_height ; l++)
  {
-	 //TODO:
- // gfx[0]->drawLine(x, y, x + (board_info.board_width * board_info.square_width), y, 0.25, 0.0, 0.5, 
-	//board_info.grid_alpha.current);
+	 DrawLine(x, y, x + (board_info.board_width * board_info.square_width), y, ColorFromNormalized({ 0.25, 0.0, 0.5, board_info.grid_alpha.current }));
 
   y += board_info.square_height;
  }
@@ -611,9 +609,7 @@ void draw_board_grid(void)
  y = board_info.start_y;
  for (l = 0 ; l < board_info.board_width ; l++)
  {
-	 //TODO:
- // gfx[0]->drawLine(x, y, x, y + (board_info.board_height * board_info.square_height), 0.25, 0.0, 0.5, 
-	//board_info.grid_alpha.current);
+	 DrawLine(x, y, x, y + (board_info.board_height * board_info.square_height), ColorFromNormalized({ 0.25, 0.0, 0.5, board_info.grid_alpha.current }));
 
   x += board_info.square_width;
  }
@@ -644,15 +640,11 @@ void draw_board(void)
 		 // Draw highlight effect.
 		 if (alpha > 0.0)
 		 {
-			 //c = highlight_board[x][y].gfx;
+			 c = highlight_board[x][y].gfx;
 			 //gfx[c]->setAlphaMode(BLENDER_ALPHA);
 
-		  // gfx[c]->setBlitColor(highlight_board[x][y].rgba.r, highlight_board[x][y].rgba.g,
-			 //highlight_board[x][y].rgba.b, alpha);
-
-			 Draw(gfx[c], Rectangle{ 0, 0, (float)gfx[c]->width, (float)gfx[c]->height },
-				 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
-			(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y },
+			 Draw(gfx[c], Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+				(float) board_info.square_width , (float)board_info.square_height },
 				 ColorFromNormalized({ highlight_board[x][y].rgba.r, highlight_board[x][y].rgba.g, highlight_board[x][y].rgba.b, alpha }));
 		 }
 
@@ -672,9 +664,8 @@ void draw_board(void)
 
 		 if (x == board_info.selected_x && y == board_info.selected_y) draw_selected_effect();
 
-		 Draw(piece_gfx[c], Rectangle{0, 0, (float) piece_gfx[c]->width, (float)piece_gfx[c]->height },
-			 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
-			(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y });
+		 Draw(piece_gfx[c], Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+			(float)board_info.square_width, (float)board_info.square_height});
 
    end:
 
@@ -764,9 +755,8 @@ void draw_selected_effect(void)
  y = board_info.selected_y;
  
  //gfx[HIGHLIGHT_GFX_BOX]->setBlitColor(1.0, 1.0, 1.0, alpha);
- Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ 0, 0, (float)gfx[HIGHLIGHT_GFX_BOX]->width, (float)gfx[HIGHLIGHT_GFX_BOX]->height },
-	 Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
-	(float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+ Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+	(float)board_info.square_width, (float)board_info.square_height}, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
 }
 
 void draw_highlight_effect(void)
@@ -804,9 +794,9 @@ void draw_highlight_effect(void)
 
 	//gfx[g]->setAlphaMode( BLENDER_ALPHA );
 	//gfx[g]->setBlitColor(rgba.r, rgba.g, rgba.b, rgba.a);
-	Draw(gfx[g], Rectangle{0, 0, (float)gfx[g]->width, (float)gfx[g]->height },
-		Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
-	 (float)((x + 1) * board_info.square_width) + board_info.start_x, (float)((y + 1) * board_info.square_height) + board_info.start_y });
+	Draw(gfx[g],Rectangle{ (float)(x * board_info.square_width) + board_info.start_x, (float)(y * board_info.square_height) + board_info.start_y,
+		(float) board_info.square_width , (float) board_info.square_height },
+		ColorFromNormalized({ rgba.r, rgba.g, rgba.b, rgba.a }));
 }
 
 
@@ -827,25 +817,30 @@ void draw_background_clouds(void)
 	//gfx[33]->setAlphaMode(BLENDER_ALPHA);
 	//gfx[33]->allowTextureWrap(true);
 	//gfx[33]->setBlitColor(0.3, 0.0, 0.5, 0.25);
-
+	//TODO:
 	// Layer 1
+	//SetTextureWrap(*gfx[33], TEXTURE_WRAP_);
 	Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
-		Rectangle{ (float)board_info.start_x + x, (float)board_info.start_y, (float)board_info.start_x + x + s, (float)board_info.start_y + s });
+		Rectangle{ (float)board_info.start_x + x, (float)board_info.start_y, (float)s, (float)s },
+		ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
 
  if (x > 0)
  {
 	 Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
-		 Rectangle {(float)board_info.start_x + x - s, (float)board_info.start_y, (float)board_info.start_x + x, (float)board_info.start_y + s});
+		 Rectangle {(float)board_info.start_x + x - s, (float)board_info.start_y, (float)x, (float)s},
+		 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
  }
 
  // Layer 2
  Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
- Rectangle{(float)board_info.start_x, (float)board_info.start_y + x, (float)board_info.start_x + s, (float)board_info.start_y + x + s});
+	 Rectangle{(float)board_info.start_x, (float)board_info.start_y + x, (float) s, (float) s},
+	 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
 
  if (x > 0)
  {
 	 Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
-		 Rectangle{ (float)board_info.start_x, (float)board_info.start_y + x - s, (float)board_info.start_x + s, (float)board_info.start_y + x });
+		 Rectangle{ (float)board_info.start_x, (float)board_info.start_y + x - s, (float) s, (float)x },
+		 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
  }
 
 }

@@ -78,10 +78,11 @@ private:
 
 const char* GetFullPath(const char* filePath);
 
-void Draw(Texture2D* tex, Rectangle source);
-void Draw(Texture2D* tex, Rectangle source, Color color);
-void Draw(Texture2D* tex, Rectangle source, Rectangle dest, float alpha);
+void Draw(Texture2D* tex, Rectangle dest);
+void Draw(Texture2D* tex, Rectangle dest, Color color);
+void Draw(Texture2D* tex, Rectangle dest, float alpha);
 void Draw(Texture2D* tex, Rectangle source, Rectangle dest);
+void Draw(Texture2D* tex, Rectangle source, Rectangle dest, float alpha);
 void Draw(Texture2D* tex, Rectangle source, Rectangle dest, Color color);
 
 struct rand_info
