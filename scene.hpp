@@ -89,6 +89,7 @@ extern struct mouse_t mouse;
 void do_alpha_logic(struct alpha *alpha_pointer);
 
 void do_scene_logic(void);
+void begin_draw(void);
 void draw_scene(void);
 void refresh_screen(void);
 

@@ -2,3 +2,6 @@
 /.vs
 /Release
 /_UpgradeReport_Files
+/*.sdf
+/*.ncb
+/logfile.txt
