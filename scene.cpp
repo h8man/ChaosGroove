@@ -281,10 +281,10 @@ void draw_bar_effect(void)
  x = board_info.start_x + ((board_info.board_width * board_info.square_width) / 2);
  y = board_info.start_y + ((board_info.board_height * board_info.square_height) / 2) + 1;
  h = 80;
-
- Draw(gfx[13], Rectangle{ 0, 0, 16, 4 }, Rectangle{ x - w, y - h, w,  h + 4 }); // Top
- Draw(gfx[13], Rectangle{ 0, 4, 16, 12 }, Rectangle{ x - w, y - h + 4, w,  h - 4 }); // Middle
- Draw(gfx[13], Rectangle{ 0, 12, 16, 16 }, Rectangle{ x - w, y + h - 4, w,  h }); // Bottom
+ SetTextureFilter(*gfx[13], TEXTURE_FILTER_BILINEAR);
+ Draw(gfx[13], Rectangle{ 0, 0, 16, 4 }, Rectangle{ x - w, y - h, 2*w, 4 }); // Top
+ Draw(gfx[13], Rectangle{ 0, 4, 16, 8 }, Rectangle{ x - w, y - h + 4, 2*w,  2*(h - 4) }); // Middle
+ Draw(gfx[13], Rectangle{ 0, 12, 16, 4 }, Rectangle{ x - w, y + h - 4, 2*w,  4 }); // Bottom
 
  y = y - (h * 0.75) + 1;
  
@@ -318,10 +318,10 @@ void draw_bar_effect(void)
  if (bar_effect.mode == BAR_MODE_WINNER)
  {
 	draw_text(bar_effect.text, board_info.start_x, board_info.start_x + (panel.info_area_w), y + 88, FONT_LARGE, 0, 
-  wizard[game.current_wizard].col, bar_effect.alpha.current, TEXT_CENTRE);
+		wizard[game.current_wizard].col, bar_effect.alpha.current, TEXT_CENTRE);
 
-	DrawTextureRec(*gfx[48], Rectangle{ 0, 0, 255, 48 }, Vector2{ x - 239, y }, ColorFromNormalized({ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
-	DrawTextureRec(*gfx[48], Rectangle{ 0, 48, 255, 96 }, Vector2{ x + 16, y }, ColorFromNormalized({ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
+	Draw(gfx[48], Rectangle{ 0, 0, 255, 48 }, Rectangle{ x - 239, y, 255, 48 }, bar_effect.alpha.current );
+	Draw(gfx[48], Rectangle{ 0, 48, 255, 48 }, Rectangle{ x + 16, y, 255, 48 }, bar_effect.alpha.current );
  }
 }
 
