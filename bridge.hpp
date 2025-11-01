@@ -101,7 +101,7 @@ int IRand(int min, int max);
 vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers);
 int LoadAndAddBitmaps(vector< Texture2D *> *bitmapList, string filenameBegin, string extension);
 
-bool CreateGameScreen(int width, int height, bool window, bool dx);
+bool CreateGameScreen(int width, int height, const char* ico, bool window, bool dx);
 void ListScreenModes(void);
 bool ListDisplays(int display);
 int get_desktop_resolution(int *width, int *height);
@@ -123,7 +123,7 @@ bool RightMouseButton(void);
 
 long FileSize(char *FileName);
 
-void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, float alpha) ;
+void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, Rgba rgba) ;
 void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4);
 void SetSolidColour(Texture2D *bmp, Rgba col);
 void CancelSolidColour(Texture2D *bmp);

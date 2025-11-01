@@ -803,7 +803,7 @@ void draw_highlight_effect(void)
 void draw_background_clouds(void)
 {
 	int s, x;
-
+	Color tint;
 	// Draw two layers of clouds to make nice cloud billowing effect.
 	// We convert the float co-ordinates to ints to avoid bilinear filtering causing
 	// black edge on texturing of clouds.
@@ -813,36 +813,38 @@ void draw_background_clouds(void)
 	//map_info.cloud_1_y + panel.map_area_y);
 	s = MAX((board_info.square_width * board_info.board_width), (board_info.square_height * board_info.board_height));
 	x = board_info.cloud_x;
-
+	tint = ColorFromNormalized({ 0.3, 0.0, 0.5, 0.5 });
 	//gfx[33]->setAlphaMode(BLENDER_ALPHA);
 	//gfx[33]->allowTextureWrap(true);
 	//gfx[33]->setBlitColor(0.3, 0.0, 0.5, 0.25);
-	//TODO:
+
 	// Layer 1
-	//SetTextureWrap(*gfx[33], TEXTURE_WRAP_);
+	BeginBlendMode(BLEND_ALPHA);
+
+	SetTextureWrap(*gfx[33], TEXTURE_WRAP_REPEAT);
 	Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
 		Rectangle{ (float)board_info.start_x + x, (float)board_info.start_y, (float)s, (float)s },
-		ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
+		tint);
 
- if (x > 0)
- {
-	 Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
-		 Rectangle {(float)board_info.start_x + x - s, (float)board_info.start_y, (float)x, (float)s},
-		 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
- }
+	 if (x > 0)
+	 {
+		 Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },
+			 Rectangle {(float)board_info.start_x + x - s, (float)board_info.start_y, (float)-s, (float)s},
+			 tint);
+	 }
 
- // Layer 2
- Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
-	 Rectangle{(float)board_info.start_x, (float)board_info.start_y + x, (float) s, (float) s},
-	 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
-
- if (x > 0)
- {
+	 // Layer 2
 	 Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
-		 Rectangle{ (float)board_info.start_x, (float)board_info.start_y + x - s, (float) s, (float)x },
-		 ColorFromNormalized({ (0.3, 0.0, 0.5, 0.25) }));
- }
+		 Rectangle{(float)board_info.start_x, (float)board_info.start_y + x, (float) s, (float) s},
+		 tint);
 
+	 if (x > 0)
+	 {
+		 Draw(gfx[33], Rectangle{ 1, 0, (float)gfx[33]->width - 1, (float)gfx[33]->height - 0 },
+			 Rectangle{ (float)board_info.start_x, (float)board_info.start_y + x - s, (float) s, (float)-s },
+			 tint);
+	 }
+	 EndBlendMode();
 }
 
 
