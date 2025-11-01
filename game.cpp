@@ -85,12 +85,7 @@ bool setup_display(void)
 
  log_no_cr("Attempting to open a screen with these settings..");
 
- //TODO: ise ico
- Image ico = LoadImage(GetFullPath("Gfx\\icon.png"));
- SetWindowIcon(ico);
- UnloadImage(ico);
-
- return CreateGameScreen(screen.w, screen.h, screen.windowed, screen.dx);
+ return CreateGameScreen(screen.w, screen.h, "Gfx\\icon.png", screen.windowed, screen.dx);
 }
 
 bool first_time_setup(void)
@@ -100,7 +95,8 @@ bool first_time_setup(void)
  log_header();
 
  // Setup screen.
- InitWindow(320, 240, "Initializing...");
+ SetWindowState(FLAG_WINDOW_HIDDEN);
+ InitWindow(1, 1, "Initializing...");
  ClearScreen();
 
  get_desktop_resolution(&screen.desktop_w, &screen.desktop_h);
@@ -118,6 +114,7 @@ bool first_time_setup(void)
  }
  log("  Successful.");
  log("");
+
 
  HideCursor( ) ;
 

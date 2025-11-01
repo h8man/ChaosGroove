@@ -128,8 +128,14 @@ vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension,
       string filename = filenameBegin + numbers + string(".") + extension;
 
       Texture2D *frame = new Texture2D();
-	  memcpy(frame, &LoadTexture(GetFullPath(filename.c_str())), sizeof(Texture2D));
-
+	  Image img = LoadImage(GetFullPath(filename.c_str()));
+	  if (img.format != PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
+	  {
+		  ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+	  }
+	  Texture2D tex = LoadTextureFromImage(img);
+	  memcpy(frame, &tex, sizeof(Texture2D));
+	  UnloadImage(img);
 	  if( !IsTextureValid(*frame))
 	  {
 		  UnloadTexture(*frame);
@@ -197,8 +203,11 @@ void Rest(int time)
  #endif
 }
 
-bool CreateGameScreen(int width, int height, bool window, bool dx)
+bool CreateGameScreen(int width, int height, const char* ico, bool window, bool dx)
 {
+	Image icon = LoadImage(GetFullPath(ico));
+	SetWindowIcon(icon);
+	UnloadImage(icon);
 	// Open DirectX or OpenGL gfx context.
 	//if (dx == false) gwin = KPTK::createKWindow( K_OPENGL );
 	//if ( dx == true) gwin = KPTK::createKWindow( K_DIRECTX );
@@ -208,9 +217,14 @@ bool CreateGameScreen(int width, int height, bool window, bool dx)
 	SetWindowTitle("Chaos Groove");
 	if (!IsWindowReady()) return false;
 
+	if (window && IsWindowFullscreen())
+	{
+		ToggleFullscreen();
+	}
 	// Clear newly created screen.
 	ClearScreen();
 
+	ClearWindowState(FLAG_WINDOW_HIDDEN);
 	game.opengl = 1 - dx;
 	return true;
 }
@@ -396,22 +410,25 @@ void Draw(Texture2D* tex, Rectangle source, Rectangle dest, Color color)
 	DrawTexturePro(*tex, source, dest, Vector2{ 0,0 }, 0, color);
 }
 
-void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, float alpha) 
+void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, Rgba rgba) 
 {
- //int width, height;
- //float zoom;
- //
- //width = bmp->width;
- //height = bmp->height;
+ int width, height;
+ float zoom;
+ 
+ width = bmp->width;
+ height = bmp->height;
 
  //// Different Width and Height.
- //x -= (w / 2);
- //y -= (h / 2);
+ x -= (w / 2);
+ y -= (h / 2);
 
  //// need -1 for dx2 and dy2 in directX, but not in OpenGL! PTK bug..
  //bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
  //alpha, 360.0 - RAD_TO_DEG( angle ));
-	DrawTexture(*bmp, (x + w), (y + h), ColorFromNormalized({ 1.0f, 1.0f, 1.0f, alpha }));
+ DrawTexturePro(*bmp, Rectangle{ 0, 0, (float)width, (float)height }, Rectangle{ x, y,  w - (1 - game.opengl),  h - (1 - game.opengl) },
+	 Vector2{0,0},
+	 360.0 - RAD_TO_DEG(angle),
+	 ColorFromNormalized({ rgba.r, rgba.g, rgba.b, rgba.a }));
  return;
 
 /*

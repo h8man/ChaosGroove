@@ -147,24 +147,24 @@ void draw_scene(void)
  //log("height: %d, width: %d, scale: %f, x: %f, y: %f, a: %f", ScreenHeight(), ScreenWidth(), scale, x, y, a);
 
  // Draw black borders to get rid of overdraw from clouds.
-
- if (scale > 0.75) // Portrait display
- {
-	 DrawRectangle(0, -(ScreenHeight() / a), 1280, 0, BLACK);
-	 DrawRectangle(0, 960, 1280, 992 / a, BLACK);
- }
- if (scale < 0.75) // Widescreen
- {
-	 DrawRectangle( - (ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, BLACK);
-	 DrawRectangle(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
- }
+ //TODO:
+ //if (scale > 0.75) // Portrait display
+ //{
+	// DrawRectangle(0, -(ScreenHeight() / a), 1280, 0, BLACK);
+	// DrawRectangle(0, 960, 1280, 992 / a, BLACK);
+ //}
+ //if (scale < 0.75) // Widescreen
+ //{
+	// DrawRectangle( - (ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, BLACK);
+	// DrawRectangle(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
+ //}
 }
 
 // Basically tell OpenGL to draw screen.
 void refresh_screen(void)
 {
 	EndDrawing();
- //UpdateScreen();
+    //UpdateScreen();
 	timer.gfx_frames++; // Keep track of 'screens' drawn.
 }
 
@@ -312,8 +312,8 @@ void draw_bar_effect(void)
 	draw_text(bar_effect.text, board_info.start_x, board_info.start_x + (panel.info_area_w), y + 88, FONT_LARGE, 0, 
   wizard[game.current_wizard].col, bar_effect.alpha.current, TEXT_CENTRE);
 
-	DrawTextureRec(*gfx[48], Rectangle{ 0, 0, 255, 48 }, Vector2{ x - 239, y }, ColorFromNormalized(Vector4{1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
-	DrawTextureRec(*gfx[48], Rectangle{ 0, 48, 255, 96 }, Vector2{ x + 16, y }, ColorFromNormalized(Vector4{ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
+	DrawTextureRec(*gfx[48], Rectangle{ 0, 0, 255, 48 }, Vector2{ x - 239, y }, ColorFromNormalized({ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
+	DrawTextureRec(*gfx[48], Rectangle{ 0, 48, 255, 96 }, Vector2{ x + 16, y }, ColorFromNormalized({ 1.0f, 1.0f, 1.0f, bar_effect.alpha.current }));
  }
 }
 
@@ -430,26 +430,30 @@ void draw_sprites(void)
 	{
 	 if (!iter->use_piece_gfx)
 	 {
-		 Color tint = ColorFromNormalized({ iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a });
-	  //if (iter->additive_draw)
-	  //{
-   //    if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
-	  // if (!game.opengl) gfx[iter->gfx]->setAlphaMode(1);  
-	  //}
-	  //else
-	  //{
+		Rgba tint = Rgba( iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a * iter->alpha );
+		if (iter->additive_draw)
+		{
+		//   if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
+	     //if (!game.opengl) gfx[iter->gfx]->setAlphaMode(1);  
+			BeginBlendMode(BLEND_ADDITIVE);
+		}
+		else
+		{
    //    gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-	  //}
+			BeginBlendMode(BLEND_ALPHA);
+		}
 
-	  if (iter->alpha > 0.0) BlitTransform(gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->alpha);
+		 if (iter->alpha > 0.0) BlitTransform(gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, tint);
+		 EndBlendMode();
 	 }
 	 else
 	 {
-    if (iter->alpha > 0.0)
+        if (iter->alpha > 0.0)
 		{
 		 //SetSolidColour(piece_gfx[iter->gfx], iter->rgba);	
 		 //piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->alpha);
+		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle,
+			 Rgba(iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a*iter->alpha));
 		 //CancelSolidColour(piece_gfx[iter->gfx]);
 		}
 	 }

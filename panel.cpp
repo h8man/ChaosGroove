@@ -250,7 +250,7 @@ void draw_panels(void)
  Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
  //TODO:
  // Blank any old cloud data in panel.
- DrawTexture(*gfx[0], 0.0, 0.0, WHITE);
+ //Draw(gfx[0], Rectangle{ 0, (float)panel.info_area_y, 1280, 960, }, BLACK);
 
  // Now draw 'reflection' glow effect on info panel.
  Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height - 1 },
@@ -258,8 +258,8 @@ void draw_panels(void)
 	 tint);
 
  // Now draw 'reflection' glow effect on spell panel.
- Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height },
-	 Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, (float)panel.spell_area_y,
+ Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height-1 },
+	 Rectangle{ (float)panel.spell_area_x, (float)panel.spell_area_y,
 	(float)panel.spell_area_w,(float)panel.spell_area_h },
 	tint);
 
@@ -796,19 +796,19 @@ void draw_control_icons(void)
  if (game.phase == PHASE_SPELLSELECT)
  {
 	 // Draw No Spell control icon.
-	 DrawTextureRec(*gfx[15], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[15], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 }, alpha );
  }
  if (game.phase == PHASE_SPELLCAST)
  {
   // Draw Skip Spell control icon.
-	 DrawTextureRec(*gfx[10], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[10], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 },  alpha );
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
  (!board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_moved ||
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_attacked))
  {
   // Draw End Move control icon.
-	 DrawTextureRec(*gfx[10], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[10], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64}, alpha );
  }
  
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
@@ -817,20 +817,20 @@ void draw_control_icons(void)
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_shot)
  {
   // Draw End Fire control icon.
-	 DrawTextureRec(*gfx[17], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[17], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8,  128, 64 }, alpha );
  }
 
  if (game.phase == PHASE_MOVEMENT && !board_info.selected_state)
  {
   // Draw End Turn control icon.
-	 DrawTextureRec(*gfx[11], Rectangle{ 0, 0, 128, 64 }, Vector2{ (float)x + 4, (float)y + 8 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[11], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 }, alpha );
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state && board_info.selected_layer == PIECE &&
  board[board_info.selected_x][board_info.selected_y][MOUNTED].gfx != BLANK &&
  !board[board_info.selected_x][board_info.selected_y][MOUNTED].has_moved)
  {
   // Draw Dismounted control icon.
-	 DrawTextureRec(*gfx[11], Rectangle{ 0, 64, 128, 128 }, Vector2{ (float)x + 4, (float)y + 80 }, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 Draw(gfx[11], Rectangle{ 0, 64, 128, 64}, Rectangle{ (float)x + 4, (float)y + 80,  128, 64 }, alpha );
  }
 }
 
