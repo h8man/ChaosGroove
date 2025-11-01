@@ -109,8 +109,7 @@ void draw_scene(void)
 {
  float x, y, a, scale;
  int x2, y2;
- BeginDrawing();
- ClearScreen();
+
  // Find angle to fit 1280 x 960 area into current screen size..
  x = ScreenWidth() / 1280.0;
  y = ScreenHeight() / 960.0;
@@ -158,8 +157,17 @@ void draw_scene(void)
 	// DrawRectangle( - (ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, BLACK);
 	// DrawRectangle(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
  //}
+
+#ifdef _DEBUG
+ DrawFPS(0, 0);
+#endif
 }
 
+void begin_draw(void)
+{
+	BeginDrawing();
+	ClearScreen();
+}
 // Basically tell OpenGL to draw screen.
 void refresh_screen(void)
 {
