@@ -847,7 +847,7 @@ void find_control_icon_mouse_over(void)
 
  if (game.phase == PHASE_SPELLSELECT)
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y && mouse.y - 16 <= y + 64) 
+  if (mouse.x >= x && mouse.x  <= x + 128 && mouse.y  >= y && mouse.y  <= y + 64) 
 	{
 	 mouse.over_control_icon = CONTROL_NO_SPELL;
 	 clear_highlight_board();
@@ -856,7 +856,7 @@ void find_control_icon_mouse_over(void)
 
  if (game.phase == PHASE_SPELLCAST)
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y && mouse.y - 16 <= y + 64)
+  if (mouse.x >= x && mouse.x <= x + 128 && mouse.y >= y && mouse.y <= y + 64)
 	mouse.over_control_icon = CONTROL_SKIP_SPELL;
  }
 
@@ -864,7 +864,7 @@ void find_control_icon_mouse_over(void)
  (!board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_moved ||
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_attacked))
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y && mouse.y - 16 <= y + 64)
+  if (mouse.x >= x && mouse.x <= x + 128 && mouse.y >= y && mouse.y <= y + 64)
 	mouse.over_control_icon = CONTROL_END_MOVE;
  }
 
@@ -873,13 +873,13 @@ void find_control_icon_mouse_over(void)
  board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_attacked &&
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_shot)
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y && mouse.y - 16 <= y + 64)
+  if (mouse.x >= x && mouse.x <= x + 128 && mouse.y >= y && mouse.y <= y + 64)
 	mouse.over_control_icon = CONTROL_END_FIRE;
  }
  
  if (game.phase == PHASE_MOVEMENT && !board_info.selected_state)
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y && mouse.y - 16 <= y + 64)
+  if (mouse.x >= x && mouse.x <= x + 128 && mouse.y >= y && mouse.y <= y + 64)
 	mouse.over_control_icon = CONTROL_END_TURN;
  }
 
@@ -887,7 +887,7 @@ void find_control_icon_mouse_over(void)
  board[board_info.selected_x][board_info.selected_y][MOUNTED].gfx != BLANK &&
  !board[board_info.selected_x][board_info.selected_y][MOUNTED].has_moved)
  {
-  if (mouse.x - 16 >= x && mouse.x - 16 <= x + 128 && mouse.y - 16 >= y + 72 && mouse.y - 16 <= y + 64 + 72)
+  if (mouse.x >= x && mouse.x <= x + 128 && mouse.y >= y + 72 && mouse.y <= y + 64 + 72)
 	mouse.over_control_icon = CONTROL_DISMOUNT;
  }
 }

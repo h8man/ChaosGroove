@@ -190,8 +190,8 @@ void do_mouse_logic(void)
  mouse.x += fx;
  mouse.y += fy;
 
- mouse.x = MID(16, mouse.x, 1280 - 16);
- mouse.y = MID(16, mouse.y, 960 - 16);
+ mouse.x = MID(16, mouse.x, 1280-16);
+ mouse.y = MID(16, mouse.y, 960-16);
  mouse.rgba = Rgba(1.0, 1.0, 1.0);
 
  if (game.stage == GAME_INGAME)
@@ -200,11 +200,11 @@ void do_mouse_logic(void)
   mouse.over_board_y = -1;
 
   // Is mouse over board?
-  if (mouse.x - 16 >= board_info.start_x && mouse.x - 16 <= board_info.start_x + (board_info.board_width * board_info.square_width)
-  &&	 mouse.y - 16 >= board_info.start_y && mouse.y - 16 <= board_info.start_y + (board_info.board_height * board_info.square_height))
+  if (mouse.x >= board_info.start_x && mouse.x <= board_info.start_x + (board_info.board_width * board_info.square_width)
+  &&	 mouse.y >= board_info.start_y && mouse.y <= board_info.start_y + (board_info.board_height * board_info.square_height))
   {
-   mouse.over_board_x = (mouse.x - board_info.start_x - 16) / board_info.square_width;
-   mouse.over_board_y = (mouse.y - board_info.start_y - 16) / board_info.square_height;
+   mouse.over_board_x = (mouse.x - board_info.start_x) / board_info.square_width;
+   mouse.over_board_y = (mouse.y - board_info.start_y) / board_info.square_height;
   }
 
   // Is mouse over spell icon?
@@ -226,15 +226,15 @@ void do_mouse_logic(void)
 
 	for (s = 0 ; s < panel.spell_icon_amount ; s++)
   { 
-    if (mouse.x - 16 >= x && mouse.x - 16 <= x + panel.spell_icon_w &&
-		   mouse.y - 16 >= y && mouse.y - 16 <= y + panel.spell_icon_h)
+    if (mouse.x >= x && mouse.x <= x + panel.spell_icon_w &&
+		   mouse.y >= y && mouse.y <= y + panel.spell_icon_h)
 	  {
      if (spell_list[0][game.current_wizard].alpha.current >= 1.0)
 		 {
 			mouse.over_spell_icon = t;
 		  mouse.spell_is_illusion = false;
 		 
-			if (spell[spell_list[t][game.current_wizard].spell].can_be_illusion && mouse.y - 16 >= y + (panel.spell_icon_h / 2)
+			if (spell[spell_list[t][game.current_wizard].spell].can_be_illusion && mouse.y >= y + (panel.spell_icon_h / 2)
 			&& return_spell_chance(spell_list[t][game.current_wizard].spell) < 100)
 			{
        mouse.spell_is_illusion = true; // Illusion
