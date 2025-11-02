@@ -298,6 +298,24 @@ void draw_panels(void)
   draw_text("NO PLACE TO CAST SPELL!", panel.info_area_x, panel.info_area_x + panel.info_area_w, 
 	panel.info_area_y + 6, FONT_LARGE, 0, Rgba(1.0, 0.0, 0.0), 1.0, TEXT_CENTRE);
  }
+ else if (mouse.over_control_icon != -1) 
+ {
+	 const char* text=NULL;
+	 switch (mouse.over_control_icon)
+	 {
+		case CONTROL_NO_SPELL		: text ="NO SPELL"; break;
+		case CONTROL_SKIP_SPELL		: text ="SKIP SPELL"; break;
+		case CONTROL_END_MOVE		: text ="END MOVE"; break;
+		case CONTROL_END_FIRE		: text ="END FIRE"; break;
+		case CONTROL_DISMOUNT		: text ="DISMOUNT"; break;
+		case CONTROL_END_TURN		: text = "END TURN"; break;
+	 }
+	 if (text != NULL)
+	 {
+		 draw_text(text, panel.info_area_x, panel.info_area_x + panel.info_area_w,
+			 panel.info_area_y + 6, FONT_LARGE, 0, Rgba(1.0, 0.0, 0.0), 1.0, TEXT_CENTRE);
+	 }
+ }
 
  // Also try to draw alternate text when over a blank board sqaure.
  draw_alternate_info_panel();
