@@ -221,6 +221,9 @@ bool CreateGameScreen(int width, int height, const char* ico, bool window, bool 
 	{
 		ToggleFullscreen();
 	}
+	int x = (GetMonitorWidth(GetCurrentMonitor()) - width) / 2;
+	int y = (GetMonitorHeight(GetCurrentMonitor()) - height) / 2;
+	SetWindowPosition(x,y);
 	// Clear newly created screen.
 	ClearScreen();
 
@@ -425,8 +428,8 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  //// need -1 for dx2 and dy2 in directX, but not in OpenGL! PTK bug..
  //bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
  //alpha, 360.0 - RAD_TO_DEG( angle ));
- DrawTexturePro(*bmp, Rectangle{ 0, 0, (float)width, (float)height }, Rectangle{ x, y,  w - (1 - game.opengl),  h - (1 - game.opengl) },
-	 Vector2{0,0},
+ DrawTexturePro(*bmp, Rectangle{ 0, 0, (float)width, (float)height }, Rectangle{ x, y,  w , h },
+	 Vector2{w/2.0f,h/2.0f},
 	 360.0 - RAD_TO_DEG(angle),
 	 ColorFromNormalized({ rgba.r, rgba.g, rgba.b, rgba.a }));
  return;
