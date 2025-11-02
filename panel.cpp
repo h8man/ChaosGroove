@@ -742,17 +742,19 @@ void draw_spell_icons(void)
 	 if (spell_list[t][game.current_wizard].bonus)
 	 {
 	  // Draw Green outline.
-		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float) panel.spell_icon_w + 4, (float) panel.spell_icon_h + 4 }, alpha);
+		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float) panel.spell_icon_w + 4, (float) panel.spell_icon_h + 4 },
+			 ColorFromNormalized({ 0.0, 1.0, 0.0, alpha}));
 	 }
 
 	 // Can we cast this spell?
 	 if (!spell_list[t][game.current_wizard].cast)
 	 {
 	  // Draw Red outline.
-		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float)panel.spell_icon_w + 4, (float)panel.spell_icon_h + 4 }, alpha);
+		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float)panel.spell_icon_w + 4 + 4, (float)panel.spell_icon_h + 4 + 4 },
+			 ColorFromNormalized({ 1.0, 0.0, 0.0, alpha }));
 	 }
 
-	 DrawRectangleLinesEx(Rectangle{ (float)x, (float)y, (float)x + panel.spell_icon_w, (float)y + panel.spell_icon_h }, 1, ColorFromNormalized({ 1.0, 1.0, 1.0, alpha }));
+	 DrawRectangleRec(Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, ColorFromNormalized({ 0.0, 0.0, 0.0, alpha }));
   
 	 //gfx[0]->drawRect(, 0.0, 0.0, 0.0, alpha);
   
