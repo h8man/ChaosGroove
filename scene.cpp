@@ -93,12 +93,12 @@ void do_scene_logic(void)
  {
 	do_alpha_logic(&bar_effect.alpha);
  
-  do_alpha_logic(&board_info.highlight_alpha);
-  do_alpha_logic(&board_info.selected_alpha);
-  board_info.highlight_cycle += 0.02;
-  do_highlight_board_logic();
+	do_alpha_logic(&board_info.highlight_alpha);
+	do_alpha_logic(&board_info.selected_alpha);
+	board_info.highlight_cycle += 0.02;
+	do_highlight_board_logic();
 
-  do_panels_logic();
+	do_panels_logic();
 	do_pieces_animation_logic();
 	do_sprites_logic();
  }
@@ -460,8 +460,7 @@ void draw_sprites(void)
 		{
 		 //SetSolidColour(piece_gfx[iter->gfx], iter->rgba);	
 		 //piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle,
-			 Rgba(iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a*iter->alpha));
+		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->rgba);
 		 //CancelSolidColour(piece_gfx[iter->gfx]);
 		}
 	 }
@@ -509,7 +508,7 @@ int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba
  if (orient == TEXT_RIGHT) //fonty[font]->drawStringFromRight( txt, x2, y, kerning);
  {
 	 size = MeasureTextEx(fonty[font], txt, fonty[font].baseSize, kerning);
-	 pos = Vector2{ (x - size.x), (float)y };
+	 pos = Vector2{ (x2 - size.x), (float)y };
  }
  if (orient != TEXT_WRAP) //fonty[font]->drawMultiline( txt, x, x2, y, TEXTSTYLE_JUSTIFIED, kerning);
  {

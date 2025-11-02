@@ -154,7 +154,7 @@ bool first_time_setup(void)
  // Centre mouse.
  mouse.x = 640;
  mouse.y = 480;
-
+ SetMousePosition(mouse.x, mouse.y);
  // Net setup.
  //log("Setting up network code..");
  log("Skip setting up network code..");

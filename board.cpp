@@ -688,59 +688,50 @@ void draw_board(void)
  }
  
  draw_highlight_effect();
-//
-// // Recolour border pieces using current wizard colour.
-// for (c = 0 ; c < 8 ; c++)
-// {
-//  gfx[c]->setBlitColor(wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, 
-//	wizard[game.current_wizard].col.b, 1.0);
-//
-//	gfx[c]->setTextureQuality( false ); // Disable bilinear filtering on border gfx to stop edge linup errors in low res.
-// }
-//
-// // Top left corner
-// gfx[0]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x - board_info.border_size, board_info.start_y - board_info.border_size, 
-// board_info.start_x, board_info.start_y);
-//
-// // Top border
-// gfx[1]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x, board_info.start_y - board_info.border_size, 
-// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
-//
-// // Top right corner
-// gfx[2]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y - board_info.border_size, 
-// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, board_info.start_y);
-//
-// // Left border
-// gfx[3]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x - board_info.border_size, board_info.start_y, 
-// board_info.start_x, board_info.start_y + (board_info.board_height * board_info.square_height));
-//
-// // Right border
-// gfx[4]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x + (board_info.board_width * board_info.square_width), board_info.start_y, 
-// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
-// board_info.start_y + (board_info.board_height * board_info.square_height));
-//
-// // Bottom left corner
-// gfx[5]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x - board_info.border_size, board_info.start_y + (board_info.board_height * board_info.square_height), 
-// board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height) + board_info.border_size);
-//
-// // Bottom border
-// gfx[6]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x, board_info.start_y  + (board_info.board_height * board_info.square_height), 
-// board_info.start_x + (board_info.board_width * board_info.square_width), 
-// board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
-//
-// // Bottom right corner
-// gfx[7]->stretchAlphaRect(0, 0, gfx[0]->getWidth(), gfx[0]->getHeight(),
-// board_info.start_x + (board_info.board_width * board_info.square_width), 
-// board_info.start_y + (board_info.board_height * board_info.square_height), 
-// board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, 
-// board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size);
+
+ // Recolour border pieces using current wizard colour.
+ //for (c = 0 ; c < 8 ; c++)
+ //{
+ // gfx[c]->setBlitColor(wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, 
+	//wizard[game.current_wizard].col.b, 1.0);
+
+	//gfx[c]->setTextureQuality( false ); // Disable bilinear filtering on border gfx to stop edge linup errors in low res.
+ //}
+ Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
+
+ // Top left corner
+ Draw(gfx[0], Rectangle{ (float)board_info.start_x - board_info.border_size, (float)board_info.start_y - board_info.border_size,
+ (float)board_info.start_x, (float)board_info.start_y }, tint);
+
+ // Top border
+ Draw(gfx[1], Rectangle{ (float)board_info.start_x, (float)board_info.start_y - board_info.border_size,
+	 (float)board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, (float)board_info.start_y }, tint);
+
+ // Top right corner
+ Draw(gfx[2], Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width), (float)board_info.start_y - board_info.border_size,
+ (float)board_info.border_size, (float)board_info.start_y }, tint);
+
+ // Left border
+ Draw(gfx[3], Rectangle{ (float)board_info.start_x - board_info.border_size, (float)board_info.start_y,
+ (float)board_info.start_x, (float)board_info.start_y + (board_info.board_height * board_info.square_height) }, tint);
+
+ // Right border
+ Draw(gfx[4], Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width), (float)board_info.start_y,
+ (float)board_info.border_size, (float)board_info.start_y + (board_info.board_height * board_info.square_height) }, tint);
+
+ // Bottom left corner
+ Draw(gfx[5], Rectangle{ (float)board_info.start_x - board_info.border_size, (float)board_info.start_y + (board_info.board_height * board_info.square_height),
+ (float)board_info.start_x, (float)board_info.border_size }, tint);
+
+ // Bottom border
+ Draw(gfx[6], Rectangle{ (float)board_info.start_x, (float)board_info.start_y + (board_info.board_height * board_info.square_height),
+ (float)board_info.start_x + (board_info.board_width * board_info.square_width),
+ (float)board_info.border_size }, tint);
+
+ // Bottom right corner
+ Draw(gfx[7], Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width),
+ (float)board_info.start_y + (board_info.board_height * board_info.square_height),
+ (float)board_info.border_size, (float)board_info.border_size }, tint);
 }
 
 void draw_selected_effect(void)
