@@ -726,6 +726,7 @@ void draw_spell_icons(void)
  int t, g, x, y, y2, x2, sp, s, offset_x;
  bool spell_icon;
  float alpha;
+ Color tint, fade;
  
  x = panel.spell_area_x;
  for (t = 0 ; t < 16 ; t++)
@@ -747,7 +748,10 @@ void draw_spell_icons(void)
   alpha = (float)spell_list[t][game.current_wizard].alpha.current;
   if (alpha < 0.0) alpha = 0.0;
   if (alpha > 1.0) alpha = 1.0;
-  
+  //simple dimming and highlight on hover
+  tint = ColorFromNormalized( {1.0, 1.0, 1.0, alpha} );
+  fade = ColorFromNormalized( {0.9, 0.9, 1.0, alpha} );
+
 	g = -1;
 	spell_icon = false;
 
@@ -778,13 +782,15 @@ void draw_spell_icons(void)
   
    if (g > -1 && !spell_icon)
 	 {
-	   Draw(piece_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, alpha);
+	   Draw(piece_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h },
+		   panel.last_spell_icon_over == sp ? tint : fade);
 
 	 }
 
 	 if (g > -1 && spell_icon)
 	 {
-		Draw(spell_icon_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, alpha );
+		Draw(spell_icon_gfx[g], Rectangle{ (float)x, (float)y, (float)panel.spell_icon_w, (float)panel.spell_icon_h }, 
+			panel.last_spell_icon_over == sp ? tint : fade );
 	 }
   }
 
@@ -809,6 +815,9 @@ void draw_control_icons(void)
  int x, y;
  
  alpha = panel.spell_area_control_alpha.current;
+ //simple dimming and highlight on hover
+ Color fade = ColorFromNormalized({ 0.9, 0.9, 1.0, alpha });
+ Color tint = ColorFromNormalized({ 1.0, 1.0, 1.0, alpha });
 
  x = panel.spell_area_x + 12;
  y = panel.spell_area_y;
@@ -816,19 +825,23 @@ void draw_control_icons(void)
  if (game.phase == PHASE_SPELLSELECT)
  {
 	 // Draw No Spell control icon.
-	 Draw(gfx[15], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 }, alpha );
+	Draw(gfx[15], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 },
+		mouse.over_control_icon == CONTROL_NO_SPELL ? tint : fade);
+
  }
  if (game.phase == PHASE_SPELLCAST)
  {
   // Draw Skip Spell control icon.
-	 Draw(gfx[10], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 },  alpha );
+	 Draw(gfx[10], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 },
+		 mouse.over_control_icon == CONTROL_SKIP_SPELL ? tint : fade);
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
  (!board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_moved ||
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_attacked))
  {
   // Draw End Move control icon.
-	 Draw(gfx[10], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64}, alpha );
+	 Draw(gfx[10], Rectangle{ 0, 64, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64},
+		 mouse.over_control_icon == CONTROL_END_MOVE ? tint : fade);
  }
  
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state &&
@@ -837,20 +850,23 @@ void draw_control_icons(void)
  !board[board_info.selected_x][board_info.selected_y][board_info.selected_layer].has_shot)
  {
   // Draw End Fire control icon.
-	 Draw(gfx[17], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8,  128, 64 }, alpha );
+	 Draw(gfx[17], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8,  128, 64 },
+		 mouse.over_control_icon == CONTROL_END_FIRE ? tint : fade);
  }
 
  if (game.phase == PHASE_MOVEMENT && !board_info.selected_state)
  {
   // Draw End Turn control icon.
-	 Draw(gfx[11], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 }, alpha );
+	 Draw(gfx[11], Rectangle{ 0, 0, 128, 64 }, Rectangle{ (float)x + 4, (float)y + 8, 128, 64 },
+		 mouse.over_control_icon == CONTROL_END_TURN ? tint : fade);
  }
  if (game.phase == PHASE_MOVEMENT && board_info.selected_state && board_info.selected_layer == PIECE &&
  board[board_info.selected_x][board_info.selected_y][MOUNTED].gfx != BLANK &&
  !board[board_info.selected_x][board_info.selected_y][MOUNTED].has_moved)
  {
   // Draw Dismounted control icon.
-	 Draw(gfx[11], Rectangle{ 0, 64, 128, 64}, Rectangle{ (float)x + 4, (float)y + 80,  128, 64 }, alpha );
+	 Draw(gfx[11], Rectangle{ 0, 64, 128, 64}, Rectangle{ (float)x + 4, (float)y + 80,  128, 64 },
+		 mouse.over_control_icon == CONTROL_DISMOUNT ? tint : fade);
  }
 }
 
