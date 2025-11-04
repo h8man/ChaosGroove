@@ -422,8 +422,8 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  height = bmp->height;
 
  //// Different Width and Height.
- x -= (w / 2);
- y -= (h / 2);
+ //x -= (w / 2);
+ //y -= (h / 2);
 
  //// need -1 for dx2 and dy2 in directX, but not in OpenGL! PTK bug..
  //bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
