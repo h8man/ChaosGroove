@@ -151,7 +151,7 @@ bool first_time_setup(void)
  setup_board();
  AI_setup();
  load_spells();
-
+ load_shaders();
  // Sound setup
  setup_sound_system();
 
@@ -170,6 +170,15 @@ bool first_time_setup(void)
  return true;
 }
 
+bool load_shaders(void)
+{
+	Shader solid = LoadShader(0, TextFormat("Shaders\\solid%i.fs", GLSL_VERSION));
+	if (!IsShaderValid(solid))
+	{
+		return false;
+	}
+	Shaders[SHADER_SOLID] = solid;
+}
 bool setup_fonts(void)
 {
 	int c;

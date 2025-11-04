@@ -34,6 +34,7 @@ vector <Texture2D *> gfx;
 vector <Texture2D *> piece_gfx;
 vector <Texture2D *> spell_icon_gfx;
 
+Shader Shaders[MAX_SHADERS];
 // The list of active sprites.
 list < sprite_t > sprites;
 
@@ -436,9 +437,10 @@ void draw_sprites(void)
   // Call appropriate functions.
   if (iter->gfx != -1 && iter->time <= 0)
 	{
+	  Rgba tint = Rgba(iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a * iter->alpha);
+
 	 if (!iter->use_piece_gfx)
 	 {
-		Rgba tint = Rgba( iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a * iter->alpha );
 		if (iter->additive_draw)
 		{
 		//   if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
@@ -458,10 +460,12 @@ void draw_sprites(void)
 	 {
         if (iter->alpha > 0.0)
 		{
-		 //SetSolidColour(piece_gfx[iter->gfx], iter->rgba);	
+		 SetSolidColour(iter->rgba);	
 		 //piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, iter->rgba);
-		 //CancelSolidColour(piece_gfx[iter->gfx]);
+
+		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, tint);
+
+		 CancelSolidColour();
 		}
 	 }
 	}
