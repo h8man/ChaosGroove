@@ -12,6 +12,12 @@
 
 #define MAX_STRING									512
 
+#if defined(PLATFORM_DESKTOP)
+#define GLSL_VERSION            330
+#else   // PLATFORM_ANDROID, PLATFORM_WEB
+#define GLSL_VERSION            100
+#endif
+
 // The different parts of the game.
 #define GAME_TITLE						0
 #define GAME_INGAME						1
@@ -45,6 +51,7 @@ bool setup_display(void);
 bool setup_fonts(void);
 void add_font_letters(struct Font table, int place, int c, int x, int y, int w, int h, int w2, int h2, int num);
 bool load_all_images(void);
+bool load_shaders(void);
 void do_exit_cleanup(void);
 
 void wait_time(int amount);

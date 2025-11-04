@@ -429,7 +429,7 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  //bmp->stretchAlphaRect( 0, 0, width, height, x, y, (x + w) - (1 - game.opengl), (y + h) - (1 - game.opengl), 
  //alpha, 360.0 - RAD_TO_DEG( angle ));
  DrawTexturePro(*bmp, Rectangle{ 0, 0, (float)width, (float)height }, Rectangle{ x, y,  w , h },
-	 Vector2{w/2.0f,h/2.0f},
+	 Vector2{ w / 2.0f,h / 2.0f },
 	 360.0 - RAD_TO_DEG(angle),
 	 ColorFromNormalized({ rgba.r, rgba.g, rgba.b, rgba.a }));
  return;
@@ -472,52 +472,61 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  */
 }
 
-//void SetSolidColour(Texture2D *bmp, Rgba col)
-//{
-// GLfloat texcols[4];
-//
-// bmp->setBlitColor(col.r, col.g, col.b, 1.0);
-//
-// if (game.opengl)
-// {
-//  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-//
-//  texcols[0] = col.r;
-//  texcols[1] = col.g;
-//  texcols[2] = col.b;
-//			
-//  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
-// }
-// else
-// {
-//  // Demo version of PTK doesn't allow D3D handle.. :'(
-//
-//  //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-//	//Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-// }
-//}
-//
-//void CancelSolidColour(Texture2D *bmp)
-//{
-// GLfloat texcols[4];
-//
-// bmp->setBlitColor(1.0, 1.0, 1.0, 1.0);
-//
-// if (game.opengl)
-// {	 
-//  texcols[0] = 1.0;
-//  texcols[1] = 1.0;
-//  texcols[2] = 1.0;
-//
-//	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
-// }
-// else
-// {
-//  //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-//	//Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-// }
-//}
+void SetSolidColour(Rgba col)
+{
+	int loc = GetShaderLocation(Shaders[SHADER_SOLID], "tint");
+
+	BeginBlendMode(BLEND_ALPHA);
+	BeginShaderMode(Shaders[SHADER_SOLID]);
+
+	Vector4 tint = { col.r, col.g, col.b, col.a }; 
+	SetShaderValue(Shaders[SHADER_SOLID], loc, &tint, SHADER_UNIFORM_VEC4);
+ //GLfloat texcols[4];
+
+ //bmp->setBlitColor(col.r, col.g, col.b, 1.0);
+
+ //if (game.opengl)
+ //{
+ // glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+
+ // texcols[0] = col.r;
+ // texcols[1] = col.g;
+ // texcols[2] = col.b;
+	//		
+ // glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
+ //}
+ //else
+ //{
+  // Demo version of PTK doesn't allow D3D handle.. :'(
+
+  //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+	//Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+ //}
+}
+
+void CancelSolidColour()
+{
+	EndShaderMode();
+	EndBlendMode();
+ //GLfloat texcols[4];
+
+ //bmp->setBlitColor(1.0, 1.0, 1.0, 1.0);
+
+ //if (game.opengl)
+ //{	 
+ // texcols[0] = 1.0;
+ // texcols[1] = 1.0;
+ // texcols[2] = 1.0;
+
+	//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	//glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, texcols);
+ //}
+ //else
+ //{
+ // //Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	////Texture2DD3D::_d3d->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+ //}
+}
 //
 //void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4)
 //{

@@ -11,7 +11,11 @@ extern std::vector <Texture2D *> spell_icon_gfx;
 #define MAX_COLS               16
 
 #define MAX_FONTS							 4
+#define MAX_SHADERS							 4
 
+#define SHADER_SOLID						 0
+
+extern Shader Shaders[MAX_SHADERS];
 extern Font fonty[MAX_FONTS];
 
 #define TYPE_EMITTER           0
