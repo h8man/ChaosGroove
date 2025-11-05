@@ -430,7 +430,7 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  //alpha, 360.0 - RAD_TO_DEG( angle ));
  DrawTexturePro(*bmp, Rectangle{ 0, 0, (float)width, (float)height }, Rectangle{ x, y,  w , h },
 	 Vector2{ w / 2.0f,h / 2.0f },
-	 360.0 - RAD_TO_DEG(angle),
+	 RAD_TO_DEG(angle),
 	 ColorFromNormalized({ rgba.r, rgba.g, rgba.b, rgba.a }));
  return;
 
