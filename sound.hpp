@@ -6,7 +6,7 @@
 struct sound_t
 {
  char name[512][MAX_SOUNDS];
- Sound *sample[MAX_SOUNDS];
+ Sound sample[MAX_SOUNDS];
  int available_sounds;
 };
 
