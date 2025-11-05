@@ -143,7 +143,7 @@ bool load_all_memory_sounds(void)
  // We leave our first entry as free for one off loaded sounds..
  sound.available_sounds = 1;
 
- sprintf(name, "Sounds\\Memory\\*.*");
+ sprintf(name, "Sounds\\Memory");
  sprintf(filepath, "%s", GetFullPath(name));
  //KMiscTools::enumerateFolder( filepath , load_sound ) ;
 
@@ -165,15 +165,14 @@ bool load_all_memory_sounds(void)
 
   if (isFolder) return true; // Skip folders.
 
-	sprintf(name, "Sounds\\Memory\\%s", f);
-    sprintf(name, "%s", GetFullPath(name));
+	sprintf(name, "%s", GetFileName(f));
+    //sprintf(name, "%s", GetFullPath(name));
 
-	sound.sample[sound.available_sounds] = NULL;
-	sound.sample[sound.available_sounds] = &LoadSound(name);
+	sound.sample[sound.available_sounds] = LoadSound(f);
 
-	if (!IsSoundValid(*sound.sample[sound.available_sounds])) return true; // Can't load this sound.
+	if (!IsSoundValid(sound.sample[sound.available_sounds])) return true; // Can't load this sound.
 
-	sprintf(sound.name[sound.available_sounds], "%s", f);
+	sprintf(sound.name[sound.available_sounds], "%s", name);
   sound.available_sounds++;
 
   //log("%s, %s", name, f);
@@ -202,7 +201,7 @@ bool load_all_memory_sounds(void)
 
 int play_sound(char *name, bool wait)
 {
- int s, v;
+ int s, v, b;
 	
  s = return_sound_number(name);
  //log("name: %s, s: %d", name, s);
@@ -211,20 +210,20 @@ int play_sound(char *name, bool wait)
  find_option_choice_variables(CONFIG_OPTIONS, "SOUND", "SOUND EFFECTS VOLUME", &v, NULL, NULL, NULL);
  if (v <= 0) return s;
 
- PlaySound(*sound.sample[s]);
- SetSoundVolume(*sound.sample[s],v);
+ PlaySound(sound.sample[s]);
+ SetSoundVolume(sound.sample[s],v/100.0);
 
- v = find_current_option_choice(CONFIG_OPTIONS, "SOUND", "SOUND BALANCE");
+ b = find_current_option_choice(CONFIG_OPTIONS, "SOUND", "SOUND BALANCE");
 
- if (v == 0) SetSoundPan(*sound.sample[s],0);
- if (v == 1) SetSoundPan(*sound.sample[s],0.5);
- if (v == 2) SetSoundPan(*sound.sample[s],1.0);
+ if (b == 0) SetSoundPan(sound.sample[s],0);
+ if (b == 1) SetSoundPan(sound.sample[s],0.5);
+ if (b == 2) SetSoundPan(sound.sample[s],1.0);
 
  if (wait && !game.AI_debug)
  do
  {
   wait_time(1);
- } while (IsSoundPlaying(*sound.sample[s]));
+ } while (IsSoundPlaying(sound.sample[s]));
 
  return s;
 }
