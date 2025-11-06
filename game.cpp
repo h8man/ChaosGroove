@@ -387,7 +387,7 @@ int loop(void)
   // Done logic, now draw:
   //if (!game.switched_out || option[OPTION_SCREEN].choice == 0)
   {
-	begin_draw();
+   begin_draw();
    draw_scene();
    refresh_screen();
    

@@ -17,6 +17,7 @@ extern std::vector <Texture2D *> spell_icon_gfx;
 
 extern Shader Shaders[MAX_SHADERS];
 extern Font fonty[MAX_FONTS];
+extern RenderTexture2D RendererTexture;
 
 #define TYPE_EMITTER           0
 #define TYPE_PARTICLE          1
