@@ -211,7 +211,8 @@ bool CreateGameScreen(int width, int height, const char* ico, bool window, bool 
 	// Open DirectX or OpenGL gfx context.
 	//if (dx == false) gwin = KPTK::createKWindow( K_OPENGL );
 	//if ( dx == true) gwin = KPTK::createKWindow( K_DIRECTX );
-
+	RendererTexture = LoadRenderTexture(1280, 960);
+	SetTextureFilter(RendererTexture.texture, TEXTURE_FILTER_BILINEAR);
 	// Now try to open screen with requested details.
 	SetWindowSize(width, height);
 	SetWindowTitle("Chaos Groove");
@@ -285,7 +286,7 @@ int ScreenWidth(void)
 
 int ScreenHeight(void)
 {
- return GetScreenWidth();
+ return GetScreenHeight();
 }
 
 void ClearScreen(void)

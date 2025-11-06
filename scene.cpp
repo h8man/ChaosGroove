@@ -34,6 +34,7 @@ vector <Texture2D *> gfx;
 vector <Texture2D *> piece_gfx;
 vector <Texture2D *> spell_icon_gfx;
 
+RenderTexture2D RendererTexture;
 Shader Shaders[MAX_SHADERS];
 // The list of active sprites.
 list < sprite_t > sprites;
@@ -166,12 +167,26 @@ void draw_scene(void)
 
 void begin_draw(void)
 {
-	BeginDrawing();
+	BeginTextureMode(RendererTexture);
 	ClearScreen();
 }
 // Basically tell OpenGL to draw screen.
 void refresh_screen(void)
 {
+	EndTextureMode();
+	BeginDrawing();
+		ClearScreen();
+		// Calculate how to fit virtual res into window while preserving aspect
+		float scale = fminf((float)ScreenWidth() / RendererTexture.texture.width,
+			(float)ScreenHeight() / RendererTexture.texture.height);
+
+		float w = (int)(RendererTexture.texture.width * scale);
+		float h = (int)(RendererTexture.texture.height * scale);
+		float x = (ScreenWidth() - w) / 2;
+		float y = (ScreenHeight() - h) / 2;
+	    Draw(&RendererTexture.texture,
+			Rectangle{ 0, 0, (float)RendererTexture.texture.width, -(float)RendererTexture.texture.height },
+			Rectangle{ x, y, w, h});
 	EndDrawing();
     //UpdateScreen();
 	timer.gfx_frames++; // Keep track of 'screens' drawn.
@@ -507,7 +522,7 @@ int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba
  if (orient == TEXT_CENTRE) //fonty[font]->drawStringCentered( txt, x, x2, y, kerning); 
  {
 	 size = MeasureTextEx(fonty[font], txt, fonty[font].baseSize, kerning);
-	 pos = Vector2{ (GetScreenWidth() - size.x) / 2, (float)y };
+	 pos = Vector2{ (x2 - size.x) / 2, (float)y };
  }
  if (orient == TEXT_RIGHT) //fonty[font]->drawStringFromRight( txt, x2, y, kerning);
  {
