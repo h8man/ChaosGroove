@@ -1,4 +1,11 @@
-#include "windows.h"
+#if defined(_WIN32)
+#include <windows.h>
+#elif defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <vector>
 #include <list>
 #include <sstream>
@@ -56,5 +63,19 @@ end_game:
 
 void _sleep(int milliseconds)
 {
-	Sleep(milliseconds);
+#if defined(__EMSCRIPTEN__)
+	//void WaitTime(double seconds);     
+	// Web builds cannot block — simulate with timer loop
+	double start = GetTime();
+	while ((GetTime() - start) * 1000.0f < milliseconds)
+	{
+		
+	}
+
+#elif defined(_WIN32)
+	Sleep((DWORD)(milliseconds));
+
+#else
+	usleep((useconds_t)(milliseconds * 1000.0f));
+#endif
 }

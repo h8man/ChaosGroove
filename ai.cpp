@@ -113,7 +113,7 @@ void AI_analyse_board(void)
 void AI_select_spell(void)
 {
  int x, y, a, s, r, sp, score, best_score, value, best_value, best_x, best_y, best_spell, extra_combat, extra_defence;
- bool illusion, best_illusion;
+ bool illusion, best_illusion = false;
  char text[MAX_STRING];
 
  sprintf(panel.info_area_line[0], "%s IS SELECTING A SPELL", wizard[game.current_wizard].name);

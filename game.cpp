@@ -322,6 +322,23 @@ void do_exit_cleanup(void)
  {
    UnloadTexture(*gfx[n]); 
  }
+ num = piece_gfx.size();
+ for (n = 0; n < num; n++)
+ {
+	 UnloadTexture(*piece_gfx[n]);
+ }
+ num = spell_icon_gfx.size();
+ for (n = 0; n < num; n++)
+ {
+	 UnloadTexture(*spell_icon_gfx[n]);
+ }
+
+ //extern Shader Shaders[MAX_SHADERS];
+ //extern Font fonty[MAX_FONTS];
+ //extern RenderTexture2D RendererTexture;
+ //extern struct sound_t sound;
+ //extern struct music_t music;
+
 
  log("Freeing config files..");
  save_options();
