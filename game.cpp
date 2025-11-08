@@ -439,8 +439,8 @@ void wait_time(int frames)
 
 void ingame_loop(void)
 {
- int s, wiz, casts, x, y;
- bool done, worked, real = false;
+ int s, wiz, failed, casts, x, y;
+ bool done, real = false;
  char name[MAX_STRING];
  log("Starting Ingame Loop");
 
@@ -695,11 +695,11 @@ void ingame_loop(void)
 
 	 if (x != -1 && y != -1)
 	 {
-		worked = try_to_cast_spell(x, y);    
+		failed = try_to_cast_spell(x, y);    
     wait_time(150);
-		if (!worked)
+		if (failed)
 		{
-     spell_fails();
+     spell_fails(failed);
 		 continue;
 		}
 
@@ -751,15 +751,15 @@ void ingame_loop(void)
 
 		if (x != -1 && y != -1)
 		{
-		 worked = try_to_cast_spell(x, y);  
+			failed = try_to_cast_spell(x, y);
 		 
 		 casts--;
 	
-     if (casts < 1 || !worked)
+     if (casts < 1 || failed)
 		 {
-		  if (!worked)
+		  if (failed)
 			{
-       spell_fails();
+       spell_fails(failed);
 			}
 			else
 			{
@@ -803,15 +803,15 @@ void ingame_loop(void)
       board_info.highlight_alpha.target = 0.0;
 			game.casting_a_spell = true;
 			
-			worked = try_to_cast_spell(mouse.over_board_x, mouse.over_board_y);  
+			failed = try_to_cast_spell(mouse.over_board_x, mouse.over_board_y);
 
 			casts--;
 	
-      if (casts < 1 || !worked)
+      if (casts < 1 || failed)
 			{
-			 if (!worked)
+			 if (failed)
 			 {
-        spell_fails();
+        spell_fails(failed);
 			 }
 			 else
 			 {

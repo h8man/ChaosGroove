@@ -6,6 +6,10 @@
 #define MAX_WIZ_SPELLS        256
 #define MAX_POS_SPELLS        999
 
+#define SPELL_SUCCESSED       0
+#define SPELL_FAILED          1
+#define SPELL_RESISTED        2
+
 struct spell_t
 {
  int piece_ID;
@@ -55,9 +59,9 @@ int return_spell_chance(int sp);
 bool can_we_cast_spell_here(int x, int y);
 void check_if_can_cast_all_spells(int wiz);
 
-bool try_to_cast_spell(int x, int y);
+int try_to_cast_spell(int x, int y);
 void spell_succeeds(void);
-void spell_fails(void);
+void spell_fails(int reason);
 Rgba return_spell_chance_col(int chance);
 int highlight_where_spell_can_be_cast(int s, bool clear);
 void autocast_spell(int *best_x, int *best_y);
