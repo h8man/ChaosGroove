@@ -474,9 +474,10 @@ int return_spell_chance(int sp)
  return chance;
 }
 
-bool try_to_cast_spell(int x, int y)
+int try_to_cast_spell(int x, int y)
 {
  int r, chance, sp, owner, g, snd;
+ bool  resisted = false;
  char name[MAX_STRING];
 
  board_info.highlight_alpha.target = 0;
@@ -529,15 +530,16 @@ bool try_to_cast_spell(int x, int y)
   if (spell[sp].chance_against_magic_resistance)
 	{
 	 // Yes, so final check is to see if we can beat creatures magic resistance!
-   r = Rand() % 10;
-	 chance = 10 - board[x][y][PIECE].magic_resist;
+    r = Rand() % 10;
+	chance = 10 - board[x][y][PIECE].magic_resist;
+	resisted = (r > chance);
 	}
  }
 
  // Spell fails?
  if (r > chance)
  {
-  wait_time(150);
+    wait_time(150);
 	//log("spell: %s failed!", spell[sp].name);
 	goto spell_fails;
  }
@@ -709,10 +711,10 @@ bool try_to_cast_spell(int x, int y)
   wait_time(200);
 
   // Final check is to see if we can beat creatures magic resistance!
-  r = Rand() % 10;
+    r = Rand() % 10;
 	chance = board[x][y][PIECE].magic_resist;
-	
-  if (r > chance)
+	resisted = r < chance;
+  if (r >= chance)
 	{
 	 r = find_current_option_choice(CONFIG_OPTIONS, "GAME", "MAGIC ATTACK ON WIZARD");
 
@@ -743,6 +745,10 @@ bool try_to_cast_spell(int x, int y)
     }
 	 }
 	}
+  else
+  {
+	  goto spell_fails;
+  }
  }
  if (spell[sp].destroy_illusion)
  {
@@ -778,11 +784,11 @@ bool try_to_cast_spell(int x, int y)
   board[x][y][PIECE].has_shot = true;
  }
 
- return true;
+ return SPELL_SUCCESSED;
 
  spell_fails:
 
- return false; // Spell failed!
+ return resisted ? SPELL_RESISTED : SPELL_FAILED; // Spell failed!
 }
 
 void spell_succeeds(void)
@@ -797,12 +803,19 @@ void spell_succeeds(void)
  game.balance += spell[wizard[game.current_wizard].spell].balance;
 }
 
-void spell_fails(void)
+void spell_fails(int reason)
 {
  wait_time(10);
+ if (reason == SPELL_RESISTED)
+ {
+	 sprintf(panel.info_area_line[1], "SPELL RESISTED");
+	 panel.info_area_line_rgba[1] = Rgba(1.0, 1.0, 0.0);
+ }
+ else {
+	 sprintf(panel.info_area_line[1], "SPELL FAILS");
+	 panel.info_area_line_rgba[1] = Rgba(1.0, 0.0, 0.0);
+ }
 
- sprintf(panel.info_area_line[1], "SPELL FAILS");
- panel.info_area_line_rgba[1] = Rgba(1.0, 0.0, 0.0);
  request_sound_effect(spell[wizard[game.current_wizard].spell].name, "SPELL", "FAILS", true);
 }
 
