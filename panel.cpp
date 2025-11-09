@@ -764,7 +764,7 @@ void draw_spell_icons(void)
 	 if (spell_list[t][game.current_wizard].bonus)
 	 {
 	  // Draw Green outline.
-		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float) panel.spell_icon_w + 4, (float) panel.spell_icon_h + 4 },
+		 Draw(gfx[HIGHLIGHT_GFX_BOX], Rectangle{ (float)x - 4, (float)y - 4, (float) panel.spell_icon_w + 4 + 4, (float) panel.spell_icon_h + 4 + 4 },
 			 ColorFromNormalized({ 0.0, 1.0, 0.0, alpha}));
 	 }
 
