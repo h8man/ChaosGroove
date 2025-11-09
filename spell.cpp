@@ -477,7 +477,7 @@ int return_spell_chance(int sp)
 int try_to_cast_spell(int x, int y)
 {
  int r, chance, sp, owner, g, snd;
- bool  resisted = false;
+ bool  resisted = false, missed = false;
  char name[MAX_STRING];
 
  board_info.highlight_alpha.target = 0;
@@ -702,7 +702,8 @@ int try_to_cast_spell(int x, int y)
   }
 	else
 	{
-   goto spell_fails;
+	  missed = true;
+      goto spell_fails;
 	}
  }
 
@@ -788,7 +789,11 @@ int try_to_cast_spell(int x, int y)
 
  spell_fails:
 
- return resisted ? SPELL_RESISTED : SPELL_FAILED; // Spell failed!
+ if (resisted)
+	 return SPELL_RESISTED;
+ if (missed)
+	 return SPELL_MISSED;
+ return SPELL_FAILED; // Spell failed!
 }
 
 void spell_succeeds(void)
@@ -806,7 +811,12 @@ void spell_succeeds(void)
 void spell_fails(int reason)
 {
  wait_time(10);
- if (reason == SPELL_RESISTED)
+ if (reason == SPELL_MISSED)
+ {
+	 sprintf(panel.info_area_line[1], "SPELL MISSED");
+	 panel.info_area_line_rgba[1] = Rgba(1.0, 1.0, 0.0);
+ }
+ else if (reason == SPELL_RESISTED)
  {
 	 sprintf(panel.info_area_line[1], "SPELL RESISTED");
 	 panel.info_area_line_rgba[1] = Rgba(1.0, 1.0, 0.0);

@@ -9,6 +9,7 @@
 #define SPELL_SUCCESSED       0
 #define SPELL_FAILED          1
 #define SPELL_RESISTED        2
+#define SPELL_MISSED          3
 
 struct spell_t
 {
