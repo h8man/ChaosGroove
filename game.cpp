@@ -695,15 +695,17 @@ void ingame_loop(void)
 
 	 if (x != -1 && y != -1)
 	 {
-		failed = try_to_cast_spell(x, y);    
-    wait_time(150);
-		if (failed)
-		{
-     spell_fails(failed);
-		 continue;
+		failed = try_to_cast_spell(x, y); 
+		casts--;
+		wait_time(150);
+		if (casts < 1 || failed == SPELL_FAILED) {
+			if (failed)
+			{
+				spell_fails(failed);
+				continue;
+			}
 		}
-
-	  casts--;
+	  
 		if (casts > 0) goto AI_cast;
 		spell_succeeds();
 	 } 
@@ -755,7 +757,7 @@ void ingame_loop(void)
 		 
 		 casts--;
 	
-     if (casts < 1 || failed)
+     if (casts < 1 || failed == SPELL_FAILED)
 		 {
 		  if (failed)
 			{
@@ -807,7 +809,7 @@ void ingame_loop(void)
 
 			casts--;
 	
-      if (casts < 1 || failed)
+      if (casts < 1 || failed == SPELL_FAILED)
 			{
 			 if (failed)
 			 {
