@@ -332,12 +332,36 @@ bool RightMouseButton(void)
  return  IsMouseButtonPressed(MOUSE_BUTTON_RIGHT);
 }
 
-void GetMouseMickeys(int *x, int *y)
+void GetMouseMickeys(float *x, float *y, bool lock)
 {
- *x = (GetMouseX() - (ScreenWidth() / 2)) * 4;
- *y = (GetMouseY() - (ScreenHeight() / 2)) * 4;
+	float fx, fy;
+	if (lock)
+	{
+		fx = (GetMouseX() - (ScreenWidth() / 2)) * 4;
+		fy = (GetMouseY() - (ScreenHeight() / 2)) * 4;
 
- if (IsWindowFocused()) SetMousePosition(ScreenWidth() / 2, ScreenHeight() / 2);
+		if (IsWindowFocused()) SetMousePosition(ScreenWidth() / 2, ScreenHeight() / 2);
+
+		AccelerateMouseMickeys(&fx, &fy, 20, 40);
+
+		*x += fx;
+		*y += fy;
+
+	}
+	else
+	{
+		float scale = fminf((float)ScreenWidth() / RendererTexture.texture.width,
+			(float)ScreenHeight() / RendererTexture.texture.height);
+
+		float w = (int)(RendererTexture.texture.width * scale);
+		float h = (int)(RendererTexture.texture.height * scale);
+		fx = (ScreenWidth() - w) / 2;
+		fy = (ScreenHeight() - h) / 2;
+
+		*x = (GetMouseX() - fx) / scale;
+		*y = (GetMouseY() - fy) / scale;
+	}
+
 }
 
 void AccelerateMouseMickeys(float *x, float *y, float scale, float scale_accel)

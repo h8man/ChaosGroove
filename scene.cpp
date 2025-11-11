@@ -197,17 +197,13 @@ void do_mouse_logic(void)
  int x, y, x2, y2, t, s, offset_x;
  float fx, fy;
 
- GetMouseMickeys(&x, &y);
+ fx = mouse.x;
+ fy = mouse.y;
 
- fx = x;
- fy = y;
- AccelerateMouseMickeys(&fx, &fy, 20, 40);
+ GetMouseMickeys(&fx, &fy, mouse.lock_cursor);
 
- mouse.x += fx;
- mouse.y += fy;
-
- mouse.x = MID(16, mouse.x, 1280-16);
- mouse.y = MID(16, mouse.y, 960-16);
+ mouse.x = MID(16, fx, 1280-16);
+ mouse.y = MID(16, fy, 960-16);
  mouse.rgba = Rgba(1.0, 1.0, 1.0);
 
  if (game.stage == GAME_INGAME)

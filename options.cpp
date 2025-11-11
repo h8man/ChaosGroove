@@ -14,16 +14,9 @@ using namespace std;
 #include "bridge.hpp"
 #include "game.hpp"
 #include "log.hpp"
-#include "timer.hpp"
 #include "scene.hpp"
 #include "config.hpp"
-#include "board.hpp"
-#include "piece.hpp"
 
-#include "net.hpp"
-#include "chat.hpp"
-#include "wizard.hpp"
-#include "effect.hpp"
 #include "options.hpp"
 
 struct option_t option[MAX_OPTIONS];
