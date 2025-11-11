@@ -110,7 +110,7 @@ void randomise_wizard_name(int w)
  find_option_choice_variables(CONFIG_WIZARDS, "WIZARDS", "WIZARD NAME LIST", NULL, NULL, NULL, name);
  if (strlen(name) <= 0) return;
 
- sprintf(text, "\\text_files\\wizard_names\\%s.ini", name);
+ sprintf(text, "text_files\\wizard_names\\%s.ini", name);
  set_config_file_new(CONFIG_WIZARD_NAMES, text, false);
  if (config[CONFIG_WIZARD_NAMES].data == NULL) return;
 
@@ -291,7 +291,7 @@ void setup_wizard_positions(void)
  }
 
  // Semi-Random placement?
- if (check_option_choice(CONFIG_WIZARDS, "WIZARDS", "WIZARD POSITIONS", "CHAOTIC"))
+ if (check_option_choice(CONFIG_OPTIONS, "WIZARD", "WIZARD POSITIONS", "CHAOTIC"))
  {
   // Blank old positions
   for (w = 0 ; w < MAX_WIZARDS ; w++)
