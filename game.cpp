@@ -115,8 +115,8 @@ bool first_time_setup(void)
  log("  Successful.");
  log("");
 
-
- HideCursor( ) ;
+  HideCursor( ) ;
+  mouse.lock_cursor = GetConfigYes(CONFIG_DISPLAY, "DISPLAY", "LOCKCURSOR", false);
 
  // Setup timer.
  start_timer();

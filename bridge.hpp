@@ -116,7 +116,7 @@ void MessageBox(char *title, char *maintext);
 void Rest(int time);
 void UpdateScreen(void);
 bool Key(int k);
-void GetMouseMickeys(int *x, int *y);
+void GetMouseMickeys(float *x, float *y, bool lock);
 void AccelerateMouseMickeys(float *x, float *y, float scale, float scale_accel);
 bool LeftMouseButton(void);
 bool RightMouseButton(void);

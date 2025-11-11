@@ -63,7 +63,7 @@ struct alpha
 struct mouse_t
 {
  float x, y;
- bool old_left_click, old_right_click, left_click, right_click, spell_is_illusion;
+ bool lock_cursor, old_left_click, old_right_click, left_click, right_click, spell_is_illusion;
  int over_board_x, over_board_y, old_over_board_x, old_over_board_y, 
  over_spell_icon, old_over_spell_icon, over_control_icon;
  struct alpha alpha;
