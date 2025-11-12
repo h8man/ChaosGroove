@@ -709,7 +709,7 @@ int try_to_cast_spell(int x, int y)
 
  if (spell[sp].magic_attack)
  {
-  wait_time(200);
+  wait_time(100);
 
   // Final check is to see if we can beat creatures magic resistance!
     r = Rand() % 10;
@@ -759,7 +759,7 @@ int try_to_cast_spell(int x, int y)
 	 do_effect(EFFECT_EXPLODE, x, y, 64, 1);
 	 request_sound_effect(board[x][y][PIECE].name, "CREATURE", "ILLUSION_DISBELIEVED", false);
 	 kill_piece(x, y, game.current_wizard, false);
-	 wait_time(200);
+	 wait_time(100);
 	}
 	else
 	{

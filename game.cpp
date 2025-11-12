@@ -623,7 +623,7 @@ void ingame_loop(void)
 	 spell_list[s][game.current_wizard].alpha.current = 1.0 + (0.1 * ((panel.spell_icon_amount * s) / 500));     
 	 spell_list[s][game.current_wizard].alpha.target = 0.0;
   }
-	wait_time(200);
+	wait_time(100);
 	request_sound_effect("CREATURE", "CREATURE", "END TURN", false);
  }
 
@@ -729,7 +729,7 @@ void ingame_loop(void)
    {
     // Skip Spell icon
     game.end_turn = true;
-    wait_time(200);
+    wait_time(100);
 		request_sound_effect("CREATURE", "CREATURE", "END TURN", false);
    }   
   
@@ -1064,7 +1064,7 @@ void menu_loop(void)
  } while (!done);
 
  music.volume.target = 0.0;
- wait_time(240);
+ wait_time(140);
  PauseMusicStream(music.mod);
 }
 

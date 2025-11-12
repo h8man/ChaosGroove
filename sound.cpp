@@ -95,7 +95,7 @@ void play_music(void)
 	
 	//music.volume.current = 0.0;
 	music.volume.target = 1.0;
-	wait_time(240);
+	wait_time(150);
  }
 }
 

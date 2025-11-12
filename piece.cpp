@@ -848,7 +848,7 @@ void attack_piece(int x, int y)
  }
 
  do_attack_effect(x, y, 3); // Do attack effect 3 times for hand-hand combat.
- wait_time(225);
+ wait_time(125);
 
  // We've killed enemy piece!
  if (do_attack_calculation(att, def))

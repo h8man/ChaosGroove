@@ -397,7 +397,7 @@ void AI_select_spell(void)
  select_spell(best_spell);
  wizard[game.current_wizard].spell_is_illusion = best_illusion;
 
- wait_time(200);
+ wait_time(150);
 }
 
 void AI_select_spell_square(void)
