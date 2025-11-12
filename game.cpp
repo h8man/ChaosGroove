@@ -137,11 +137,8 @@ bool first_time_setup(void)
  game.release_version = true;
  game.AI_debug = false;
  game.debug_to_chat = false;//true;
-#ifdef _DEBUG
- game.show_fps = true;
-#elif
- game.show_fps = false;
-#endif // _DEBUG
+
+ game.show_fps = GetConfigYes(CONFIG_DISPLAY, "DISPLAY", "SHOWFPS", false);;
 
  // Call setup functions.
  setup_fonts();
