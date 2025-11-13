@@ -797,7 +797,7 @@ int AI_rate_piece(int x, int y, int tx, int ty, int layer, bool wiz)
  // of growing)
  if (old_range_from_selected < 2.0 && board[x][y][layer].grow_chance > 0)
  {
-	value += 5000 + (board[x][y][layer].grow_chance * (board[x][y][layer].grow_attack * 5));
+	value += 500 + (board[x][y][layer].grow_chance * (board[x][y][layer].grow_attack * 5));
   if (!wiz && board[x][y][layer].defence == 0) value = 1;
  }
  highlight_board[x][y].AI_score = value;
