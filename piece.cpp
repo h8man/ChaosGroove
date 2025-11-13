@@ -293,19 +293,37 @@ void kill_piece(int x, int y, int by, bool sound)
  if (board[x][y][MOUNTED].gfx == BLANK)
  {
   // No rider. Check if we have just killed a wizard..
-  if (wizard_here(x, y) != -1)
-  {
-   kill_wizard(wizard_here(x, y), by);
-  }
-	else
+	if (wizard_here(x, y) != -1)
 	{
-   if (sound) request_sound_effect(board[x][y][PIECE].name, "CREATURE", "DIES", false);
+		kill_wizard(wizard_here(x, y), by);
+	}
+	else if (sound)
+	{
+		if (!board[x][y][PIECE].illusion)
+		{
+			request_sound_effect(board[x][y][PIECE].name, "CREATURE", "DIES", false);
+		}
+		else
+		{
+			wait_time(50);
+			do_effect(EFFECT_EXPLODE, x, y, 64, 1);
+			request_sound_effect(board[x][y][PIECE].name, "CREATURE", "ILLUSION_DISBELIEVED", false);
+		}
 	}
  }
- else
- {
-  if (sound) request_sound_effect(board[x][y][MOUNTED].name, "CREATURE", "DIES", false);
- }
+else if (sound)
+{
+	 if (!board[x][y][MOUNTED].illusion)
+	 {
+		 request_sound_effect(board[x][y][MOUNTED].name, "CREATURE", "DIES", false);
+	 }
+	 else
+	 {
+		 wait_time(50);
+		 do_effect(EFFECT_EXPLODE, x, y, 64, 1);
+		 request_sound_effect(board[x][y][MOUNTED].name, "CREATURE", "ILLUSION_DISBELIEVED", false);
+	 }
+}
 
  // If creature has a body gfx then deal with that now.
  if (board[x][y][PIECE].body_gfx != -1 && !board[x][y][PIECE].illusion)
