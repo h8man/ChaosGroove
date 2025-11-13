@@ -553,12 +553,13 @@ int draw_text(const char *txt, int x, int x2, int y, int font, int kerning, Rgba
 
 		if (txt[t] == ' ' || t == strlen(txt) - 1) 
 		{
-			if (t == strlen(txt) - 1) b = a + 1;
 			size = MeasureTextEx(fonty[font], name, fonty[font].baseSize, kerning);
 			if (x + size.x > x2) break;
 		 
 			s = t;
 			b = a;
+
+			if (t == strlen(txt) - 1) b = a + 1;
 		}
 	 }
 	 name[b] = '\0';
