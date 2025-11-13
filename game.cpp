@@ -249,6 +249,8 @@ bool setup_fonts(void)
 	add_font_letters(fonty[FONT_SMALL], 56, '0', 13, 39, 13, 13, 14, 18, 10);
 	add_font_letters(fonty[FONT_SMALL], 66, '%', 52, 52, 13, 13, 14, 18, 1);
 	add_font_letters(fonty[FONT_SMALL], 67, ':', 65, 52, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 68, '(', 78, 52, 13, 13, 14, 18, 1);
+	add_font_letters(fonty[FONT_SMALL], 69, ')', 83, 52, 13, 13, 14, 18, 1);
 
 	if (!IsFontValid(fonty[FONT_SMALL]))
 	{

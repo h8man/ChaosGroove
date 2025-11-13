@@ -666,7 +666,9 @@ void draw_spell_info(void)
 
  // Draw spell name.
  a = draw_text(text, x, 0, y, FONT_LARGE, 0, Rgba(1.0, 1.0, 0.5), alpha, TEXT_LEFT);
-
+ a = 0;
+ if(spell[panel.last_spell_icon_over].magic_attack || spell[panel.last_spell_icon_over].chance_against_magic_resistance) a += draw_text("MAGIK ATTACK", x+a, 0, y+21, FONT_SMALL, 0, Rgba(0.5, 0.5, 0.5), alpha, TEXT_LEFT);
+ if(spell[panel.last_spell_icon_over].attack_value) a += draw_text(a>0 ? ", SPELL ATTACK" : "SPELL ATTACK", x+a, 0, y+21, FONT_SMALL, 0, Rgba(0.5, 0.5, 0.5), alpha, TEXT_LEFT);
  // Current wizards name.
  if (wizard[game.current_wizard].ability > 0)
  {
