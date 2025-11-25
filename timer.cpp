@@ -1,4 +1,5 @@
-#include <windows.h>
+//#include <windows.h>
+#include "raylib.h"
 #include "timer.hpp"
 
 
@@ -8,17 +9,26 @@
 
 struct timer_t timer;
 
+LARGE_TICK QueryPerformanceCounter()
+{
+    LARGE_TICK ticks;
+    ticks.QuadPart = (GetTime() * 10000000000); //nanosec per tick
+    //LARGE_INTEGER t;
+    //QueryPerformanceCounter(&t);
+    //ticks.QuadPart = t.QuadPart;
+    return ticks;
+}
+
 void start_timer(void) 
 {
- LARGE_INTEGER ticks;
- timer.high_freq = QueryPerformanceFrequency(&ticks);
- timer.tticks.QuadPart = ticks.QuadPart;
+ //LARGE_INTEGER ticks;
+ timer.high_freq = 1;//QueryPerformanceFrequency(&ticks);
+ timer.tticks.QuadPart = 10000000000;//ticks.QuadPart;
  timer.logic_frames = 0;
  	
  if (timer.high_freq)	
  {
-     LARGE_INTEGER ticks;
-  QueryPerformanceCounter(&ticks);
+  LARGE_TICK ticks = QueryPerformanceCounter();
   timer.tstart.QuadPart = ticks.QuadPart;
   timer.tlast = timer.tstart;	
  } 
@@ -28,9 +38,7 @@ void reset_timer(void)
 {
  if (timer.high_freq)
  {
-     LARGE_INTEGER ticks;
-
-  QueryPerformanceCounter(&ticks);
+  LARGE_TICK ticks = QueryPerformanceCounter();
   timer.tnow.QuadPart = ticks.QuadPart;
   timer.tstart = timer.tnow;
  } 
@@ -42,9 +50,7 @@ int check_timer(int frac_sec)
 
  if (timer.high_freq)
  {
-     LARGE_INTEGER ticks;
-
-  QueryPerformanceCounter(&ticks);
+  LARGE_TICK ticks = QueryPerformanceCounter();
   timer.tnow.QuadPart = ticks.QuadPart;
 
   t = (int) (((timer.tnow.QuadPart - timer.tstart.QuadPart) * frac_sec) / timer.tticks.QuadPart);		
