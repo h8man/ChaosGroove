@@ -2,7 +2,7 @@
 #include "raylib.h"
 #include "timer.hpp"
 
-
+#define TO_NANOSECOND 10000000000
 
 // High resolution timer code for Windows. Call start_timer first and then call 
 // check_timer with the required accuracy range.
@@ -12,7 +12,7 @@ struct timer_t timer;
 LARGE_TICK QueryPerformanceCounter()
 {
     LARGE_TICK ticks;
-    ticks.QuadPart = (GetTime() * 10000000000); //nanosec per tick
+    ticks.QuadPart = (GetTime() * TO_NANOSECOND); //nanosec per tick
     //LARGE_INTEGER t;
     //QueryPerformanceCounter(&t);
     //ticks.QuadPart = t.QuadPart;
@@ -23,7 +23,7 @@ void start_timer(void)
 {
  //LARGE_INTEGER ticks;
  timer.high_freq = 1;//QueryPerformanceFrequency(&ticks);
- timer.tticks.QuadPart = 10000000000;//ticks.QuadPart;
+ timer.tticks.QuadPart = TO_NANOSECOND;//ticks.QuadPart;
  timer.logic_frames = 0;
  	
  if (timer.high_freq)	
