@@ -443,6 +443,9 @@ void ingame_loop(void)
  char name[MAX_STRING];
  log("Starting Ingame Loop");
 
+ //clear fireworks
+ destroy_all_sprites();
+ 
  reset_timer();
 
  // Unlike in Chaos Funk, this is split into the 3 phases and the structure is much simpler.
