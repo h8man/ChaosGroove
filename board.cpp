@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include "math.h"
 #include "raylib.h"
 
 using namespace std;
@@ -29,7 +30,7 @@ void setup_board(void)
 {
  int x, y;
 
- log("Setting up board..");
+ log_no_cr("Setting up board..");
  
  // Blank all board and each layer.
  for (y = 0 ; y < MAX_BOARD_HEIGHT ; y++)
@@ -85,6 +86,9 @@ void setup_board(void)
  board_info.highlight_type = HIGHLIGHT_NONE;
 
  game.balance = 0; // Start of at Neutral Balance.
+
+ log("Done.");
+
 }
 
 void do_highlight_board_logic(void)

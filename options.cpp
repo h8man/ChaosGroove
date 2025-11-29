@@ -6,7 +6,7 @@
 #include <vector>
 #include <list>
 #include <sstream>
-#include "time.h"
+#include "string.h"
 #include "raylib.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ bool load_options(void)
 {
  char text[MAX_STRING], file[MAX_STRING];
 
- sprintf(text, "text_files\\game_options.ini");
+ sprintf(text, "Text_Files\\Game_Options.ini");
  sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_OPTIONS, file, false))
@@ -35,25 +35,25 @@ bool load_options(void)
   return false;
  }
 
- sprintf(text, "text_files\\menus.ini");
+ sprintf(text, "Text_Files\\Menus.ini");
  sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_MENUS, file, false))
  {
-	log("Can't open game options config file!");
+	log("Can't open menu options config file!");
   return false;
  }
 
- sprintf(text, "text_files\\wizard_options.ini");
+ sprintf(text, "Text_Files\\Wizard_Options.ini");
  sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_WIZARDS, file, false))
  {
-	log("Can't open game options config file!");
+	log("Can't open wizards options config file!");
   return false;
  }
 
- sprintf(text, "text_files\\sounds.ini");
+ sprintf(text, "Text_Files\\Sounds.ini");
  sprintf(file, "%s", GetFullPath(text));
  
  if (!set_config_file_new(CONFIG_SOUNDS, file, false))
@@ -63,7 +63,7 @@ bool load_options(void)
  }
 
  // Now load a name list
- sprintf(text, "text_files\\wizard_names\\funk.ini");
+ sprintf(text, "Text_Files\\Wizard_Names\\Funk.ini");
  sprintf(file, "%s", GetFullPath(text));
  if (!set_config_file_new(CONFIG_WIZARD_NAMES, file, false))
  {
@@ -71,11 +71,11 @@ bool load_options(void)
  }
 
  // Load Scrolly text
- sprintf(text, "text_files\\Scrolly.ini");
+ sprintf(text, "Text_Files\\Scrolly.ini");
  sprintf(file, "%s", GetFullPath(text));
  if (!set_config_file_new(CONFIG_SCROLLY, file, false))
  {
-  log("Can't open Scrolly text!");
+  log("Can't open scrolly text!");
  }
  menu_info.scrolly_pos = 0;
 
@@ -215,6 +215,8 @@ bool find_option_choice_variables(int cfg, char *section, char *option, int *var
 
  sprintf(text, "OPTION_CHOICE_%d_TEXT_VAR1", c);
  if (text_var1) GetConfigString(cfg, name, text, text_var1, MAX_STRING);
+
+ return true;
 }
 
 void do_options(bool draw)

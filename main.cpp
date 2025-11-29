@@ -9,18 +9,20 @@
 #include <vector>
 #include <list>
 #include <sstream>
-#include "time.h"
 #include "game.hpp"
 #include "log.hpp"
 
 using namespace std;
 
 
-
+#if defined(_WIN32)
 int WINAPI WinMain(IN HINSTANCE hInstance,
 	IN HINSTANCE hPrevInstance,
 	IN LPSTR lpCmdLine,
 	IN int nShowCmd)
+#else
+int main(void)
+#endif
 {
 
 	// Do first time setup stuff, quitting on error.

@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <sstream>
+#include "string.h"
 #include "math.h"
 #include "raylib.h"
 

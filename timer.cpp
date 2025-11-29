@@ -7,7 +7,7 @@
 // High resolution timer code for Windows. Call start_timer first and then call 
 // check_timer with the required accuracy range.
 
-struct timer_t timer;
+struct ttimer_t timer;
 
 LARGE_TICK QueryPerformanceCounter()
 {

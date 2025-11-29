@@ -1,4 +1,4 @@
-// bridge (.Cpp)
+﻿// bridge (.Cpp)
 // -----------------
 
 // Bridge code (used to add some handy RGBA code as well as wrap around some PTK functions)
@@ -8,7 +8,11 @@
 #include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "time.h"
+#include "string.h"
+#include "math.h"
+#include <filesystem>
+#include <string>
+#include <algorithm>
 #include "raylib.h"
 
 using namespace std;
@@ -100,7 +104,7 @@ unsigned long Rand()
 // Returns a Floating point random number between min and max.
 float FRand( float min, float max )
 {
- return min + float(Rand())/float(RAND_MAX) * (max-min);
+ return min + float(Rand())/float(65535) * (max-min);
 }
 
 int IRand(int min, int max)
@@ -109,7 +113,7 @@ int IRand(int min, int max)
 
  return min + (Rand() % (max + 1 - min));
 }
-
+namespace fs = std::filesystem;
 vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension, unsigned int numNumbers)
 {
    vector< Texture2D *> bitmapList;
@@ -124,8 +128,9 @@ vector < Texture2D *> LoadListOfBitmaps( string filenameBegin, string extension,
 	  {
          numbers = string("0") + numbers;
       }
-      
-      string filename = filenameBegin + numbers + string(".") + extension;
+	  fs::path path = filenameBegin;
+	  path /= (numbers + string(".") + extension);
+      string filename = path.generic_string();
 
       Texture2D *frame = new Texture2D();
 	  Image img = LoadImage(GetFullPath(filename.c_str()));
@@ -159,11 +164,14 @@ int LoadAndAddBitmaps(vector< Texture2D *> *bitmapList, string filenameBegin, st
       stringstream stream;
       stream << index;
       string numbers = stream.str();
-      
-      string filename = filenameBegin + numbers + string(".") + extension;
+
+	  fs::path path = filenameBegin;
+	  path /= (numbers + string(".") + extension);
+	  string filename = path.generic_string();
 
       Texture2D* frame = new Texture2D();
-	  memcpy(frame, &LoadTexture(GetFullPath(filename.c_str())),sizeof(Texture2D));
+	  Texture2D temp = LoadTexture(GetFullPath(filename.c_str()));
+	  memcpy(frame, &temp, sizeof(Texture2D));
 
 	  if (!IsTextureValid(*frame))
 	  {
@@ -228,8 +236,10 @@ bool CreateGameScreen(int width, int height, const char* ico, bool window, bool 
 	int y = (GetMonitorHeight(GetCurrentMonitor()) - height) / 2;
 	SetWindowPosition(x,y);
 	// Clear newly created screen.
+	BeginDrawing();
 	ClearScreen();
-
+	DrawText("INITIALIZING...", 20, height/1.1, 40, RAYWHITE);
+	EndDrawing();
 	ClearWindowState(FLAG_WINDOW_HIDDEN);
 	game.opengl = 1 - dx;
 	return true;
@@ -410,9 +420,76 @@ long FileSize(char *FileName)
  return 0;
 }
 
+// lowercase helper
+static std::string lower(const std::string& s) {
+	std::string out = s;
+	std::transform(out.begin(), out.end(), out.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	return out;
+}
+
+// Fixes a whole path case-insensitively.
+// Example: FixPathInsensitive("assets/Textures/PLAYER.PNG");
+std::string FixPathInsensitive(const std::string& inputPath)
+{
+	fs::path p = inputPath;
+	fs::path resolved;
+
+	// If path is relative → start at current dir
+	if (!p.is_absolute())
+		resolved = fs::current_path();
+	else
+		resolved = fs::path(p.root_path()); // "/" or "C:\"
+
+	// Iterate over each component ("assets", "textures", "player.png")
+	for (const auto& part : p.relative_path()) {
+		if (part.empty()) continue; // skip no-op parts
+		std::string target = lower(part.string());
+
+		bool matched = false;
+
+		// List entries inside 'resolved'
+		if (fs::exists(resolved) && fs::is_directory(resolved)) {
+			for (auto& entry : fs::directory_iterator(resolved)) {
+				std::string entryNameLower = lower(entry.path().filename().string());
+
+				if (entryNameLower == target) {
+					resolved /= entry.path().filename();
+					matched = true;
+					break;
+				}
+			}
+		}
+
+		if (!matched) {
+			// Not found (path component doesn't exist)
+			return "";
+		}
+	}
+
+	return resolved.generic_string(); // consistent "/" separators
+}
+
+const char* path_to_portable(const char *input) {
+    static char buffer[1024];
+    size_t i = 0;
+
+    if (!input) return NULL;
+
+    for (; input[i] && i < sizeof(buffer) - 1; i++) {
+        buffer[i] = (input[i] == '\\') ? '/' : input[i];
+    }
+    buffer[i] = '\0';
+
+    return buffer;  // const char*
+}
 const char* GetFullPath(const char* filePath)
 {
-	return filePath;
+	static char result[MAX_STRING];
+	const char* new_path = path_to_portable(filePath);
+	std::string final_path = FixPathInsensitive(new_path);
+	strncpy(result, final_path.c_str(), MAX_STRING);
+    return result;
 }
 
 void Draw(Texture2D* tex, Rectangle dest)
@@ -501,13 +578,9 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
 
 void SetSolidColour(Rgba col)
 {
-	int loc = GetShaderLocation(Shaders[SHADER_SOLID], "tint");
-
 	BeginBlendMode(BLEND_ALPHA);
 	BeginShaderMode(Shaders[SHADER_SOLID]);
 
-	Vector4 tint = { col.r, col.g, col.b, col.a }; 
-	SetShaderValue(Shaders[SHADER_SOLID], loc, &tint, SHADER_UNIFORM_VEC4);
  //GLfloat texcols[4];
 
  //bmp->setBlitColor(col.r, col.g, col.b, 1.0);
@@ -635,7 +708,7 @@ int slprintf(char *buffer, size_t count, const char *fmt, ...)
 	int ret;
 
 	va_start(ap, fmt);
-#if !defined __APPLE__	
+#ifdef _WIN32	
 	ret = _vsnprintf(buffer, count-1, fmt, ap);
 #else
 	ret = vsnprintf(buffer, count-1, fmt, ap);

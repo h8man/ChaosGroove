@@ -4,7 +4,6 @@
 #include <vector>
 #include <list>
 #include <sstream>
-#include "time.h"
 #include "raylib.h"
 
 using namespace std;

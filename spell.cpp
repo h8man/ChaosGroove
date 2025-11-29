@@ -5,8 +5,8 @@
 #include <vector>
 #include <list>
 #include <sstream>
+#include "string.h"
 #include "raylib.h"
-#include "time.h"
 
 using namespace std;
 

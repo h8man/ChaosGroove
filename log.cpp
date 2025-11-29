@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 #include "log.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 
 // Logging functions:
 // ------------------

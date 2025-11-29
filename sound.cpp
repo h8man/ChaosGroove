@@ -5,8 +5,13 @@
 #include <list>
 #include <sstream>
 #include <string.h>
+#ifdef _WIN32
+#define stricmp _stricmp
+#else
+#include <strings.h>
+#define stricmp strcasecmp
+#endif
 #include "raylib.h"
-#include "time.h"
 
 using namespace std;
 

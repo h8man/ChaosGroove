@@ -1,17 +1,23 @@
 #version 100
+
 precision mediump float;
 
+// Input vertex attributes (from vertex shader)
 varying vec2 fragTexCoord;
 varying vec4 fragColor;
 
+// Input uniform values
 uniform sampler2D texture0;
-uniform vec4 tint;
+uniform vec4 colDiffuse;
+
+// NOTE: Add your custom variables here
 
 void main()
 {
-    // Sample the texture's alpha
-    float alpha = texture2D(texture0, fragTexCoord).a;
+    // Texel color fetching from texture sampler
+    vec4 texelColor = texture2D(texture0, fragTexCoord);
 
-    // Use tint color RGB, apply alpha mask
-    gl_FragColor = vec4(tint.rgb, alpha * tint.a);
+    // NOTE: Implement here your fragment shader code
+
+    gl_FragColor = vec4(fragColor.rgb, texelColor.a*fragColor.a);;
 }

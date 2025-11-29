@@ -15,8 +15,8 @@
 #include <vector>
 #include <list>
 #include <sstream>
+#include "string.h"
 #include "raylib.h"
-#include "time.h"
 
 using namespace std;
 
@@ -90,13 +90,20 @@ bool setup_display(void)
 
 bool first_time_setup(void)
 {
+SetTraceLogLevel(LOG_DEBUG);
  // Setup logfile.
  open_log( GetFullPath("logfile.txt") );
  log_header();
 
  // Setup screen.
+#ifdef _WIN32
  SetWindowState(FLAG_WINDOW_HIDDEN);
- InitWindow(1, 1, "Initializing...");
+#endif // _WIN32
+ 
+ InitWindow(800, 600, "Initializing...");
+
+ SetWindowState(FLAG_WINDOW_HIDDEN);
+
  ClearScreen();
 
  get_desktop_resolution(&screen.desktop_w, &screen.desktop_h);
@@ -148,7 +155,10 @@ bool first_time_setup(void)
  setup_board();
  AI_setup();
  load_spells();
- load_shaders();
+ if (!load_shaders())
+ {
+	 log("Shaders failed to load.");
+ }
  // Sound setup
  setup_sound_system();
 
@@ -169,12 +179,14 @@ bool first_time_setup(void)
 
 bool load_shaders(void)
 {
-	Shader solid = LoadShader(0, TextFormat("Shaders\\solid%i.fs", GLSL_VERSION));
+	Shader solid = LoadShader(0, GetFullPath(TextFormat("Shaders\\solid%i.fs", GLSL_VERSION)));
 	if (!IsShaderValid(solid))
 	{
 		return false;
 	}
 	Shaders[SHADER_SOLID] = solid;
+
+	return true;
 }
 bool setup_fonts(void)
 {
@@ -189,7 +201,7 @@ bool setup_fonts(void)
 	//	smallfontTablePtr[c]._c = 0;
 	//}
 
-	Image fontImage = LoadImage("Gfx\\Fonts\\large.png");
+	Image fontImage = LoadImage(GetFullPath("Gfx\\Fonts\\large.png"));
 
 	// Manually load ASCII characters from the image grid
 	fonty[FONT_LARGE] = Font();//LoadFontFromImage(fontImage, BLACK, 65); // 32 = starting ASCII code (' ')
@@ -228,7 +240,7 @@ bool setup_fonts(void)
 	//fonty[FONT_LARGE]->getKGraphicPtr()->setTextureQuality(true);
 	//fonty[FONT_LARGE]->getKGraphicPtr()->allowTextureWrap(true);
 
-	fontImage = LoadImage("Gfx\\Fonts\\small.png");
+	fontImage = LoadImage(GetFullPath("Gfx\\Fonts\\small.png"));
 
 	fonty[FONT_SMALL] = Font();
 	fonty[FONT_SMALL].baseSize = 13;
@@ -301,10 +313,8 @@ bool load_all_images(void)
  {
   log("Could not load sprite bitmaps!");
   //KMiscTools::messageBox("Error!", "Could not load sprite bitmaps!" );
-  //return false;
+  return false;
  }
- log("Done.");
-
  log("Done.");
 
  return true;
@@ -442,6 +452,8 @@ void ingame_loop(void)
  bool done, real = false;
  char name[MAX_STRING];
  log("Starting Ingame Loop");
+
+
 
  //clear fireworks
  destroy_all_sprites();
