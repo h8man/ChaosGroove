@@ -61,6 +61,7 @@
       </PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>raylibdll.lib;ddraw.lib;winmm.lib;opengl32.lib;dsound.lib;dxguid.lib;wininet.lib;shell32.lib;d3dx.lib;ws2_32.lib;RakNetLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>

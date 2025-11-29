@@ -12,13 +12,13 @@ typedef union {
     long long QuadPart;
 } LARGE_TICK;
 
-struct timer_t   
+struct ttimer_t   
 {
  LARGE_TICK tstart, tticks, tnow, tlast;
  int high_freq, logic_frames, logic_fps, gfx_frames, gfx_fps;
 };
 
-extern struct timer_t timer;
+extern struct ttimer_t timer;
 
 void start_timer(void);
 void reset_timer(void);

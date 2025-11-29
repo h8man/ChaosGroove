@@ -7,6 +7,7 @@
 #include <list>
 #include <sstream>
 #include <sys/stat.h>
+#include "string.h"
 #include "raylib.h"
 
 using namespace std;
@@ -108,6 +109,8 @@ bool write_config_file(int cfg)
  }
 
  fclose(f);
+
+ return true;
 }
 
 void SetConfigData(int cfg, char *data, int len)

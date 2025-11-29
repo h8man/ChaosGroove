@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include "string.h"
 #include "raylib.h"
 
 using namespace std;
