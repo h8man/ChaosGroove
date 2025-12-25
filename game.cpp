@@ -376,8 +376,9 @@ int loop(void)
  // accuracy). logic is decreased below..
  
  logic = check_timer(240);
-
- Rest(5);
+#if !defined(__EMSCRIPTEN__) //browser ASYNCIFY deals with sleep
+  Rest(5);
+#endif
  /*
  // If the game is switched out then rest to save CPU and batteries.
  if (game.switched_out)
@@ -393,7 +394,7 @@ int loop(void)
  
  // Frames to do - frames done (both in last second).
  logic = logic - timer.logic_frames;
-   
+ //log("start %lld  now %lld delta %f", timer.tstart.QuadPart, timer.tnow.QuadPart, double(timer.tnow.QuadPart - timer.tstart.QuadPart) / timer.tticks.QuadPart);  
  // We have a frame to do:  
  if (logic > 0)
  {   
@@ -401,10 +402,14 @@ int loop(void)
   frames = logic; // How many frames to do.
   
 	if (game.exit_key) frames = 1;
-
-  do
+#if defined(__EMSCRIPTEN__) //call once per frame, do not alow browser sleep
+ check_for_exit_key();
+#endif
+ do
   {
+#if !defined(__EMSCRIPTEN__)
    check_for_exit_key();
+#endif
    do_scene_logic();
 
    logic--;

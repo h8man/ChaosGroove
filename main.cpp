@@ -66,15 +66,11 @@ end_game:
 void _sleep(int milliseconds)
 {
 #if defined(__EMSCRIPTEN__)
-	//void WaitTime(double seconds);     
-	// Web builds cannot block — simulate with timer loop
-	double start = GetTime();
-	while ((GetTime() - start) * 1000.0f < milliseconds)
-	{
-		
-	}
+
+	emscripten_sleep(milliseconds);
 
 #elif defined(_WIN32)
+
 	Sleep((DWORD)(milliseconds));
 
 #else
