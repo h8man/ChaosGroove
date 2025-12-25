@@ -199,10 +199,10 @@ bool CheckWindowFocus(void)
  return IsWindowFocused();
 }
 
-void RestoreWindow(void)
-{
-	RestoreWindow();
-}
+//void RestoreWindow(void)
+//{
+//	RestoreWindow();
+//}
 
 void Rest(int time)
 {
@@ -242,6 +242,10 @@ bool CreateGameScreen(int width, int height, const char* ico, bool window, bool 
 	EndDrawing();
 	ClearWindowState(FLAG_WINDOW_HIDDEN);
 	game.opengl = 1 - dx;
+
+	//webGL setup?
+	//SetTargetFPS(140);
+
 	return true;
 }
 
@@ -349,11 +353,18 @@ void GetMouseMickeys(float *x, float *y, bool lock)
 	float fx, fy;
 	if (lock)
 	{
+#if defined(__EMSCRIPTEN__)
+		Vector2 delta = GetMouseDelta();
+		fx = delta.x;
+		fy = delta.y;
+#else
+
 		fx = (GetMouseX() - (ScreenWidth() / 2)) * 4;
 		fy = (GetMouseY() - (ScreenHeight() / 2)) * 4;
 
 		if (IsWindowFocused()) SetMousePosition(ScreenWidth() / 2, ScreenHeight() / 2);
 
+#endif
 		AccelerateMouseMickeys(&fx, &fy, 20, 40);
 
 		*x += fx;
@@ -362,6 +373,16 @@ void GetMouseMickeys(float *x, float *y, bool lock)
 	}
 	else
 	{
+#if defined(__EMSCRIPTEN__)
+		Vector2 delta = GetMouseDelta();
+		fx = delta.x;
+		fy = delta.y;
+
+		AccelerateMouseMickeys(&fx, &fy, 20, 40);
+
+		*x += fx;
+		*y += fy;
+#else
 		float scale = fminf((float)ScreenWidth() / RendererTexture.texture.width,
 			(float)ScreenHeight() / RendererTexture.texture.height);
 
@@ -372,6 +393,7 @@ void GetMouseMickeys(float *x, float *y, bool lock)
 
 		*x = (GetMouseX() - fx) / scale;
 		*y = (GetMouseY() - fy) / scale;
+#endif
 	}
 
 }

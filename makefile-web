@@ -1,0 +1,68 @@
+# ==========================================================
+# Makefile: raylib + Emscripten (WebAssembly)
+# ==========================================================
+
+# Compiler (Emscripten C++)
+CXX = em++
+
+# Output
+TARGET = index.html
+
+# Directories
+SRC_DIR = .
+BIN_DIR = build
+ASSETS  = Gfx Music Pieces Shaders Sounds Spells Text_Files
+
+RAYLIB_INC = web/raylib/include
+RAYLIB_LIB = web/raylib/lib/libraylib.a
+
+# Build type: Debug or Release
+BUILD ?= Release
+
+# Source files
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
+
+# Compiler flags
+ifeq ($(BUILD),Debug)
+    CXXFLAGS = -std=c++17 -g -O0 -Wall -D_DEBUG -sASSERTIONS -s SAFE_HEAP=1
+else
+    CXXFLAGS = -std=c++17 -O3 -Wall
+endif
+
+# Emscripten / Web flags
+WEB_FLAGS = \
+    -DPLATFORM_WEB \
+    -s USE_GLFW=3 \
+    -s ASYNCIFY \
+    -s FORCE_FILESYSTEM=1 \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -sEXPORTED_RUNTIME_METHODS=["ccall","HEAPF32"] \
+    --shell-file shell.html
+
+# Include paths
+INCLUDES = -I$(RAYLIB_INC)
+
+PRELOAD = $(foreach dir,$(ASSETS),--preload-file $(dir))
+
+# Build
+all: $(BIN_DIR)/$(TARGET)
+
+$(BIN_DIR)/$(TARGET): $(SRC)
+	@mkdir -p $(BIN_DIR)
+	cp Gfx/icon.ico $(BIN_DIR)
+	cp Gfx/icon.png $(BIN_DIR)
+	$(CXX) $(SRC) \
+		-o $@ \
+		$(CXXFLAGS) \
+		$(WEB_FLAGS) \
+		$(INCLUDES) \
+		$(PRELOAD) \
+		$(RAYLIB_LIB)
+
+# Clean
+clean:
+	rm -rf $(BIN_DIR)
+
+# Run locally
+run: all
+	emrun --no_browser --port 8080 $(BIN_DIR)/$(TARGET)

@@ -14,9 +14,14 @@ FILE *log_file;
 
 int open_log(const char *filename)
 {
+#if defined(__EMSCRIPTEN__)
+ //redirect to console
+ log_file = stdout; return 0;
+#else
  if ((log_file = fopen(filename, "w")) != NULL) return 0; /* Opened succesfully. */
 
  return -1; /* Failed. */
+#endif
 }
 
 int log(char *format, ...)
