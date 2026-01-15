@@ -90,7 +90,12 @@ bool setup_display(void)
 
 bool first_time_setup(void)
 {
-SetTraceLogLevel(LOG_DEBUG);
+#ifdef _DEBUG
+
+	SetTraceLogLevel(LOG_DEBUG);
+
+#endif // _DEBUG
+
  // Setup logfile.
  open_log( GetFullPath("logfile.txt") );
  log_header();

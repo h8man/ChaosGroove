@@ -16,7 +16,7 @@ OBJ_DIR = bin/obj
 INC_DIR = linux/raylib/include
 
 # Build type: Debug or Release
-BUILD ?= Debug
+BUILD ?= Release
 
 # Compiler flags
 ifeq ($(BUILD),Debug)
