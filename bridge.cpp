@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 #include "raylib.h"
 
 using namespace std;
@@ -442,6 +443,20 @@ long FileSize(char *FileName)
  return 0;
 }
 
+const char* path_to_portable(const char* input) {
+	static char buffer[1024];
+	size_t i = 0;
+
+	if (!input) return NULL;
+
+	for (; input[i] && i < sizeof(buffer) - 1; i++) {
+		buffer[i] = (input[i] == '\\') ? '/' : input[i];
+	}
+	buffer[i] = '\0';
+
+	return buffer;  // const char*
+}
+
 // lowercase helper
 static std::string lower(const std::string& s) {
 	std::string out = s;
@@ -454,27 +469,54 @@ static std::string lower(const std::string& s) {
 // Example: FixPathInsensitive("assets/Textures/PLAYER.PNG");
 std::string FixPathInsensitive(const std::string& inputPath)
 {
+	static std::unordered_map<std::string, std::string> cache;
+
+	//auto it = cache.find(lower(inputPath));
+	//if (it != cache.end())
+	//	return it->second;
+
 	fs::path p = inputPath;
 	fs::path resolved;
 
 	// If path is relative → start at current dir
 	if (!p.is_absolute())
+	{
 		resolved = fs::current_path();
+		auto p_it = cache.find(path_to_portable(lower((resolved / p).string()).c_str()));
+		if (p_it != cache.end())
+			return p_it->second;
+	}
 	else
+	{
 		resolved = fs::path(p.root_path()); // "/" or "C:\"
-
+		auto i_it = cache.find(path_to_portable(lower(inputPath).c_str()));
+		if (i_it != cache.end())
+			return i_it->second;
+	}
 	// Iterate over each component ("assets", "textures", "player.png")
 	for (const auto& part : p.relative_path()) {
 		if (part.empty()) continue; // skip no-op parts
 		std::string target = lower(part.string());
 
+		auto part_it = cache.find(path_to_portable(lower((resolved / part).string()).c_str()));
+		if (part_it != cache.end()) {
+			resolved = part_it->second;
+			continue;
+		}
+
 		bool matched = false;
 
 		// List entries inside 'resolved'
-		if (fs::exists(resolved) && fs::is_directory(resolved)) {
-			for (auto& entry : fs::directory_iterator(resolved)) {
-				std::string entryNameLower = lower(entry.path().filename().string());
+		if (fs::is_directory(resolved))
+		{
 
+			for (auto& entry : fs::directory_iterator(resolved))
+			{
+				std::string entryNameLower = lower(entry.path().filename().string());
+				if (!entryNameLower.empty())
+				{
+					cache[path_to_portable(lower(entry.path().string()).c_str())] = entry.path().string();
+				}
 				if (entryNameLower == target) {
 					resolved /= entry.path().filename();
 					matched = true;
@@ -485,6 +527,7 @@ std::string FixPathInsensitive(const std::string& inputPath)
 
 		if (!matched) {
 			// Not found (path component doesn't exist)
+			//cache[inputPath] = "";
 			return "";
 		}
 	}
@@ -492,19 +535,6 @@ std::string FixPathInsensitive(const std::string& inputPath)
 	return resolved.generic_string(); // consistent "/" separators
 }
 
-const char* path_to_portable(const char *input) {
-    static char buffer[1024];
-    size_t i = 0;
-
-    if (!input) return NULL;
-
-    for (; input[i] && i < sizeof(buffer) - 1; i++) {
-        buffer[i] = (input[i] == '\\') ? '/' : input[i];
-    }
-    buffer[i] = '\0';
-
-    return buffer;  // const char*
-}
 const char* GetFullPath(const char* filePath)
 {
 	static char result[MAX_STRING];
