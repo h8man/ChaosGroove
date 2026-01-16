@@ -1,7 +1,73 @@
-Chaos Groove is a remake by Richard Phipps of the classic Spectrum game Chaos: Battle of the Wizards.
+# Chaos Groove (GLX)
 
-Build instructions.
+> This project is a port of "Chaos Groove"
+by Richard Phipps, originally developed for Windows.
 
-Download and install Visual Studio 2010 express.
+This version targets Windows/Linux/Wasm (Web) and intended as game history preservation project.
 
-Open the project file: ChaosGroove.sln
+#Play in browser
+
+url
+
+---
+
+## Overview
+
+Chaos Groove is a remake by Richard Phipps of the classic Spectrum game Chaos: Battle of the Wizards by Julian Gollop.
+
+https://chaosgroove.wordpress.com/
+
+---
+
+
+🔗 **Original project:** https://github.com/adamjimenez/ChaosGroove
+
+All credit for the original design and implementation belongs to the original author(s).
+
+---
+
+## Features
+
+- Platform-native implementation
+- Miantained code portability
+- Randering with raylib
+- All binaries included
+
+Planned to 'restore' netplay
+
+---
+
+## Release
+
+url 
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/your-org/your-repo.git
+cd your-repo
+
+##Build instructions.
+
+###Windows:
+
+Download and install Visual Studio 2022 (any edition).
+
+Open the project file: ChaosGroove.sln build and run.
+
+###Linux
+
+make
+chaos-groove-run.sh
+
+###Linux/Wasm
+
+Install emsdk
+
+make -f makefile-web
+
+or
+
+make run -f makefile-web
