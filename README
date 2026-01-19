@@ -71,3 +71,9 @@ make -f makefile-web
 or
 
 make run -f makefile-web
+
+##License
+
+// You are free to use and modify this source code however you see fit, as long as this game or any modified
+// version is not sold in any way. This game must always be freely available!
+// Richard Phipps, 13/04/08
