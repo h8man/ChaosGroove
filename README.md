@@ -7,7 +7,7 @@ This version targets Windows/Linux/Wasm (Web) and intended as game history prese
 
 #Play in browser
 
-url
+https://h8man.github.io/ChaosGroove/
 
 ---
 
@@ -48,7 +48,7 @@ url
 ```bash
 git clone https://github.com/your-org/your-repo.git
 cd your-repo
-
+```
 ##Build instructions.
 
 ###Windows:
@@ -58,20 +58,21 @@ Download and install Visual Studio 2022 (any edition).
 Open the project file: ChaosGroove.sln build and run.
 
 ###Linux
-
+```
 make
 chaos-groove-run.sh
+```
 
 ###Linux/Wasm
 
 Install emsdk
-
+```
 make -f makefile-web
-
+```
 or
-
+```
 make run -f makefile-web
-
+```
 ##License
 
 // You are free to use and modify this source code however you see fit, as long as this game or any modified
