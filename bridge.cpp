@@ -352,20 +352,43 @@ bool RightMouseButton(void)
 void GetMouseMickeys(float *x, float *y, bool lock)
 {
 	float fx, fy;
-	if (lock)
-	{
+
 #if defined(__EMSCRIPTEN__)
-		Vector2 delta = GetMouseDelta();
-		fx = delta.x;
-		fy = delta.y;
+	if (GetTouchPointCount() > 0)
+	{
+		Vector2 pos = GetTouchPosition(0);
+
+		float scale = fminf((float)ScreenWidth() / RendererTexture.texture.width,
+			(float)ScreenHeight() / RendererTexture.texture.height);
+
+		float w = (int)(RendererTexture.texture.width * scale);
+		float h = (int)(RendererTexture.texture.height * scale);
+		fx = (ScreenWidth() - w) / 2;
+		fy = (ScreenHeight() - h) / 2;
+
+		*x = (pos.x - fx) / scale;
+		*y = (pos.y - fy) / scale;
+		return;
+	}
+
+	Vector2 delta = GetMouseDelta();
+	fx = delta.x;
+	fy = delta.y;
+
+	AccelerateMouseMickeys(&fx, &fy, 20, 40);
+
+	*x += fx;
+	*y += fy;
 #else
 
+	if (lock)
+	{
 		fx = (GetMouseX() - (ScreenWidth() / 2)) * 4;
 		fy = (GetMouseY() - (ScreenHeight() / 2)) * 4;
 
 		if (IsWindowFocused()) SetMousePosition(ScreenWidth() / 2, ScreenHeight() / 2);
 
-#endif
+
 		AccelerateMouseMickeys(&fx, &fy, 20, 40);
 
 		*x += fx;
@@ -374,16 +397,6 @@ void GetMouseMickeys(float *x, float *y, bool lock)
 	}
 	else
 	{
-#if defined(__EMSCRIPTEN__)
-		Vector2 delta = GetMouseDelta();
-		fx = delta.x;
-		fy = delta.y;
-
-		AccelerateMouseMickeys(&fx, &fy, 20, 40);
-
-		*x += fx;
-		*y += fy;
-#else
 		float scale = fminf((float)ScreenWidth() / RendererTexture.texture.width,
 			(float)ScreenHeight() / RendererTexture.texture.height);
 
@@ -394,9 +407,9 @@ void GetMouseMickeys(float *x, float *y, bool lock)
 
 		*x = (GetMouseX() - fx) / scale;
 		*y = (GetMouseY() - fy) / scale;
-#endif
-	}
 
+	}
+#endif
 }
 
 void AccelerateMouseMickeys(float *x, float *y, float scale, float scale_accel)
