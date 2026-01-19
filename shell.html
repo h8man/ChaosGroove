@@ -16,16 +16,25 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
+            min-height: 100svh; /* SAFE viewport height */
+            overflow: auto;
             background: black;
         }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-        canvas {
-            display: block;
-            margin: auto;
-            background: black;
+            /* Push content below browser UI */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
+        canvas {
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* helps non-WebGL canvases */ }
 
         #loading {
             position: absolute;
