@@ -1090,6 +1090,8 @@ void menu_loop(void)
 
  } while (!done);
 
+ save_options();
+
  music.volume.target = 0.0;
  wait_time(140);
  PauseMusicStream(music.mod);
