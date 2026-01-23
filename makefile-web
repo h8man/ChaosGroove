@@ -37,7 +37,8 @@ WEB_FLAGS = \
     -s FORCE_FILESYSTEM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -sEXPORTED_RUNTIME_METHODS=["ccall","HEAPF32"] \
-    --shell-file shell.html
+    --shell-file shell.html \
+	-lidbfs.js
 
 # Include paths
 INCLUDES = -I$(RAYLIB_INC)

@@ -54,6 +54,7 @@
 
     <script>
         var Module = {
+            noInitialRun: true,
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
                 return canvas;
@@ -62,10 +63,43 @@
         // Hide loading text once WASM is ready
         if (typeof Module !== 'undefined') {
             Module.onRuntimeInitialized = function () {
+                //mount persistant storage
+                if (!FS.analyzePath('/persist').exists) {
+                    FS.mkdir('/persist');
+                }
+                FS.mount(IDBFS, {}, '/persist');
+                // Pull persistent data into memory
+                FS.syncfs(true, () => {
+                    // Overwrite files the app expects
+                    if (FS.analyzePath('/persist/Game_Options.ini').exists) {
+                        FS.writeFile(
+                            '/Text_Files/Game_Options.ini',
+                            FS.readFile('/persist/Game_Options.ini', { encoding: "utf8" }),
+                            { encoding: "utf8" }
+                        );
+                    }
+                    // App will now see swapped files
+                    Module._main(); // start app manually
+                });
                 const loading = document.getElementById('loading');
                 if (loading) loading.remove();
             };
         }
+
+        function saveSettings() {
+
+            if (FS.analyzePath('/Text_Files/Game_Options.ini').exists) {
+                FS.writeFile(
+                    '/persist/Game_Options.ini',
+                    FS.readFile('/Text_Files/Game_Options.ini', { encoding: "utf8" }),
+                    { encoding: "utf8" }
+                    );
+                FS.syncfs(false, () => { });
+            }
+        }
+
+        window.addEventListener("beforeunload", saveSettings);
+
     </script>
 
     {{{ SCRIPT }}}
