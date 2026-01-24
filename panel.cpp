@@ -250,7 +250,7 @@ void draw_panels(void)
  Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
  //TODO:
  // Blank any old cloud data in panel.
- //Draw(gfx[0], Rectangle{ 0, (float)panel.info_area_y, 1280, 960, }, BLACK);
+ Draw(gfx[8], Rectangle{ 0, (float)panel.info_area_y, 1280, 960, }, BLACK);
  SetTextureWrap(*gfx[8], TEXTURE_WRAP_CLAMP);
  SetTextureFilter(*gfx[8], TEXTURE_FILTER_BILINEAR);
  // Now draw 'reflection' glow effect on info panel.
@@ -260,8 +260,8 @@ void draw_panels(void)
 
  // Now draw 'reflection' glow effect on spell panel.
  Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height-1 },
-	 Rectangle{ (float)panel.spell_area_x, (float)panel.spell_area_y,
-	(float)panel.spell_area_w,(float)panel.spell_area_h },
+	 Rectangle{ (float)board_info.start_x+board_info.board_width*board_info.square_width+board_info.border_size, (float)panel.spell_area_y,
+	(float)1280-(board_info.start_x + board_info.board_width * board_info.square_width + board_info.border_size),(float)panel.spell_area_h},
 	tint);
 
  if (panel.info_area_show_piece_stats)

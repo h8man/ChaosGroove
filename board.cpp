@@ -709,7 +709,7 @@ void draw_board(void)
 
  // Top border
  Draw(gfx[1], Rectangle{ (float)board_info.start_x, (float)board_info.start_y - board_info.border_size,
-	 (float)board_info.start_x + (board_info.board_width * board_info.square_width) + board_info.border_size, (float)board_info.start_y }, tint);
+	 (float)board_info.start_x + (board_info.board_width * board_info.square_width), (float)board_info.start_y }, tint);
 
  // Top right corner
  Draw(gfx[2], Rectangle{ (float)board_info.start_x + (board_info.board_width * board_info.square_width), (float)board_info.start_y - board_info.border_size,
