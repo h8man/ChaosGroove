@@ -106,7 +106,7 @@ void draw_mouse(void);
 void draw_bar_effect(void);
 
 void clear_sprite_data(sprite_t &s);
-void add_sprite(sprite_t &sprite);
+void add_sprite(sprite_t sprite);
 void do_sprites_logic(void);
 void draw_sprites(void);
 void destroy_all_sprites(void);
