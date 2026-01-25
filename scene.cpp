@@ -369,7 +369,7 @@ void clear_sprite_data(sprite_t &s)
 }
 
 // Add sprite to our list of sprites.
-void add_sprite(sprite_t &sprite)
+void add_sprite(sprite_t sprite)
 {
  if (sprites.size() > MAX_SPRITES) return;
  sprite.w /= board_info.scale;
