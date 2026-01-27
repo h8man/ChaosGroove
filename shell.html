@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <link rel="icon" type="image/png" sizes="256x256" href="icon.png">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
 
     <style>
@@ -34,8 +34,8 @@
             max-height: 100vh;
             width: auto;
             height: auto;
-            object-fit: contain; /* helps non-WebGL canvases */ }
-
+            object-fit: contain; /* helps non-WebGL canvases */ 
+        }
         #loading {
             position: absolute;
             top: 50%;
@@ -121,6 +121,31 @@
         }
 
         window.addEventListener("beforeunload", saveSettings);
+
+        //---------FULL SCREEN----------
+        let lastTap = 0;
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('touchend', function (e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+
+            // Threshold of 300ms is standard for double-taps
+            if (tapLength < 300 && tapLength > 0) {
+                toggleBrowserFullscreen();
+                e.preventDefault(); // Prevents zooming on some mobile browsers
+            }
+            lastTap = currentTime;
+        }, { passive: false });
+
+        function toggleBrowserFullscreen() {
+            const el = document.documentElement;
+
+            el.requestFullscreen?.()
+                || el.webkitRequestFullscreen?.()
+                || el.mozRequestFullScreen?.()
+                || el.msRequestFullscreen?.();
+        }
 
     </script>
 
