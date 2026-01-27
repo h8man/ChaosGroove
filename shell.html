@@ -48,14 +48,19 @@
 </head>
 
 <body>
-    <div id="loading">Loading…</div>
+    <!-- The loading state -->
+    <div id="status-container" style="position:fixed; top:0; left:0; width:100%; height:100%;
+     background:#111; color:white; display:flex; align-items:center;
+     justify-content:center; z-index:9999; font-family:sans-serif; cursor:pointer;">
+        <div id="status-text">LOADING...</div>
+    </div>
 
     <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
 
     <script>
         var Module = {
             noInitialRun: true,
-            canvas: (function() {
+            canvas: (function () {
                 var canvas = document.getElementById('canvas');
                 return canvas;
             })()
@@ -79,10 +84,27 @@
                         );
                     }
                     // App will now see swapped files
-                    Module._main(); // start app manually
+                    // 0. Get Elements
+                    const statusContainer = document.getElementById('status-container');
+                    const statusText = document.getElementById('status-text');
+
+                    // 1. Loading is done, update the UI to ask for a touch
+                    statusText.innerHTML = "TOUCH TO START";
+
+                    // 2. Wait for user interaction to unlock audio and start the app
+                    statusContainer.addEventListener('click', function unlock() {
+                        // Resume AudioContext for browsers (Chrome/Firefox/Safari 2026)
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContext) {
+                            const ctx = new AudioContext();
+                            ctx.resume();
+                        }
+
+                        // Remove overlay and start raylib main
+                        statusContainer.remove();
+                        Module._main(); // start app manually
+                    }, { once: true });
                 });
-                const loading = document.getElementById('loading');
-                if (loading) loading.remove();
             };
         }
 
@@ -93,7 +115,7 @@
                     '/persist/Game_Options.ini',
                     FS.readFile('/Text_Files/Game_Options.ini', { encoding: "utf8" }),
                     { encoding: "utf8" }
-                    );
+                );
                 FS.syncfs(false, () => { });
             }
         }
