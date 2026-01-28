@@ -43,13 +43,13 @@ jobs:
         xcopy bin\Release\*.dll release\
         xcopy raylib\lib\*.dll release\
         xcopy create_shortcut.bat release\
-        xcopy Gfx release\Gfx /s
-        xcopy Music release\Misuc /s
-        xcopy Pieces release\Pieces /s
-        xcopy Shaders release\Shaders /s
-        xcopy Sounds release\Sounds /s
-        xcopy Spells release\Spells /s
-        xcopy Text_Files release\Text_Files /s
+        xcopy /E /I /Y Gfx release\Gfx
+        xcopy /E /I /Y Music release\Misuc
+        xcopy /E /I /Y Pieces release\Pieces
+        xcopy /E /I /Y Shaders release\Shaders
+        xcopy /E /I /Y Sounds release\Sounds
+        xcopy /E /I /Y Spells release\Spells
+        xcopy /E /I /Y Text_Files release\Text_Files
         powershell Compress-Archive -Path release\* -DestinationPath build-release.zip
     
     - name: Upload EXE artifact
