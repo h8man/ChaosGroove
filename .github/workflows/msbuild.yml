@@ -39,17 +39,17 @@ jobs:
     - name: Create ZIP with EXE + DLLs
       run: |
         mkdir release
-        copy bin\Release\*.exe release\
-        copy bin\Release\*.dll release\
-        copy raylib\lib\*.dll release\
-        copy create_shortcut.bat release\
-        copy Gfx release\
-        copy Music release\
-        copy Pieces release\
-        copy Shaders release\
-        copy Sounds release\
-        copy Spells release\
-        copy Text_Files release\
+        xcopy bin\Release\*.exe release\
+        xcopy bin\Release\*.dll release\
+        xcopy raylib\lib\*.dll release\
+        xcopy create_shortcut.bat release\
+        xcopy Gfx release\Gfx /s
+        xcopy Music release\Misuc /s
+        xcopy Pieces release\Pieces /s
+        xcopy Shaders release\Shaders /s
+        xcopy Sounds release\Sounds /s
+        xcopy Spells release\Spells /s
+        xcopy Text_Files release\Text_Files /s
         powershell Compress-Archive -Path release\* -DestinationPath build-release.zip
     
     - name: Upload EXE artifact
