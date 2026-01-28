@@ -39,8 +39,8 @@ jobs:
     - name: Create ZIP with EXE + DLLs
       run: |
         mkdir release
-        xcopy bin\{{env.BUILD_CONFIGURATION}}\*.exe release\
-        xcopy bin\{{env.BUILD_CONFIGURATION}}\*.dll release\
+        xcopy bin\Debug\*.exe release\
+        xcopy bin\Debug\*.dll release\
         xcopy raylib\lib\*.dll release\
         xcopy create_shortcut.bat release\
         xcopy /E /I /Y Gfx release\Gfx
