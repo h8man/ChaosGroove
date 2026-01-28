@@ -2,7 +2,7 @@
 
 REM === Get paths ===
 set SCRIPT_DIR=%~dp0
-set TARGET=%SCRIPT_DIR%\ChaosGroove.exe
+set TARGET=%SCRIPT_DIR%bin\Release\ChaosGroove.exe
 set ICON=%SCRIPT_DIR%Gfx\icon.ico
 set SHORTCUT_NAME=ChaosGroove
 
