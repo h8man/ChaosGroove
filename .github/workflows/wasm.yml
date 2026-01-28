@@ -1,0 +1,35 @@
+name: Build & Deploy WASM to Pages
+
+on:
+  push:
+    branches: [ "master" ]
+    
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: emscripten/emsdk:5.0.0
+
+    steps:
+        - uses: actions/checkout@v4
+    
+        - name: Build
+          run: make -f makefile-web
+          
+        - name: Upload Pages artifact
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: build/dist  
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
