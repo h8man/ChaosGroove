@@ -482,8 +482,17 @@ static std::string lower(const std::string& s) {
 // Example: FixPathInsensitive("assets/Textures/PLAYER.PNG");
 std::string FixPathInsensitive(const std::string& inputPath)
 {
+	static bool init = true;
 	static std::unordered_map<std::string, std::string> cache;
-
+	if(init)
+	{
+		init = false;
+		fs::path acc = fs::current_path().root_path();
+		for (const auto& part : fs::current_path().relative_path()) {
+			acc /= part;
+			cache[path_to_portable(lower(acc.string()).c_str())] = acc.string();
+		}
+	}
 	//auto it = cache.find(lower(inputPath));
 	//if (it != cache.end())
 	//	return it->second;
