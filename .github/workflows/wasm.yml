@@ -1,9 +1,9 @@
 name: Build & Deploy WASM to Pages
 
 on:
-  push:
-    branches: [ "master" ]
-    
+  #push:
+  #  branches: [ "master" ]
+  workflow_dispatch:  
 permissions:
   contents: read
   pages: write
