@@ -26,6 +26,7 @@ struct piece_data piece[MAX_PIECES];
 
 void load_all_pieces(void)
 {
+ log_no_cr("Loading all pieces..");
  int frames, gfx, piece_num;
  char file[MAX_STRING], text[MAX_STRING], name[MAX_STRING], section[MAX_STRING];
 
@@ -168,6 +169,8 @@ void load_all_pieces(void)
 
 	piece[piece_num].engaged = false;
  }
+ log(".. Done ");
+
 }
 
 void do_pieces_animation_logic(void)
