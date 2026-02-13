@@ -39,7 +39,7 @@ Planned to 'restore' netplay
 
 ## Release
 
-url 
+[Windows](https://github.com/h8man/ChaosGroove/actions/workflows/msbuild.yml)
 
 ---
 
@@ -49,21 +49,21 @@ url
 git clone https://github.com/your-org/your-repo.git
 cd your-repo
 ```
-##Build instructions.
+## Build instructions.
 
-###Windows:
+### Windows:
 
 Download and install Visual Studio 2022 (any edition).
 
 Open the project file: ChaosGroove.sln build and run.
 
-###Linux
+### Linux
 ```
 make
 chaos-groove-run.sh
 ```
 
-###Linux/Wasm
+### Linux/Wasm
 
 Install emsdk
 ```
@@ -73,7 +73,7 @@ or
 ```
 make run -f makefile-web
 ```
-##License
+## License
 
 // You are free to use and modify this source code however you see fit, as long as this game or any modified
 // version is not sold in any way. This game must always be freely available!
