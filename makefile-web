@@ -50,6 +50,8 @@ all: $(BIN_DIR)/$(TARGET)
 
 $(BIN_DIR)/$(TARGET): $(SRC)
 	@mkdir -p $(BIN_DIR)
+	cp web/manifest.json $(BIN_DIR)
+	cp web/sw.js $(BIN_DIR)
 	cp Gfx/icon.ico $(BIN_DIR)
 	cp Gfx/icon.png $(BIN_DIR)
 	$(CXX) $(SRC) \

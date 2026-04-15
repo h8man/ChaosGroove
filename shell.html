@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Chaos Groove GLX</title>
-
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#000000">
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <link rel="icon" type="image/png" sizes="256x256" href="icon.png">
@@ -56,7 +57,15 @@
     </div>
 
     <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
-
+	
+	<script>
+	if (navigator.storage && navigator.storage.persist) {
+		navigator.storage.persist().then(persistent => {
+			console.log("Persistent storage:", persistent);
+		});
+	}
+	</script>
+	
     <script>
         var Module = {
             noInitialRun: true,
@@ -150,6 +159,7 @@
     </script>
 
     {{{ SCRIPT }}}
-
+	
+	<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}</script>
 </body>
 </html>
