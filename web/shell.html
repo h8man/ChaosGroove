@@ -58,14 +58,6 @@
 
     <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
 	
-	<script>
-	if (navigator.storage && navigator.storage.persist) {
-		navigator.storage.persist().then(persistent => {
-			console.log("Persistent storage:", persistent);
-		});
-	}
-	</script>
-	
     <script>
         var Module = {
             noInitialRun: true,
@@ -128,7 +120,12 @@
                 FS.syncfs(false, () => { });
             }
         }
-
+		
+		document.addEventListener("visibilitychange", () => {
+			if (document.hidden) {
+				saveSettings();
+			}
+		});
         window.addEventListener("beforeunload", saveSettings);
 
         //---------FULL SCREEN----------
