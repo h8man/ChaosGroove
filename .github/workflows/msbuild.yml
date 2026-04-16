@@ -21,17 +21,17 @@ env:
   BUILD_CONFIGURATION: Release
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-and-release:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v3
 
     - name: Build
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=Win32 ${{env.SOLUTION_FILE_PATH}}
@@ -50,10 +50,18 @@ jobs:
         xcopy /E /I /Y Sounds release\Sounds
         xcopy /E /I /Y Spells release\Spells
         xcopy /E /I /Y Text_Files release\Text_Files
-        powershell Compress-Archive -Path release\* -DestinationPath build-release.zip
+        powershell Compress-Archive -Path release\* -DestinationPath chaos-windows-release-${{ github.ref_name }}.zip
     
     - name: Upload EXE artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-release
-        path: build-release.zip
+        name: chaos-windows-release
+        path: release
+
+    - name: Release
+      uses: softprops/action-gh-release@v3
+      if: github.ref_type == 'tag'
+      with:
+        files: chaos-windows-release-*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
