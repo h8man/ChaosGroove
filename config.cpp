@@ -138,17 +138,17 @@ void find_random_line_from_text_config(int cfg, char *text)
  // Find start of name.
  for (c = 0 ; c < 512 ; c++)
  {
-  if (a == 0 || config[cfg].data[a - 1] == 13) break;
+  if (a == 0 || config[cfg].data[a - 1] == 0x0a) break;
 	a--;
  }
 
- if (a > 0) a++;
+ //if (a > 0) a++;
  b = a;
 
  // Find end of name.
  for (c = 0 ; c < 512 ; c++)
  {
-  if (b == config[cfg].length || config[cfg].data[b + 1] == 13) break;
+  if (b == config[cfg].length || config[cfg].data[b + 1] == 0x0d || config[cfg].data[b + 1] == 0x0a) break;
 	b++;
  }
 
@@ -214,8 +214,7 @@ char		*posstart, *posend ;
 	{
 		if  ( *posstart == 0x0d )
 		{
-			posstart++ ;
-			if  ( *posstart == '[' )
+			if  ( *(posstart+1) == '[' )
 			{
 				return false ;
 			}
@@ -223,8 +222,7 @@ char		*posstart, *posend ;
 
 		if  ( *posstart == 0x0a )
 		{
-			posstart++ ;
-			if  ( *posstart == '[' )
+			if  ( *(posstart+1) == '[' )
 			{
 				return false ;
 			}
@@ -236,7 +234,10 @@ char		*posstart, *posend ;
 	
 	variablePosition += strlen( variableName ) + 1 ;
 	
-	if (*variablePosition != ' ' && *variablePosition != '=') return false; // Not a variable!
+	if (*variablePosition != ' ' && *variablePosition != '=')
+	{
+		return false; // Not a variable!
+	}
 
 	//find the start of the variable data.
 	do
@@ -249,7 +250,7 @@ char		*posstart, *posend ;
 	do
 	{
 		endofline++ ;
-	}while( ( variablePosition[endofline] != 0x0d ) && ( variablePosition[endofline] != 0 ) &&
+	}while( ( variablePosition[endofline] != 0x0d && variablePosition[endofline] != 0x0a ) && ( variablePosition[endofline] != 0 ) &&
 	variablePosition < config[cfg].data + config[cfg].length);
 
 	if (  (size - 1) <= endofline ) 
@@ -370,7 +371,7 @@ bool change_config_text(int cfg, char	*section , char *variable, char	*buffer)
 	do
 	{
 		endofline++ ;
-	}while( ( variablePosition[endofline] != 0x0d ) &&          ( variablePosition[endofline] ));
+	}while( ( variablePosition[endofline] != 0x0d && variablePosition[endofline] != 0x0a ) && ( variablePosition[endofline] != 0 ) );
 
   size = (config[cfg].length - endofline) + strlen(buffer);
   s = (variablePosition - config[cfg].data) + endofline;

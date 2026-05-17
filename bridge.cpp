@@ -540,7 +540,7 @@ std::string FixPathInsensitive(const std::string& inputPath)
 					cache[path_to_portable(lower(entry.path().string()).c_str())] = entry.path().string();
 				}
 				if (entryNameLower == target) {
-					resolved /= entry.path().filename();
+					resolved = entry.path();
 					matched = true;
 					break;
 				}
