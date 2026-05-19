@@ -5,7 +5,7 @@
 #define __Game_hpp__ 
 
 #define GAME_NAME                   "Chaos Groove"
-#define GAME_VERSION                "0.9"
+#define GAME_VERSION                "0.9.1"
 #define GAME_AUTHOR                 "Richard Phipps"
 #define GAME_DATE                   "10.04.07"
 #define GAME_LAUNCH_DATE            "Unknown"
