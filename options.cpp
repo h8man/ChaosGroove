@@ -245,7 +245,7 @@ void do_options(bool draw)
 	//Draw gradients
 	SetTextureWrap(*gfx[43], TEXTURE_WRAP_CLAMP);
 	SetTextureFilter(*gfx[43], TEXTURE_FILTER_BILINEAR);
-	Draw(gfx[43], Rectangle{ 1, 0, (float)gfx[43]->width-1, (float)gfx[43]->height-0}, Rectangle{ 0, 0, 1280, 960 });
+	Draw(gfx[43], Rectangle{ 1, 0, (float)gfx[43]->width-1, (float)gfx[43]->height-0}, Rectangle{ 0, 0, GRAPHICS_WIDTH, GRAPHICS_HEIGHT });
 
 	draw_scrolly();
 
@@ -265,7 +265,7 @@ void do_options(bool draw)
 	 }
 
 	 // Author text
-	 draw_text("a game by richard phipps", 0, 1280, 890, FONT_SMALL, 1, Rgba(0.0, 1.0, 1.0), menu_info.alpha.current, TEXT_CENTRE);
+	 draw_text("a game by richard phipps", 0, GRAPHICS_WIDTH, 890, FONT_SMALL, 1, Rgba(0.0, 1.0, 1.0), menu_info.alpha.current, TEXT_CENTRE);
 	}
  }
 
@@ -358,7 +358,7 @@ void do_options(bool draw)
 		  Draw(gfx[46], Rectangle{ 0, 1, 16, 16 }, Rectangle{ (float)x, (float)y, (float) w, 21 }, menu_info.alpha.current);
 	  }
     
-		draw_text(text, x, 1280, y, font, 0, col, menu_info.alpha.current, TEXT_LEFT);
+		draw_text(text, x, (float)GRAPHICS_WIDTH, y, font, 0, col, menu_info.alpha.current, TEXT_LEFT);
 	 }
 
 	 // Clicked on an option choice?
@@ -400,5 +400,5 @@ void draw_scrolly(void)
 	if (pos > config[CONFIG_SCROLLY].length) pos--;
  }
  buffer[81] = 0;
- draw_text(buffer, 0 - offset, 1280, 930, FONT_LARGE, 0, Rgba(1.0, 1.0, 1.0), 1.0, TEXT_LEFT);
+ draw_text(buffer, 0 - offset, (float)GRAPHICS_WIDTH, 930, FONT_LARGE, 0, Rgba(1.0, 1.0, 1.0), 1.0, TEXT_LEFT);
 }

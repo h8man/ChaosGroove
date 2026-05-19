@@ -34,6 +34,9 @@ extern RenderTexture2D RendererTexture;
 
 #define MAX_SPRITES 1000
 
+#define GRAPHICS_HEIGHT 960
+#define GRAPHICS_WIDTH 1280
+
 // Code to use for rotations.
 #ifndef M_PI
 #define M_PI 3.14

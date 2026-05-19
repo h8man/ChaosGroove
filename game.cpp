@@ -56,8 +56,8 @@ bool setup_display(void)
 
  if (set_config_file_new(CONFIG_DISPLAY, file, false))
  {
-  screen.w = GetConfigInt(CONFIG_DISPLAY, "DISPLAY", "WIDTH", 1280);
-  screen.h = GetConfigInt(CONFIG_DISPLAY, "DISPLAY", "HEIGHT", 1024);
+  screen.w = GetConfigInt(CONFIG_DISPLAY, "DISPLAY", "WIDTH", GRAPHICS_WIDTH);
+  screen.h = GetConfigInt(CONFIG_DISPLAY, "DISPLAY", "HEIGHT", GRAPHICS_HEIGHT);
 
   screen.dx = GetConfigYes(CONFIG_DISPLAY, "DISPLAY", "DX", false);
   screen.windowed = GetConfigYes(CONFIG_DISPLAY, "DISPLAY", "WINDOWED", false);
@@ -65,8 +65,8 @@ bool setup_display(void)
  else
  {
   log("Couldn't find or open display.ini file. Using default settings instead..");
-  screen.w = 1280;
-	screen.h = 1024;
+  screen.w = GRAPHICS_WIDTH;
+	screen.h = GRAPHICS_HEIGHT;
 	screen.dx = false;
 	screen.windowed = false;
  }

@@ -113,14 +113,14 @@ void draw_scene(void)
  float x, y, a, scale;
  int x2, y2;
 
- // Find angle to fit 1280 x 960 area into current screen size..
- x = ScreenWidth() / 1280.0;
- y = ScreenHeight() / 960.0;
+ // Find angle to fit GRAPHICS_WIDTH x GRAPHICS_HEIGHT area into current screen size..
+ x = ScreenWidth() / (float)GRAPHICS_WIDTH;
+ y = ScreenHeight() / (float)GRAPHICS_HEIGHT;
  a = MIN(x, y);
 
  // Also, find x and y amounts to centre new screen.
- x = -(1280.0 - (ScreenWidth())) / 2.0;
- y = (960.0 - (ScreenHeight())) / 2.0;
+ x = -(GRAPHICS_WIDTH - (ScreenWidth())) / 2.0;
+ y = (GRAPHICS_HEIGHT - (ScreenHeight())) / 2.0;
 
  // We have to scale the x and y by the new viewing angle too.
  x = x * a;
@@ -152,13 +152,13 @@ void draw_scene(void)
  //TODO:
  //if (scale > 0.75) // Portrait display
  //{
-	// DrawRectangle(0, -(ScreenHeight() / a), 1280, 0, BLACK);
-	// DrawRectangle(0, 960, 1280, 992 / a, BLACK);
+	// DrawRectangle(0, -(ScreenHeight() / a), GRAPHICS_WIDTH, 0, BLACK);
+	// DrawRectangle(0, GRAPHICS_HEIGHT, GRAPHICS_WIDTH, 992 / a, BLACK);
  //}
  //if (scale < 0.75) // Widescreen
  //{
 	// DrawRectangle( - (ScreenWidth() / a), 0, 0, (ScreenHeight() / a) + 1, BLACK);
-	// DrawRectangle(1280, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
+	// DrawRectangle(GRAPHICS_WIDTH, 0, ScreenWidth() / a, (ScreenHeight() / a) + 1, BLACK);
  //}
 
 #ifdef _DEBUG
@@ -203,8 +203,8 @@ void do_mouse_logic(void)
 
  GetMouseMickeys(&fx, &fy, mouse.lock_cursor);
 
- mouse.x = MID(16, fx, 1280-16);
- mouse.y = MID(16, fy, 960-16);
+ mouse.x = MID(16, fx, GRAPHICS_WIDTH-16);
+ mouse.y = MID(16, fy, GRAPHICS_HEIGHT-16);
  mouse.rgba = Rgba(1.0, 1.0, 1.0);
 
  if (game.stage == GAME_INGAME)
@@ -225,7 +225,7 @@ void do_mouse_logic(void)
   for (t = 0 ; t < 16 ; t++)
   {
    x += panel.spell_icon_w;
-	 if (x + panel.spell_icon_space_x > 1280) break;
+	 if (x + panel.spell_icon_space_x > GRAPHICS_WIDTH) break;
    x += panel.spell_icon_space_x;
   }
   offset_x = panel.spell_area_w - (t * (panel.spell_icon_w + panel.spell_icon_space_x)) + panel.spell_icon_space_x; 
@@ -430,8 +430,8 @@ void do_sprites_logic(void)
 	  }
 
     // Paricles has shrunk, or faded so w or h, or alpha is less than zero. Let's destroy.
-    if (iter->w <= 0.0 || iter->h <= 0.0 || iter->alpha <= 0.0 || iter->x > 1280.0 || iter->x + iter->w < 0.0
-		|| iter->y > 960.0 || iter->y + iter->h < 0.0) iter->destroy = true;
+    if (iter->w <= 0.0 || iter->h <= 0.0 || iter->alpha <= 0.0 || iter->x > (float)GRAPHICS_WIDTH || iter->x + iter->w < 0.0
+		|| iter->y > (float)GRAPHICS_HEIGHT || iter->y + iter->h < 0.0) iter->destroy = true;
 	 }
 	 else
 	 {

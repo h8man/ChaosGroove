@@ -36,12 +36,12 @@ void setup_panels(void)
  panel.info_area_x = board_info.start_x - board_info.border_size;
  panel.info_area_y = board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size;
  panel.info_area_w = 1120 - panel.info_area_x;
- panel.info_area_h = 96;//960 - panel.info_area_y;
+ panel.info_area_h = 96;//GRAPHICS_HEIGHT - panel.info_area_y;
 
  panel.spell_area_x = 1120;
  panel.spell_area_y = 0;
- panel.spell_area_w = 1280 - panel.spell_area_x;
- panel.spell_area_h = 960 - panel.spell_area_y;
+ panel.spell_area_w = GRAPHICS_WIDTH - panel.spell_area_x;
+ panel.spell_area_h = GRAPHICS_HEIGHT - panel.spell_area_y;
  panel.spell_icon_w = 64;
  panel.spell_icon_h = 64;
  panel.spell_icon_space_x = 8;
@@ -250,7 +250,7 @@ void draw_panels(void)
  Color tint = ColorFromNormalized({ wizard[game.current_wizard].col.r, wizard[game.current_wizard].col.g, wizard[game.current_wizard].col.b, 1.0 });
  //TODO:
  // Blank any old cloud data in panel.
- Draw(gfx[8], Rectangle{ 0, (float)panel.info_area_y, 1280, 960, }, BLACK);
+ Draw(gfx[8], Rectangle{ 0, (float)panel.info_area_y, (float)GRAPHICS_WIDTH, (float)GRAPHICS_HEIGHT }, BLACK);
  SetTextureWrap(*gfx[8], TEXTURE_WRAP_CLAMP);
  SetTextureFilter(*gfx[8], TEXTURE_FILTER_BILINEAR);
  // Now draw 'reflection' glow effect on info panel.
@@ -261,7 +261,7 @@ void draw_panels(void)
  // Now draw 'reflection' glow effect on spell panel.
  Draw(gfx[8], Rectangle{ 1, 1, (float)gfx[8]->width - 1, (float)gfx[8]->height-1 },
 	 Rectangle{ (float)board_info.start_x+board_info.board_width*board_info.square_width+board_info.border_size, (float)panel.spell_area_y,
-	(float)1280-(board_info.start_x + board_info.board_width * board_info.square_width + board_info.border_size),(float)panel.spell_area_h},
+	(float)GRAPHICS_WIDTH-(board_info.start_x + board_info.board_width * board_info.square_width + board_info.border_size),(float)panel.spell_area_h},
 	tint);
 
  if (panel.info_area_show_piece_stats)
@@ -735,7 +735,7 @@ void draw_spell_icons(void)
  for (t = 0 ; t < 16 ; t++)
  {
   x += panel.spell_icon_w;
-	if (x + panel.spell_icon_space_x > 1280) break;
+	if (x + panel.spell_icon_space_x > GRAPHICS_WIDTH) break;
   x += panel.spell_icon_space_x;
  }
  offset_x = panel.spell_area_w - (t * (panel.spell_icon_w + panel.spell_icon_space_x)) + panel.spell_icon_space_x; 
