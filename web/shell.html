@@ -99,6 +99,19 @@
                 return canvas;
             })()
         };
+        let gameStarted = false;
+
+        async function requestScreenWakeLock() {
+            if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') {
+                return;
+            }
+
+            try {
+                await navigator.wakeLock.request('screen');
+            } catch (_) {
+            }
+        }
+
         // Hide loading text once WASM is ready
         if (typeof Module !== 'undefined') {
             Module.onRuntimeInitialized = function () {
@@ -140,6 +153,8 @@
                         // Remove overlay and start raylib main
                         statusContainer.remove();
                         Module._main(); // start app manually
+                        gameStarted = true;
+                        requestScreenWakeLock();
                     }, { once: true });
                 });
             };
@@ -160,6 +175,8 @@
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 saveSettings();
+            } else if (gameStarted) {
+                requestScreenWakeLock();
             }
         });
         window.addEventListener("beforeunload", saveSettings);
@@ -193,6 +210,6 @@
 
     {{{ SCRIPT }}}
 
-    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js?v1.2'); }</script>
+    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js?v1.3'); }</script>
 </body>
 </html>
