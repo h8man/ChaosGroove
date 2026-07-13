@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaos-groove-pwa-v1.1";
+const CACHE_NAME = "chaos-groove-pwa-v1.2";
 
 const FILES_TO_CACHE = [
     "./",
@@ -32,10 +32,18 @@ self.addEventListener('activate', event => {
 // Fetch: network-first for navigation (HTML), cache-first for assets
 self.addEventListener('fetch', event => {
     if (event.request.mode === 'navigate') {
-        // Always try network first for HTML
+        // Always try network first for HTML, then use the cached page.
         event.respondWith(
-            fetch(event.request).catch(() => caches.match('/index.html'))
+            fetch(event.request).catch(() =>
+                caches.match(event.request).then(response =>
+                    response || caches.match(new URL('index.html', self.registration.scope).href)
+                )
+            )
         );
+        return;
+    }
+
+    if (event.request.method !== 'GET') {
         return;
     }
 
