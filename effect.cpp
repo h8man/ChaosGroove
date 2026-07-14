@@ -432,7 +432,7 @@ void do_wizard_dying_effect(int x, int y, int times)
    s.dy = sin(angle) * speed;
 	 s.rgba = wizard[t % 8].col;
 	 s.alpha = 1.0;
-	 s.additive_draw = true;
+	 s.additive_draw = false;
 	 s.angle_move = false;
 
    add_sprite(s);
