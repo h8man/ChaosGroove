@@ -56,6 +56,16 @@ void setup_wizards(void)
  wizard[7].human = false;
  wizard[INDEPENDENT].human = false;
 
+ wizard[0].gfx = 1;
+ wizard[1].gfx = 2;
+ wizard[2].gfx = 3;
+ wizard[3].gfx = 4;
+ wizard[4].gfx = 5;
+ wizard[5].gfx = 6;
+ wizard[6].gfx = 7;
+ wizard[7].gfx = 8;
+ wizard[INDEPENDENT].gfx = -1;
+
  // Don't forget Independents.
  sprintf(wizard[INDEPENDENT].name, "INDEPENDENT");
 
@@ -155,6 +165,27 @@ void setup_wizard_colours(void)
 	b = GetConfigInt(CONFIG_WIZARDS, name, "OPTION_B", 255);
 
 	wizard[w].col = Rgba(r, g, b);
+ }
+}
+
+void setup_wizard_order(void)
+{
+ int w, a;
+ struct wizard_t temp;
+
+ // Keep the configured order when randomisation is disabled.
+ if (check_option_choice(CONFIG_WIZARDS, "WIZARDS", "RANDOMISE WIZARDS TURN", "NO")) return;
+
+ // Shuffle only player wizard slots. INDEPENDENT is not a player slot.
+ for (w = MAX_WIZARDS - 1; w > 0; --w)
+ {
+  a = IRand(0, w);
+
+  if (a == w) continue;
+
+  temp = wizard[w];
+  wizard[w] = wizard[a];
+  wizard[a] = temp;
  }
 }
 
@@ -366,7 +397,7 @@ void setup_wizard_positions(void)
   {
    // Use WIZARD_x names to find any piece read from data file.
    // This stops hardcoded piece numbers.
-   sprintf(name, "wizard_%d", w + 1);
+   sprintf(name, "wizard_%d", wizard[w].gfx);
    create_new_piece(name, wizard[w].x, wizard[w].y);
    board[wizard[w].x][wizard[w].y][PIECE].owner = w; // Mark wizard as owner.
    board[wizard[w].x][wizard[w].y][PIECE].turn = 1; // Set as oldest creature.

@@ -498,8 +498,9 @@ void ingame_loop(void)
  
  // Setup Wizards (using wizard option data).
  setup_wizards();
+ setup_wizard_order();
  setup_wizard_positions();
- 
+
  // Setup Spell Lists.
  setup_spell_lists();
 
@@ -1063,7 +1064,7 @@ void menu_loop(void)
 		setup_options(menu_info.new_config, menu_info.new_section_name);
 	  
 		if (menu_info.new_config == CONFIG_WIZARDS && check_option_choice(CONFIG_WIZARDS, "WIZARDS", 
-		"RANDOMISE EACH PLAY", "YES"))
+		"RANDOMISE NAMES EACH PLAY", "YES"))
 		{
      for (w = 0 ; w < MAX_WIZARDS ; w++)
 		 {
