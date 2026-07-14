@@ -814,7 +814,7 @@ void draw_background_clouds(void)
 	//gfx[33]->setBlitColor(0.3, 0.0, 0.5, 0.25);
 
 	// Layer 1
-	BeginBlendMode(BLEND_ALPHA);
+	//BeginBlendMode(BLEND_ALPHA);
 
 	SetTextureWrap(*gfx[33], TEXTURE_WRAP_REPEAT);
 	Draw(gfx[33], Rectangle{ 1, 1, (float)gfx[33]->width - 1, (float)gfx[33]->height - 1 },

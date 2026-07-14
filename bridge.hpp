@@ -125,7 +125,7 @@ long FileSize(char *FileName);
 
 void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float angle, Rgba rgba) ;
 void DrawShadedRect(int x1, int y1, int x2, int y2, Rgba c1, Rgba c2, Rgba c3, Rgba c4);
-void SetSolidColour(Rgba col);
+void SetSolidColour();
 void CancelSolidColour();
 
 void CheckGfxExists(int g, char *file, int line);

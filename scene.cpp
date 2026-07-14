@@ -445,44 +445,51 @@ void do_sprites_logic(void)
 
 void draw_sprites(void)
 {
- for( list < sprite_t > ::iterator iter = sprites.begin(); iter != sprites.end(); )
+ vector < sprite_t * > sprite_batches[2][2];
+
+ for (list < sprite_t > ::iterator iter = sprites.begin(); iter != sprites.end(); ++iter)
  {
-  // Call appropriate functions.
-  if (iter->gfx != -1 && iter->time <= 0)
+  if (iter->gfx != -1 && iter->time <= 0 && iter->alpha > 0.0)
+  {
+   sprite_batches[iter->use_piece_gfx ? 1 : 0][iter->additive_draw ? 1 : 0].push_back(&*iter);
+  }
+ }
+
+ for (int use_piece_gfx = 0; use_piece_gfx < 2; ++use_piece_gfx)
+ {
+  for (int additive_draw = 0; additive_draw < 2; ++additive_draw)
+  {
+   if (sprite_batches[use_piece_gfx][additive_draw].empty()) continue;
+
+   BeginBlendMode(additive_draw ? BLEND_ADDITIVE : BLEND_ALPHA);
+   if (use_piece_gfx)
+   {
+	   SetSolidColour();
+   }
+
+   for (vector < sprite_t * > ::iterator iter = sprite_batches[use_piece_gfx][additive_draw].begin();
+		iter != sprite_batches[use_piece_gfx][additive_draw].end(); ++iter)
+   {
+	sprite_t *sprite = *iter;
+	if (!sprite->alpha > 0.0) continue;
+	Rgba tint = Rgba(sprite->rgba.r, sprite->rgba.g, sprite->rgba.b, sprite->rgba.a * sprite->alpha);
+	if (use_piece_gfx)
 	{
-	  Rgba tint = Rgba(iter->rgba.r, iter->rgba.g, iter->rgba.b, iter->rgba.a * iter->alpha);
-
-	 if (!iter->use_piece_gfx)
-	 {
-		if (iter->additive_draw)
-		{
-		//   if (game.opengl) gfx[iter->gfx]->setAlphaMode(GL_SRC_ALPHA, GL_ONE);
-	     //if (!game.opengl) gfx[iter->gfx]->setAlphaMode(1);  
-			BeginBlendMode(BLEND_ADDITIVE);
-		}
-		else
-		{
-   //    gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-			BeginBlendMode(BLEND_ALPHA);
-		}
-
-		 if (iter->alpha > 0.0) BlitTransform(gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, tint);
-		 EndBlendMode();
-	 }
-	 else
-	 {
-        if (iter->alpha > 0.0)
-		{
-		 SetSolidColour(iter->rgba);	
-		 //piece_gfx[iter->gfx]->setAlphaMode(BLENDER_ALPHA);
-
-		 BlitTransform(piece_gfx[iter->gfx], iter->x, iter->y, iter->w, iter->h, iter->angle, tint);
-
-		 CancelSolidColour();
-		}
-	 }
+		BlitTransform(piece_gfx[sprite->gfx], sprite->x, sprite->y, sprite->w, sprite->h, sprite->angle, tint);
 	}
-  iter++;
+	else
+	{
+		BlitTransform(gfx[sprite->gfx], sprite->x, sprite->y, sprite->w, sprite->h, sprite->angle, tint);
+	}
+   }
+
+   if (use_piece_gfx)
+   {
+	   CancelSolidColour();
+   }
+
+   EndBlendMode();
+  }
  }
 
 }

@@ -650,7 +650,7 @@ void BlitTransform(Texture2D *bmp, float x, float y, float w, float h, float ang
  */
 }
 
-void SetSolidColour(Rgba col)
+void SetSolidColour()
 {
 	BeginBlendMode(BLEND_ALPHA);
 	BeginShaderMode(Shaders[SHADER_SOLID]);

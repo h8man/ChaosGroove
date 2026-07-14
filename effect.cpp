@@ -177,7 +177,7 @@ void do_plain_missile_effect(int g, float speed, int x1, int y1, int x2, int y2)
  add_sprite(s);
 
  wait_time((int)time);
-
+ //fix shot flying across the screen
  destroy_all_sprites();
 }
 
