@@ -36,6 +36,7 @@ WEB_FLAGS = \
     -s ASYNCIFY \
     -s FORCE_FILESYSTEM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
+	-sEXIT_RUNTIME=1 \
     -sEXPORTED_RUNTIME_METHODS=["ccall","HEAPF32"] \
     --shell-file web/shell.html \
 	-lidbfs.js
@@ -64,7 +65,7 @@ $(BIN_DIR)/$(TARGET): $(SRC)
 
 # Clean
 clean:
-	rm -rf $(BIN_DIR)
+	rm -rf $(BIN_DIR)/*
 
 # Run locally
 run: all

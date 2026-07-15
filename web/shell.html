@@ -97,7 +97,15 @@
             canvas: (function () {
                 var canvas = document.getElementById('canvas');
                 return canvas;
-            })()
+            })(),
+            onAbort: (reason) => {
+                console.log("@Shell: Application exited unexpectedly");
+            },
+            onExit: (reason) => {
+                console.log("@Shell: Application clean exit");
+                saveSettings();
+                showReloadPrompt();
+            }
         };
         let gameStarted = false;
 
@@ -116,6 +124,7 @@
         if (typeof Module !== 'undefined') {
             Module.onRuntimeInitialized = function () {
                 //mount persistant storage
+                console.log("@Shell: Mounting persistent storage...");
                 if (!FS.analyzePath('/persist').exists) {
                     FS.mkdir('/persist');
                 }
@@ -123,10 +132,18 @@
                 // Pull persistent data into memory
                 FS.syncfs(true, () => {
                     // Overwrite files the app expects
+                    console.log("@Shell: Syncing persistent storage...");
                     if (FS.analyzePath('/persist/Game_Options.ini').exists) {
                         FS.writeFile(
                             '/Text_Files/Game_Options.ini',
                             FS.readFile('/persist/Game_Options.ini', { encoding: "utf8" }),
+                            { encoding: "utf8" }
+                        );
+                    }
+                    if (FS.analyzePath('/persist/Wizard_Options.ini').exists) {
+                        FS.writeFile(
+                            '/Text_Files/Wizard_Options.ini',
+                            FS.readFile('/persist/Wizard_Options.ini', { encoding: "utf8" }),
                             { encoding: "utf8" }
                         );
                     }
@@ -150,26 +167,48 @@
                         canvas.style.background = 'black';
                         canvas.style.boxShadow = "0 0 3px 3px rgba(15, 12, 12, 0.8)";
                         document.body.style.backgroundColor = "rgb(0,0,0,0.8)";
-                        // Remove overlay and start raylib main
-                        statusContainer.remove();
-                        Module._main(); // start app manually
+                        // Hide overlay and start raylib main
+                        statusContainer.style.display = "none";
                         gameStarted = true;
+                        history.pushState({ chaosGroove: true }, "", location.href);
                         requestScreenWakeLock();
+                        Module._main(); // start app manually
                     }, { once: true });
                 });
             };
         }
 
         function saveSettings() {
-
+            console.log("@Shell: Saving settings...");
             if (FS.analyzePath('/Text_Files/Game_Options.ini').exists) {
                 FS.writeFile(
                     '/persist/Game_Options.ini',
                     FS.readFile('/Text_Files/Game_Options.ini', { encoding: "utf8" }),
                     { encoding: "utf8" }
                 );
-                FS.syncfs(false, () => { });
             }
+            if (FS.analyzePath('/Text_Files/Wizard_Options.ini').exists) {
+                FS.writeFile(
+                    '/persist/Wizard_Options.ini',
+                    FS.readFile('/Text_Files/Wizard_Options.ini', { encoding: "utf8" }),
+                    { encoding: "utf8" }
+                );
+            }
+
+            FS.syncfs(false, () => { });
+
+        }
+
+        function showReloadPrompt() {
+            gameStarted = false;
+
+            const statusContainer = document.getElementById('status-container');
+            const statusText = document.getElementById('status-text');
+            const canvas = document.getElementById('canvas');
+            canvas.style.display = "none";
+            statusText.innerHTML = "TOUCH TO RELOAD";
+            statusContainer.style.display = "flex";
+            statusContainer.addEventListener('click', () => location.reload(), { once: true });
         }
 
         document.addEventListener("visibilitychange", () => {
@@ -180,6 +219,36 @@
             }
         });
         window.addEventListener("beforeunload", saveSettings);
+
+        function emulateEscapePress() {
+            const escapeEvent = {
+                key: "Escape",
+                code: "Escape",
+                keyCode: 27,
+                which: 27,
+                bubbles: true,
+                cancelable: true
+            };
+
+            canvas.dispatchEvent(new KeyboardEvent("keydown", escapeEvent));
+            window.setTimeout(() => {
+                canvas.dispatchEvent(new KeyboardEvent("keyup", escapeEvent));
+            }, 50);
+        }
+
+        function handleBackButton() {
+            if (!gameStarted) return;
+
+            emulateEscapePress();
+        }
+
+        window.addEventListener("popstate", () => {
+            if (!gameStarted) return;
+
+            handleBackButton();
+            history.pushState({ chaosGroove: true }, "", location.href);
+        });
+        document.addEventListener("backbutton", handleBackButton, false);
 
         //---------FULL SCREEN----------
         let lastTap = 0;
@@ -210,6 +279,6 @@
 
     {{{ SCRIPT }}}
 
-    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js?v1.12'); }</script>
+    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js?v1.12.1'); }</script>
 </body>
 </html>
