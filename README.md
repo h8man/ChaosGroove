@@ -29,7 +29,7 @@ All credit for the original design and implementation belongs to the original au
 ## Features
 
 - Platform-native implementation
-- Miantained code portability
+- Code portability
 - Randering with raylib
 - All binaries included
 
@@ -75,6 +75,6 @@ make run -f makefile-web
 ```
 ## License
 
-// You are free to use and modify this source code however you see fit, as long as this game or any modified
-// version is not sold in any way. This game must always be freely available!
-// Richard Phipps, 13/04/08
+You are free to use and modify this source code however you see fit, as long as this game or any modified version is not sold in any way. This game must always be freely available!
+
+Richard Phipps, 13/04/08
