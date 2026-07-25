@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaos-groove-pwa-v1.12.1";
+const CACHE_NAME = "chaos-groove-pwa-v1.12.2";
 
 const FILES_TO_CACHE = [
     "./",

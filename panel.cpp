@@ -27,6 +27,8 @@ using namespace std;
 #include "spell.hpp"
 #include "options.hpp"
 
+#define MAX_SPELL_AREA 1120
+
 struct panel_t panel;
 
 void setup_panels(void)
@@ -35,10 +37,10 @@ void setup_panels(void)
 
  panel.info_area_x = board_info.start_x - board_info.border_size;
  panel.info_area_y = board_info.start_y + (board_info.board_height * board_info.square_height) + board_info.border_size;
- panel.info_area_w = 1120 - panel.info_area_x;
+ panel.info_area_w = MAX_SPELL_AREA - panel.info_area_x;
  panel.info_area_h = 96;//GRAPHICS_HEIGHT - panel.info_area_y;
 
- panel.spell_area_x = 1120;
+ panel.spell_area_x = MAX_SPELL_AREA;
  panel.spell_area_y = 0;
  panel.spell_area_w = GRAPHICS_WIDTH - panel.spell_area_x;
  panel.spell_area_h = GRAPHICS_HEIGHT - panel.spell_area_y;
@@ -48,7 +50,7 @@ void setup_panels(void)
  panel.spell_icon_space_y = 8;
  panel.spell_icon_amount = 22;
 
- find_option_choice_variables(CONFIG_OPTIONS, "SPELL", "MAXIMUM AMOUNT OF SPELLS VISIBLE", &panel.spell_icon_amount, &panel. spell_icon_w, &panel.spell_icon_space_x, NULL);
+ find_option_choice_variables(CONFIG_OPTIONS, "SPELL", "MAXIMUM AMOUNT OF SPELLS VISIBLE", &panel.spell_icon_amount, &panel.spell_icon_w, &panel.spell_icon_space_x, NULL);
 
  panel.spell_icon_h = panel.spell_icon_w;
 
